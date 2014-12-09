@@ -10,18 +10,18 @@ App::uses('AppModel', 'Model');
  */
 class Lottery extends AppModel {
 
-/**
- * Display field
- *
- * @var string
- */
+	/**
+	 * Display field
+	 *
+	 * @var string
+	 */
 	public $displayField = 'name';
 
-/**
- * Validation rules
- *
- * @var array
- */
+	/**
+	 * Validation rules
+	 *
+	 * @var array
+	 */
 	public $validate = array(
 		'eve_item_id' => array(
 			'numeric' => array(
@@ -31,8 +31,8 @@ class Lottery extends AppModel {
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
 		'name' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
@@ -41,8 +41,8 @@ class Lottery extends AppModel {
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
 		'creator_user_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
@@ -51,8 +51,8 @@ class Lottery extends AppModel {
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
 		'created' => array(
 			'datetime' => array(
 				'rule' => array('datetime'),
@@ -61,8 +61,8 @@ class Lottery extends AppModel {
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
 		'modified' => array(
 			'datetime' => array(
 				'rule' => array('datetime'),
@@ -71,18 +71,22 @@ class Lottery extends AppModel {
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
 		'nb_tickets' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
-				//'required' => false,
+				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
+			'limitTickets' => array(
+				'rule'    => array('inList', array(8, 16)),
+				'message' => 'You can only propose 8 or 16 tickets.'
+				)
 			),
-		),
 		'lottery_status_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
@@ -91,9 +95,9 @@ class Lottery extends AppModel {
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
-	);
+		);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -102,27 +106,27 @@ class Lottery extends AppModel {
  *
  * @var array
  */
-	public $belongsTo = array(
-		'EveItem' => array(
-			'className' => 'EveItem',
-			'foreignKey' => 'eve_item_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
+public $belongsTo = array(
+	'EveItem' => array(
+		'className' => 'EveItem',
+		'foreignKey' => 'eve_item_id',
+		'conditions' => '',
+		'fields' => '',
+		'order' => ''
 		),
-		'LotteryStatus' => array(
-			'className' => 'LotteryStatus',
-			'foreignKey' => 'lottery_status_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
+	'LotteryStatus' => array(
+		'className' => 'LotteryStatus',
+		'foreignKey' => 'lottery_status_id',
+		'conditions' => '',
+		'fields' => '',
+		'order' => ''
 		),
-		'User' => array(
-			'className' => 'User',
-			'foreignKey' => 'creator_user_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
+	'User' => array(
+		'className' => 'User',
+		'foreignKey' => 'creator_user_id',
+		'conditions' => '',
+		'fields' => '',
+		'order' => ''
 		)
 	);
 
@@ -131,19 +135,19 @@ class Lottery extends AppModel {
  *
  * @var array
  */
-	public $hasMany = array(
-		'Ticket' => array(
-			'className' => 'Ticket',
-			'foreignKey' => 'lottery_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
+public $hasMany = array(
+	'Ticket' => array(
+		'className' => 'Ticket',
+		'foreignKey' => 'lottery_id',
+		'dependent' => true,
+		'conditions' => '',
+		'fields' => '',
+		'order' => '',
+		'limit' => '',
+		'offset' => '',
+		'exclusive' => '',
+		'finderQuery' => '',
+		'counterQuery' => ''
 		)
 	);
 

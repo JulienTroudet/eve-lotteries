@@ -36,7 +36,7 @@
 			<div class="related">
 				<h3><?php echo __('Related Eve Items'); ?></h3>
 				<?php if (!empty($eveCategory['EveItem'])): ?>
-					<table cellpadding = "0" cellspacing = "0">
+					<table class="table table-striped table-condensed">
 						<tr>
 							<th><?php echo __('Eve Id'); ?></th>
 							<th><?php echo __('Name'); ?></th>

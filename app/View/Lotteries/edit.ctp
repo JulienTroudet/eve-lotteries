@@ -14,7 +14,10 @@
 					echo $this->Form->input('id');
 					echo $this->Form->input('eve_item_id');
 					echo $this->Form->input('name');
-					echo $this->Form->input('nb_tickets');
+					echo $this->Form->input('nb_tickets', array(
+						'default' => $eveItem['EveItem']['nb_tickets_default'],
+						'options' => array('8','16'),
+						));
 					echo $this->Form->input('lottery_status_id');
 					?>
 				</fieldset>

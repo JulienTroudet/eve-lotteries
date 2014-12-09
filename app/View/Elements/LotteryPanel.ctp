@@ -1,4 +1,17 @@
+<?php 
+$ticketsCount = count($lottery['Ticket']);
+if ($ticketsCount == 8) {
+?>
 <div class="col-md-4 col-sm-6">
+<?php
+}?>
+
+<?php if ($ticketsCount == 16) {
+?>
+<div class="col-md-8 col-sm-12">
+<?php
+}?>
+
 	<div class="panel panel-default">
 		<div class="media panel-heading">
 			<p class="pull-left">
@@ -14,7 +27,8 @@
 			<div class="row">
 				<?php foreach ($lottery['Ticket'] as $ticket){
 					echo $this->element('TicketPanel', array(
-						"ticket" => $ticket
+						"ticket" => $ticket,
+						"ticketsCount" => $ticketsCount
 						));
 					}?>
 				</div>

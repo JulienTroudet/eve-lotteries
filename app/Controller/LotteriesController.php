@@ -16,6 +16,13 @@ class LotteriesController extends AppController {
 	 */
 	public $components = array('Paginator', 'Session');
 
+	public $paginate = array(
+        'limit' => 10,
+        'order' => array(
+            'Lottery.id' => 'asc'
+        )
+    );
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('index', 'view');
@@ -27,6 +34,7 @@ class LotteriesController extends AppController {
 	 * @return void
 	 */
 	public function index() {
+		$this->Paginator->settings = $this->paginate;
 		$this->Lottery->recursive = 1;
 		$this->set('lotteries', $this->Paginator->paginate());
 	}
@@ -152,7 +160,7 @@ class LotteriesController extends AppController {
 			throw new NotFoundException(__('Invalid lottery'));
 		}
 		$this->request->allowMethod('post', 'delete');
-		if ($this->Lottery->delete()) {
+		if ($this->Lottery->delete($id, true)) {
 			$this->Session->setFlash(__('The lottery has been deleted.'));
 		} else {
 			$this->Session->setFlash(__('The lottery could not be deleted. Please, try again.'));

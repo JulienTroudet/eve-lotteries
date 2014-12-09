@@ -8,7 +8,7 @@
 		<div class="container-fluid">
 			<div class="users index">
 				<h2><?php echo __('Users'); ?></h2>
-				<table cellpadding="0" cellspacing="0">
+				<table class="table table-striped table-condensed">
 					<thead>
 						<tr>
 							<th><?php echo $this->Paginator->sort('username'); ?></th>
@@ -43,19 +43,26 @@
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				<p>
-					<?php
-					echo $this->Paginator->counter(array(
-						'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-						));
-						?>	</p>
-						<div class="paging">
+				<div class="row">
+					<ul class="pager">
+						<li class="previous">
 							<?php
-							echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-							echo $this->Paginator->numbers(array('separator' => ''));
-							echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+							echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled'));
 							?>
-						</div>
+						</li>
+						<li>
+							<?php
+							echo $this->Paginator->counter(array(
+								'format' => __('Page {:page} of {:pages}, showing {:current} Users out of {:count}, starting on user {:start}, ending on {:end}')
+								));
+								?>	
+							</li>
+							<li class="next">
+								<?php
+								echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
+								?>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>

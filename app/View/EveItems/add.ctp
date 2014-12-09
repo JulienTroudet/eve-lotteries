@@ -18,7 +18,6 @@
 					echo $this->Form->input('status');
 					echo $this->Form->input('nb_tickets_default', array(
 						'options' => array(8,16),
-						'empty' => '(choose)'
 						));
 						?>
 					</fieldset>

@@ -1,11 +1,7 @@
+<?php print_r($choosenTicket);?>
 <div class="lotteries view">
-<h2><?php echo __('Lottery'); ?></h2>
+<h2>Buy a ticket</h2>
 	<dl>
-		<dt><?php echo __('Id'); ?></dt>
-		<dd>
-			<?php echo h($lottery['Lottery']['id']); ?>
-			&nbsp;
-		</dd>
 		<dt><?php echo __('Eve Item'); ?></dt>
 		<dd>
 			<?php echo $this->Html->link($lottery['EveItem']['name'], array('controller' => 'eve_items', 'action' => 'view', $lottery['EveItem']['id'])); ?>

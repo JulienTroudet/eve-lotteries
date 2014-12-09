@@ -16,16 +16,27 @@ if(isset($ticket['buyer_user_id']))
 }
 else
 {
-	?>
-	<div class="col-md-6 col-sm-12 ticket-slot">
-		<?php
-		echo $this->Html->link(
-			($ticket['position']+1).'. Buy this ticket', 
-			array('controller' => 'tickets', 'action' => 'buy', 'id' => $ticket['id']),
-			array('class' => 'btn btn-block btn-primary')
-			);
+
+	if ($ticketsCount == 8) {
+		?>
+		<div class="col-md-6 col-sm-12 ticket-slot">
+			<?php
+		}?>
+
+		<?php if ($ticketsCount == 16) {
 			?>
-		</div>
-		<?php
-	}
-	?>
+			<div class="col-md-3 col-sm-6 ticket-slot">
+				<?php
+			}?>
+
+			<?php
+			echo $this->Html->link(
+				($ticket['position']+1).'. Buy this ticket', 
+				array('controller' => 'tickets', 'action' => 'buy', $ticket['id']),
+				array('class' => 'btn btn-block btn-primary')
+				);
+				?>
+			</div>
+			<?php
+		}
+		?>

@@ -21,10 +21,6 @@ class TicketsController extends AppController {
 		$this->Auth->allow('index', 'view');
 	}
 
-	
-
-	
-
 	/**
 	 * add method
 	 *
@@ -78,6 +74,16 @@ class TicketsController extends AppController {
 	 */
 	public function buy($id = null) {
 		$userId = $this->Auth->user('id');
+
+		if (!$this->Ticket->exists($id)) {
+			throw new NotFoundException(__('Invalid ticket'));
+		}
+		$options = array('conditions' => array('Ticket.' . $this->Ticket->primaryKey => $id));
+		$choosenTicket = $this->Ticket->find('first', $options);
+		$this->set('choosenTicket', $choosenTicket);
+
+		// $options = array('conditions' => array('Ticket.' . $this->Ticket->Lottery->primaryKey => $choosenTicket['lottery_id']));
+		// $this->set('lottery', $this->Ticket->Lottery->find('first', $options));
 	}
 
 	
