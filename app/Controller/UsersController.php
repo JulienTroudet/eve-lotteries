@@ -18,7 +18,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'logout', 'register', 'activate', 'password_reinit');
+		$this->Auth->allow('login', 'logout', 'register', 'activate', 'password_reinit', 'initDB');
 	}
 
 	/**
@@ -39,6 +39,7 @@ class UsersController extends AppController {
 	 * @return void
 	 */
 	public function admin_view($id = null) {
+		$this->User->recursive = 0;
 		if (!$this->User->exists($id)) {
 			throw new NotFoundException(__('Invalid user'));
 		}
@@ -188,7 +189,7 @@ class UsersController extends AppController {
 							array('type' => 'success')
 							);
 
-						$this->redirect('/');
+						$this->redirect($this->Auth->logout());
 					}
 					else{
 						$this->Session->setFlash(
@@ -434,23 +435,35 @@ class UsersController extends AppController {
 		return false;	
 	}
 
-	// public function initDB() {
-	// 	$group = $this->User->Group;
+	public function initDB() {
 
- //    // Allow admins to everything
-	// 	$group->id = 3;
-	// 	$this->Acl->allow($group, 'controllers');
+		$group = $this->User->Group;
+
+		$this->log($group);
+
+    // Allow admins to everything
+		$group->id = 3;
+		$this->Acl->allow($group, 'controllers');
 
 
- //    // allow users to only add and edit on posts and widgets
-	// 	$group->id = 4;
-	// 	$this->Acl->deny($group, 'controllers');
+    // allow users to only add and edit on posts and widgets
+		$group->id = 4;
+		$this->Acl->deny($group, 'controllers');
+		$this->Acl->allow($group, 'controllers');
 
- //    // allow basic users to log out
-	// 	$this->Acl->allow($group, 'controllers/users/logout');
+    // allow basic users to log out
+		$this->Acl->allow($group, 'controllers/Users/edit');
 
- //    // we add an exit to avoid an ugly "missing views" error message
-	// 	echo "all done";
-	// 	exit;
-	// }
+		$this->Acl->allow($group, 'controllers/Configs/update_api_check');
+		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
+		$this->Acl->allow($group, 'controllers/Lotteries/old_list');
+		$this->Acl->allow($group, 'controllers/Tickets/buy');
+		$this->Acl->allow($group, 'controllers/Transactions');
+		
+		$this->Acl->allow($group, 'controllers/Withdrawals/index');
+		$this->Acl->allow($group, 'controllers/Withdrawals/old_list');
+    // we add an exit to avoid an ugly "missing views" error message
+		echo "all done";
+		exit;
+	}
 }

@@ -12,15 +12,66 @@
 					<legend><?php echo __('Edit User'); ?></legend>
 					<?php
 					echo $this->Form->input('id');
-					echo $this->Form->input('username');
-					echo $this->Form->password('password');
-					echo $this->Form->input('mail');
-					echo $this->Form->input('group_id');
-					echo $this->Form->input('wallet');
-					echo $this->Form->input('eve_id', array('type' => 'string'));
+					echo $this->Form->input('username', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('mail', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('group_id', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('tokens', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('wallet', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('eve_name', array(
+						'type' => 'string',
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('eve_id', array(
+						'type' => 'string',
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
 					?>
 				</fieldset>
-				<?php echo $this->Form->end(__('Submit')); ?>
+				<?php 
+					$optionsFormLogin = array(
+						'label' => 'Edit',
+						'div' => false,
+						'class' => 'btn btn-block btn-primary'
+						);
+						echo $this->Form->end($optionsFormLogin); ?>
 			</div>
 			<div class="actions">
 				<h3><?php echo __('Actions'); ?></h3>

@@ -36,7 +36,7 @@
 						<!--<button type="button" onclick="window.prompt('Copy to clipboard: Ctrl+C, Enter', '<?php echo $claimed_award['User']['eve_name']; ?>');"><?php echo $claimed_award['User']['eve_name']; ?></button>-->
 						
 					</td>
-					<td>
+					<td >
 						<?php 
 						switch ($claimed_award['Withdrawal']['type']) {
 							case 'award_isk':
@@ -58,8 +58,16 @@
 						
 					</td>
 					<td>
-						<button class="btn btn-block btn-warning btn-xs btn-reserve" type="button" data-award-id-group="<?php echo $claimed_award['Withdrawal']['group_id']; ?>" <?php if(isset($claimed_award['Withdrawal']['admin_id'])){echo'disabled';}?>>Reserve this</button>
+
+
+						<?php if((isset($claimed_award['Withdrawal']['admin_id']) && $claimed_award['Withdrawal']['admin_id'] == $userGlobal['id']) || empty($claimed_award['Withdrawal']['admin_id'])):?>
+							<button class="btn btn-block btn-warning btn-xs btn-reserve" type="button" data-award-id-group="<?php echo $claimed_award['Withdrawal']['group_id']; ?>" <?php if(isset($claimed_award['Withdrawal']['admin_id'])){echo'disabled';}?>>Reserve this</button>
 						<button class="btn btn-block btn-danger btn-xs btn-complete" type="button" data-award-id-group="<?php echo $claimed_award['Withdrawal']['group_id']; ?>" <?php if(!isset($claimed_award['Withdrawal']['admin_id'])){echo'disabled';}?>>Complete this</button>
+						<?php else:?>
+							Reserved by another admin <br/>
+							(id : <?php echo $claimed_award['Withdrawal']['admin_id']; ?>)
+						<?php endif;?>
+						
 					</td>
 					
 				</tr>

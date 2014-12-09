@@ -13,6 +13,7 @@
 						<tr>
 							<th><?php echo $this->Paginator->sort('id'); ?></th>
 							<th><?php echo $this->Paginator->sort('name'); ?></th>
+							<th><?php echo $this->Paginator->sort('type'); ?></th>
 							<th><?php echo $this->Paginator->sort('profit'); ?></th>
 							<th><?php echo $this->Paginator->sort('status'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
@@ -23,6 +24,7 @@
 							<tr>
 								<td><?php echo h($eveCategory['EveCategory']['id']); ?>&nbsp;</td>
 								<td><?php echo h($eveCategory['EveCategory']['name']); ?>&nbsp;</td>
+								<td><?php echo h($eveCategory['EveCategory']['type']); ?>&nbsp;</td>
 								<td><?php echo h($eveCategory['EveCategory']['profit']); ?>&nbsp;%</td>
 								<td><?php echo h($eveCategory['EveCategory']['status']); ?>&nbsp;</td>
 								<td class="actions">

@@ -54,7 +54,6 @@
 			<div class="actions">
 				<h3><?php echo __('Actions'); ?></h3>
 				<ul>
-					<li><?php echo $this->Html->link(__('Edit Lottery'), array('action' => 'edit', 'admin' => true, $lottery['Lottery']['id'])); ?> </li>
 					<li><?php echo $this->Form->postLink(__('Delete Lottery'), array('action' => 'delete', 'admin' => true, $lottery['Lottery']['id']), array(), __('Are you sure you want to delete # %s?', $lottery['Lottery']['id'])); ?> </li>
 				</ul>
 			</div>

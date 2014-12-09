@@ -151,22 +151,8 @@ class LotteriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function view($id = null) {
-		if (!$this->Lottery->exists($id)) {
-			throw new NotFoundException(__('Invalid lottery'));
-		}
-		$options = array('conditions' => array('Lottery.' . $this->Lottery->primaryKey => $id));
-		$this->set('lottery', $this->Lottery->find('first', $options));
-	}
-
-	/**
-	 * view method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
 	public function admin_view($id = null) {
+		$this->Lottery->recursive = 1;
 		if (!$this->Lottery->exists($id)) {
 			throw new NotFoundException(__('Invalid lottery'));
 		}
@@ -193,42 +179,6 @@ class LotteriesController extends AppController {
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');
 		$this->set('old_lotteries', $oldLotteries);
-	}
-
-	/**
-	 * edit method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-	public function admin_edit($id = null) {
-		if (!$this->Lottery->exists($id)) {
-			throw new NotFoundException(__('Invalid lottery'));
-		}
-		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Lottery->save($this->request->data)) {
-				$this->Session->setFlash(
-					'The lottery has been saved.',
-					'FlashMessage',
-					array('type' => 'success')
-					);
-				return $this->redirect(array('action' => 'index', 'admin' => true));
-			} else {
-				$this->Session->setFlash(
-					'The lottery could not be saved. Please, try again.',
-					'FlashMessage',
-					array('type' => 'error')
-					);
-			}
-		} else {
-			$options = array('conditions' => array('Lottery.' . $this->Lottery->primaryKey => $id));
-			$this->request->data = $this->Lottery->find('first', $options);
-		}
-		$eveItems = $this->Lottery->EveItem->find('list');
-		$lotteryStatuses = $this->Lottery->LotteryStatus->find('list');
-		$users = $this->Lottery->User->find('list');
-		$this->set(compact('eveItems', 'lotteryStatuses', 'users'));
 	}
 
 	/**

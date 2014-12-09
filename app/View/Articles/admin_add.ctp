@@ -11,11 +11,29 @@
 				<fieldset>
 					<legend><?php echo __('Add Article'); ?></legend>
 					<?php
-					echo $this->Form->input('title');
-					echo $this->Form->input('body');
+					echo $this->Form->input('title', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('body', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
 					?>
 				</fieldset>
-				<?php echo $this->Form->end(__('Submit')); ?>
+				<?php 
+				$optionsFormLogin = array(
+						'label' => 'Submit',
+						'div' => false,
+						'class' => 'btn btn-block btn-primary'
+						);
+						echo $this->Form->end($optionsFormLogin); ?>
 			</div>
 		</div>
 	</div>

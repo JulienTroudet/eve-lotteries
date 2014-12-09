@@ -42,8 +42,7 @@
 									<?php echo h($lottery['LotteryStatus']['name']); ?>
 								</td>
 								<td class="actions">
-									<?php echo $this->Html->link(__('View'), array('action' => 'adminView', 'admin' => true, $lottery['Lottery']['id'])); ?>
-									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', 'admin' => true, $lottery['Lottery']['id'])); ?>
+									<?php echo $this->Html->link(__('View'), array('action' => 'view', 'admin' => true, $lottery['Lottery']['id'])); ?>
 									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $lottery['Lottery']['id']), array(), __('Are you sure you want to delete # %s?', $lottery['Lottery']['id'])); ?>
 								</td>
 							</tr>

@@ -67,9 +67,12 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 			'fields' => array('SUM(Transaction.amount) as totalAmount'),
 			'group' => array('Transaction.user_id'),
 			);
-
-		$iskClaim = $this->Transaction->find('all', $params)[0][0][totalAmount];
-		$this->set('totalClaimedIsk', $iskClaim);
+		$iskClaimValue = 0;
+		$iskClaim = $this->Transaction->find('all', $params);
+		if(isset($iskClaim[0][0][totalAmount])){
+			$iskClaimValue = $iskClaim[0][0][totalAmount];
+		}
+		$this->set('totalClaimedIsk', $iskClaimValue);
 
 	}
 }

@@ -57,6 +57,13 @@
 				</button>
 				<a class="navbar-brand" href="<?php echo $this->webroot; ?>">EVE-Lotteries</a>
 			</div>
+			<ul class="nav navbar-nav">
+				<li><?php echo $this->Html->link(
+					'F.A.Q.', 
+					array('controller' => 'pages', 'action' => 'faq', 'admin'=>false, 'plugin' => false)
+					);?>	
+				</li>
+			</ul>
 			<p class="navbar-text">Next API Check : <?php echo $apiCheckTime; ?></p>
 			<div class="navbar-collapse collapse navbar-site">
 				<?php 
@@ -77,7 +84,7 @@
 
 	<div class="container" style="margin-top:4em;margin-bottom: 12em;;">
 
-		
+
 
 
 		<?php echo $this->Session->flash(); ?>
@@ -85,7 +92,7 @@
 		<?php echo $this->fetch('content'); ?>
 
 	</div> <!-- /container -->
-	
+
 	<div class="footer">
 		<div class="container">
 			<p class="text-muted">
@@ -94,6 +101,6 @@
 		</div>
 	</div>
 
-	
+
 </body>
 </html>

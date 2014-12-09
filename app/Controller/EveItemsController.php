@@ -24,7 +24,8 @@ class EveItemsController extends AppController {
 	 */
 	public function admin_index() {
 		$this->EveItem->recursive = 0;
-		$this->set('eveItems', $this->Paginator->paginate());
+		$eveItems = $this->EveItem->find('all');
+		$this->set('eveItems', $eveItems);
 	}
 
 	/**
@@ -35,6 +36,7 @@ class EveItemsController extends AppController {
 	 * @return void
 	 */
 	public function admin_view($id = null) {
+		$this->EveItem->recursive = 1;
 		if (!$this->EveItem->exists($id)) {
 			throw new NotFoundException(__('Invalid eve item'));
 		}

@@ -12,13 +12,43 @@
 					<legend><?php echo __('Edit Eve Category'); ?></legend>
 					<?php
 					echo $this->Form->input('id');
-					echo $this->Form->input('name');
-					echo $this->Form->input('profit');
-					echo $this->Form->input('status');
-					?>
-				</fieldset>
-				<?php echo $this->Form->end(__('Submit')); ?>
+					echo $this->Form->input('name', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('type', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('profit', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('status', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+						?>
+					</fieldset>
+					<?php $optionsFormLogin = array(
+						'label' => 'Edit',
+						'div' => false,
+						'class' => 'btn btn-block btn-primary'
+						);
+						echo $this->Form->end($optionsFormLogin); ?>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>

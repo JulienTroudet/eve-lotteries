@@ -50,11 +50,19 @@
 		$optionsFormLogin = array(
 			'label' => 'Log in',
 			'div' => false,
-			'class' => 'btn btn-block btn-primary'
+			'class' => 'btn btn-block btn-success'
 			);
 
 		echo $this->Form->end($optionsFormLogin);
 		?>
+<br/>
+		<?php 
+				echo $this->Html->link(
+					'Register', 
+					array('controller' => 'users', 'action' => 'register'),
+					array('class' => 'btn btn-primary btn-block')
+					);
+					?>
 	</div>
 	<div class="col-md-6 col-sm-12"></div>
 </div>
