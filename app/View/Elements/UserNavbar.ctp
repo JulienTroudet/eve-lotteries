@@ -45,7 +45,7 @@
 							<?php
 							$label = 'My Messages';
 							if($userGlobal['nb_new_messages']>0){
-								$label= $label.' <span class="badge">'.$userGlobal['nb_new_messages'].' New';
+								$label= $label.' <span class="badge">'.$userGlobal['nb_new_messages'];
 							}
 							echo $this->Html->link(
 								$label, 
@@ -61,7 +61,7 @@
 								$label = 'My Lotteries';
 								$nbWon = $userGlobal['nb_new_won_lotteries']+$userGlobal['nb_new_won_super_lotteries'];
 								if($nbWon>0){
-									$label= $label.' <span class="badge">'.$nbWon.' New';
+									$label= $label.' <span class="badge">'.$nbWon;
 								}
 								echo $this->Html->link(
 									$label, 
@@ -75,7 +75,7 @@
 									<?php
 									$label = 'My Awards';
 									if($userGlobal['nb_new_awards']>0){
-										$label= $label.' <span class="badge">'.$userGlobal['nb_new_awards'].' New';
+										$label= $label.' <span class="badge">'.$userGlobal['nb_new_awards'];
 									}
 									echo $this->Html->link(
 										$label, 
@@ -122,7 +122,7 @@
 				<script type="text/javascript">
 					$(document).ready(function() {
 						var pathname = window.location.pathname;
-						if(pathname.slice(-1) == '/'){
+						if(pathname.slice(-7) == 'little/' || pathname.slice(-6) == 'create'){
 							$('.new-lot-redirect').remove();
 						}
 						else{

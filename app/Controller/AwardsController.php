@@ -33,6 +33,8 @@ class AwardsController extends AppController {
 	 */
 	public function index() {
 		$this->loadModel('User');
+		$this->loadModel('Message');
+		
 		$userGlobal = $this->Auth->user();
 
 		$params = array(
@@ -71,6 +73,14 @@ class AwardsController extends AppController {
 					
 
 					$this->log('Award Update : user_id['.$userGlobal['id'].'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
+
+					$this->Message->sendMessage(
+									$userGlobal['id'], 
+									'Award Completed', 
+									('You have completed the award "'.$award['Award']['name'].'". Please claim your prize in the award Menu'),
+									'awards', 
+									'index'
+									);
 				}
 				
 			}

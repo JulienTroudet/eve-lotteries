@@ -185,6 +185,30 @@
 				filterItems();
 			});
 
+
+			// (function poll() {
+			// 	setTimeout(function() {
+			// 		$.ajax({
+			// 			type:"get",
+			// 			url:"<?php echo $this->Html->url(array('controller' => 'lotteries', 'action' => 'list_lotteries')); ?>",
+
+
+			// 			beforeSend: function(xhr) {
+			// 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			// 			},
+			// 			success: function(response) {
+			// 				$('#list-lotteries').html(response);
+			// 				instanciateButtons();
+			// 				poll();
+			// 			},
+			// 			error: function(e) {
+			// 				alert("An error occurred: " + e.responseText);
+			// 				console.log(e);
+			// 			}
+			// 		});
+			// 	}, 3000);
+			// })();
+
 		});
 
 

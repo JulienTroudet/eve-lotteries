@@ -317,12 +317,14 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/Users/user_navbar');
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
 		$this->Acl->allow($group, 'controllers/Messages/index');
+		$this->Acl->allow($group, 'controllers/Messages/delete');
 		$this->Acl->allow($group, 'controllers/Tickets/buy');
 		$this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
 		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
 		$this->Acl->allow($group, 'controllers/SuperLotteries/claim');
 		$this->Acl->allow($group, 'controllers/Transactions/index');
 		$this->Acl->allow($group, 'controllers/Withdrawals/index');
+		$this->Acl->allow($group, 'controllers/Withdrawals/view');
 		$this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
 		$this->Acl->allow($group, 'controllers/Withdrawals/list_super_awards');
 		$this->Acl->allow($group, 'controllers/Withdrawals/old_list');

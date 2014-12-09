@@ -30,7 +30,7 @@
 
 					echo $this->Html->link(
 						'Claim <strong>'.number_format($award['award_credits'], 2).' <i class="fa fa-money"></i></strong>', 
-						array('controller' => 'UserAwards', 'action' => 'claim', $userAwards[$award['id']]['UserAward']['id']),
+						array('controller' => 'UserAwards', 'action' => 'claim', $userAwards[$award['id']]['UserAward']['id'], $tab),
 						array(
 							'class' => 'btn btn-block btn-success',
 							'escape' => false,

@@ -25,9 +25,9 @@ class UserAwardsController extends AppController {
 	}
 
 
-	public function claim($id) {
+	public function claim($id, $tab) {
 		$userAwardId = $id;
-		if (isset($userAwardId)) {
+		if (isset($userAwardId) && isset($tab)) {
 
 			$this->loadModel('User');
 			$userId = $this->Auth->user('id');
@@ -38,7 +38,7 @@ class UserAwardsController extends AppController {
 					'FlashMessage',
 					array('type' => 'warning')
 					);
-				return $this->redirect(array('controller' => 'Awards', 'action' => 'index', 'admin' => false));
+				return $this->redirect(array('controller' => 'Awards', 'action' => 'index','#' => $tab, 'admin' => false));
 			}
 			else if (!$this->User->exists($userId)) {
 				$this->Session->setFlash(
@@ -46,7 +46,7 @@ class UserAwardsController extends AppController {
 					'FlashMessage',
 					array('type' => 'warning')
 					);
-				return $this->redirect(array('controller' => 'Awards', 'action' => 'index', 'admin' => false));
+				return $this->redirect(array('controller' => 'Awards', 'action' => 'index','#' => $tab,  'admin' => false));
 			}
 			else{
 
@@ -80,7 +80,7 @@ class UserAwardsController extends AppController {
 							'FlashMessage',
 							array('type' => 'info')
 							);
-						return $this->redirect(array('controller' => 'Awards', 'action' => 'index', 'admin' => false));
+						return $this->redirect(array('controller' => 'Awards', 'action' => 'index','#' => $tab,  'admin' => false));
 
 						$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
@@ -90,7 +90,7 @@ class UserAwardsController extends AppController {
 				}
 			}
 		}
-		return $this->redirect(array('controller' => 'Awards', 'action' => 'index', 'admin' => false));
+		return $this->redirect(array('controller' => 'Awards', 'action' => 'index','#' => $tab,  'admin' => false));
 	}
 	
 	

@@ -743,7 +743,7 @@ pre code {
 }
 @media (min-width: 1200px) {
 	.container {
-		width: 1170px;
+		width: 1190px;
 	}
 }
 .container-fluid {
@@ -3938,6 +3938,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
 	color: #FA9E0E;
+	background-color: #474747;
 	text-decoration: underline;
 }
 .navbar-default .navbar-text {

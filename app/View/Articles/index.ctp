@@ -9,6 +9,7 @@
 		<div class="row">
 			<div class="col-md-10 col-md-offset-1 col-sm-12">
 				<div class="panel panel-default panel-news">
+					<div class="panel-heading"><strong><?php echo $article['Article']['title']; ?></strong><span class="pull-right"><?php echo CakeTime::niceShort($article['Article']['created']); ?></span></div>
 					<div class="panel-body">
 						<?php echo $article['Article']['body']; ?>
 					</div>

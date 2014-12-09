@@ -99,6 +99,12 @@ class SuperLotteriesController extends AppController {
 	 */
 	public function admin_index() {
 		$this->SuperLottery->recursive = 0;
+		$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.status !=' => 'completed'),
+			'order' => array('SuperLottery.created' => 'desc'), 
+			);
+		$this->Paginator->settings = $params;
 		$this->set('superLotteries', $this->Paginator->paginate());
 	}
 
@@ -110,6 +116,7 @@ class SuperLotteriesController extends AppController {
 	 * @return void
 	 */
 		public function admin_complete($id = null) {
+			$this->loadModel('Message');
 			$this->SuperLottery->recursive = 0;
 			if (!$this->SuperLottery->exists($id)) {
 				throw new NotFoundException(__('Invalid super lottery'));
@@ -121,6 +128,14 @@ class SuperLotteriesController extends AppController {
 			unset($superlottery['SuperLottery']['modified']);
 
 			if ($this->SuperLottery->save($superlottery, true, array('id', 'status'))) {
+
+				$this->Message->sendSuperLotteryMessage(
+									$superlottery['Winner']['id'], 
+									'Super Lottery Completed', 
+									'Your prize for a super lottery has been delivered by our staff. Please check your wallet or your contracts in game.',
+									$superlottery['SuperLottery']['id']
+									);
+
 				$this->Session->setFlash(
 					'The super lottery has been completed.',
 					'FlashMessage',

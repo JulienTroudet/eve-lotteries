@@ -69,10 +69,20 @@
 						);?>	
 					</li>
 					<li>
-						<?php echo $this->Html->link('News', array('controller' => 'articles', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>
+						<?php 
+						$label = 'News';
+						if($userGlobal['nb_unread_news']>0){
+							$label= $label.' <span class="badge">'.$userGlobal['nb_unread_news'];
+						}
+						echo $this->Html->link($label, array('controller' => 'articles', 'action' => 'index', 'admin'=>false, 'plugin' => false), array('escape' => false));
+						?>
+
 					</li>
 					<li>
 						<?php echo $this->Html->link('Statistics', array('controller' => 'statistics', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>	
+					</li>
+					<li>
+						<a href="#" onclick="CCPEVE.joinChannel('EVE-Lotteries Chat')">Join In Game Chat</a>
 					</li>
 				</ul>
 				<h3 class="navbar-text" style="margin-bottom: 0px;">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
@@ -93,9 +103,9 @@
 		</div>
 	</div>
 
+
+
 	<div class="container" style="margin-top:5em;margin-bottom: 12em;;">
-
-
 
 
 		<?php echo $this->Session->flash(); ?>

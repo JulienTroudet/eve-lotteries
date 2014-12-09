@@ -19,6 +19,11 @@ class Lottery extends AppModel {
 
 	public $actsAs = array('Containable');
 
+	public function beforeValidate($options = array()) {
+		parent::beforeValidate($options);
+		unset($this->data['Lottery']['modified']);
+	}
+
 	public function checkForWinner($lottery) {
 
 		

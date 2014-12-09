@@ -44,7 +44,7 @@ class WithdrawalsController extends AppController {
 						)
 					),
 				),
-			'conditions' => array('Withdrawal.status' => array('new', 'claimed'), 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
+			'conditions' => array('Withdrawal.status' => array('new', 'claimed', 'reserved'), 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
 			'order' => array(
 				'Withdrawal.modified' => 'desc'
 				),
@@ -88,6 +88,30 @@ class WithdrawalsController extends AppController {
 		$db = $this->Withdrawal->getDataSource();
 	}
 
+	public function view($group_id = null) {
+
+		if(isset($group_id)){
+			$userGlobal = $this->Auth->user();
+			$paginateVar = array(
+				'contain' => array(
+					'Ticket' => array(
+						'Lottery' => array(
+							'EveItem'
+							)
+						),
+					),
+				'conditions' => array('OR' => array('Withdrawal.group_id' => $group_id, 'Withdrawal.id' => $group_id)),
+				'order' => array(
+					'Withdrawal.modified' => 'desc'
+					),
+				'limit' => 10
+				);
+			$this->Paginator->settings = $paginateVar;
+			$unclaimed_awards = $this->Paginator->paginate('Withdrawal');
+			$this->set('unclaimed_awards', $unclaimed_awards);
+		}
+	}
+
 	public function list_awards() {
 		$this->layout = false;
 
@@ -100,7 +124,7 @@ class WithdrawalsController extends AppController {
 						)
 					),
 				),
-			'conditions' => array('Withdrawal.status' => array('new', 'claimed'), 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
+			'conditions' => array('Withdrawal.status' => array('new', 'claimed', 'reserved'), 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
 			'order' => array(
 				'Withdrawal.modified' => 'desc'
 				),
@@ -127,7 +151,6 @@ class WithdrawalsController extends AppController {
 		$claimed_awards = $this->Withdrawal->find('all', $params);
 		$this->set('claimed_awards', $claimed_awards);
 	}
-
 
 	public function list_super_awards() {
 		$this->layout = false;
@@ -314,7 +337,7 @@ class WithdrawalsController extends AppController {
 						)
 					),
 				),
-			'conditions' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => array('award_isk', 'award_item')),
+			'conditions' => array('Withdrawal.status' => array('claimed', 'reserved'), 'Withdrawal.type' => array('award_isk', 'award_item')),
 			'order' => array(
 				'Withdrawal.modified' => 'desc'
 				),
@@ -325,6 +348,9 @@ class WithdrawalsController extends AppController {
 
 		$this->Paginator->settings = $paginateVar;
 		$claimed_awards = $this->Paginator->paginate('Withdrawal');
+
+		// debug($claimed_awards);
+		// die();
 		
 		$this->set('claimed_awards', $claimed_awards);
 	}
@@ -343,7 +369,7 @@ class WithdrawalsController extends AppController {
 						)
 					),
 				),
-			'conditions' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => array('award_isk', 'award_item')),
+			'conditions' => array('Withdrawal.status' => array('claimed', 'reserved'), 'Withdrawal.type' => array('award_isk', 'award_item')),
 			'order' => array(
 				'Withdrawal.modified' => 'desc'
 				),
@@ -362,18 +388,22 @@ class WithdrawalsController extends AppController {
 		//ici lorsque l'admin se connecte on effectue un regroupement des retraits d'ISK. Ainsi on fait une première requette afin de remplir le id_group des withdrawals pour qu'un player n'aie qu'un seul retrait à son actif (simplification des versements)
 		//on récupère la liste des user_id concernés.
 		$params = array(
-			'conditions' => array('AND' => array('Withdrawal.status' => 'claimed', 'Withdrawal.type' => 'award_isk')),
+			'conditions' => array('AND' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => 'award_isk')),
 			'fields' => array('Withdrawal.user_id'),
 			'group' => array('Withdrawal.user_id')
 			);
 
 		$userIds = $this->Withdrawal->find('list', $params);
+		// debug($userIds);
+		// die();
 
 		//on update pour chaque user le group_id des withdrawal claimed ISK afin de pouvoir les grouper plus tard avec cette valeur.
+		//
+		
 		foreach ($userIds as $id => $userId) {
 			$this->Withdrawal->updateAll(
 				array('Withdrawal.group_id' => $id),
-				array('AND' => array('Withdrawal.status' => 'claimed', 'Withdrawal.type' => 'award_isk', 'Withdrawal.user_id' => $userId, 'Withdrawal.admin_id' => null))
+				array('AND' => array('Withdrawal.status' => 'claimed', 'Withdrawal.type' => 'award_isk', 'Withdrawal.user_id' => $userId))
 				);
 		}
 	}
@@ -418,13 +448,13 @@ class WithdrawalsController extends AppController {
 				$continue = true;
 				foreach ($claimedAwards as $key => $claimedAward) {
 					if($claimedAward['Withdrawal']['status'] != 'claimed'){
-						$data = array('error' => 'Award not claimed.');
+						$data = array('error' => 'Withdrawal not claimed.');
 						$continue = false;
 						break;
 					}
 
 					if($claimedAward['Withdrawal']['admin_id'] != $userGlobal['id']){
-						$data = array('error' => 'Award not reserved or already reserved by an admin.');
+						$data = array('error' => 'Withdrawal not reserved or already reserved by an admin.');
 						$continue = false;
 						break;
 					}
@@ -436,6 +466,8 @@ class WithdrawalsController extends AppController {
 				}
 
 				if($continue){
+
+					$this->loadModel('Message');
 					
 					$success = $this->Withdrawal->updateAll(
 						array('Withdrawal.status' => '"completed"'),
@@ -446,10 +478,17 @@ class WithdrawalsController extends AppController {
 
 						$data = array (
 							'success' => true,
-							'message' => 'You have completed the Award for '.$claimerUser['User']['eve_name'],
+							'message' => 'You have completed the Withdrawal for '.$claimerUser['User']['eve_name'],
 							);
 
-						$this->log('Award completed : user_name['.$claimerUser['User']['eve_name'].'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalGroupId.']', 'eve-lotteries');
+						$this->Message->sendLotteryMessage(
+							$claimerUser['User']['id'], 
+							'Lottery Completed', 
+							'Your prize for one or more lotteries has been delivered by our staff. Please check your wallet or your contracts in game.',
+							$withdrawalGroupId
+							);
+
+						$this->log('Withdrawal completed : user_name['.$claimerUser['User']['eve_name'].'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalGroupId.']', 'eve-lotteries');
 					}
 				}
 			}
@@ -491,7 +530,7 @@ class WithdrawalsController extends AppController {
 				}
 				if($continue){
 					$success = $this->Withdrawal->updateAll(
-						array('Withdrawal.admin_id' => $userGlobal['id']),
+						array('Withdrawal.admin_id' => $userGlobal['id'], 'Withdrawal.status' => '"reserved"'),
 						array('Withdrawal.group_id' => $withdrawalGroupId)
 						);
 

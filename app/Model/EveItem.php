@@ -8,17 +8,16 @@ App::uses('AppModel', 'Model');
  */
 class EveItem extends AppModel {
 
-/**
- * Display field
- *
- * @var string
- */
-public $displayField = 'name';
+	/**
+	 * Display field
+	 *
+	 * @var string
+	 */
+	public $displayField = 'name';
 
-public $actsAs = array('Containable');
+	public $actsAs = array('Containable');
 
-public function getTicketPrice($eveItem) {
-
+	public function getTicketPrice($eveItem) {
 
 		$evePrice = $eveItem['EveItem']['eve_value'];
 

@@ -10,7 +10,7 @@
 							<th><?php echo $this->Paginator->sort('eve_item_id'); ?></th>
 							<th><?php echo $this->Paginator->sort('number_items'); ?></th>
 							<th><?php echo $this->Paginator->sort('name'); ?></th>
-							<th><?php echo $this->Paginator->sort('creator_user_id'); ?></th>
+							<th><?php echo $this->Paginator->sort('winner_user_id'); ?></th>
 							<th><?php echo $this->Paginator->sort('nb_tickets'); ?></th>
 							<th><?php echo $this->Paginator->sort('ticket_value'); ?></th>
 							<th><?php echo $this->Paginator->sort('lottery_status_id'); ?></th>
@@ -26,7 +26,7 @@
 								<td><?php echo h($superLottery['SuperLottery']['number_items']); ?>&nbsp;</td>
 								<td><?php echo $this->Html->link($superLottery['SuperLottery']['name'], array('action' => 'view', $superLottery['SuperLottery']['id']));?>&nbsp;</td>
 								<td>
-									<?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Creator']['id'])); ?>
+									<?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Winner']['id'])); ?>
 								</td>
 								<td><?php echo h($superLottery['SuperLottery']['nb_tickets']); ?>&nbsp;</td>
 								<td><?php echo h($superLottery['SuperLottery']['ticket_value']); ?>&nbsp;</td>

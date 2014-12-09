@@ -30,7 +30,7 @@ class SuperLotteryTicketsController extends AppController {
 
 	/**
 	 * buy method
-	 *
+	 * Gère l'achat des tickets de super lotteries
 	 * @throws NotFoundException
 	 * @param string $id
 	 * @return void
@@ -78,16 +78,14 @@ class SuperLotteryTicketsController extends AppController {
 					$this->Session->setFlash('There is not enough tickets to buy.', 'FlashMessage', array('type' => 'info'));
 					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 				}
-				else if (($superLottery['SuperLottery']['nb_ticket_bought']+$nbTicketsBuy)>($superLottery['SuperLottery']['nb_tickets']/4)) {
-					$this->Session->setFlash('You can\'t buy more than one fourth of the tickets.', 'FlashMessage', array('type' => 'info'));
-					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-				}
+
 				else if($buyer['User']['tokens'] < ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy)){
 
 					$this->Session->setFlash('Not enough Points.', 'FlashMessage', array('type' => 'warning'));
 					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 				}
 				else{
+					$this->loadModel('Message');
 
 					$buyer['User']['tokens'] -= ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy);
 
@@ -109,8 +107,13 @@ class SuperLotteryTicketsController extends AppController {
 					else{
 						$superLotTicket['SuperLotteryTicket']['nb_tickets'] += $nbTicketsBuy;
 					}
+
+					if ($superLotTicket['SuperLotteryTicket']['nb_tickets']>($superLottery['SuperLottery']['nb_tickets']/4)) {
+						$this->Session->setFlash('You can\'t buy more than one fourth of the tickets.', 'FlashMessage', array('type' => 'info'));
+						return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+					}
 					
-					if ($this->User->save($buyer, true, array('id', 'tokens')) && $this->SuperLottery->save($superLottery, true, array('id', 'nb_ticket_bought')) && $this->SuperLotteryTicket->save($superLotTicket)) {
+					else if ($this->User->save($buyer, true, array('id', 'tokens')) && $this->SuperLottery->save($superLottery, true, array('id', 'nb_ticket_bought')) && $this->SuperLotteryTicket->save($superLotTicket)) {
 
 						$this->log('Super Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], idSuperTickets['.$this->SuperLotteryTicket->id.'], superLottery['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
 
@@ -164,8 +167,21 @@ class SuperLotteryTicketsController extends AppController {
 					$winnerUser['User']['nb_new_won_super_lotteries']++;
 
 					if ($this->User->save($winnerUser, true, array('id', 'nb_new_won_super_lotteries')) && $this->SuperLottery->save($superLottery, true, array('id', 'winner_user_id', 'status'))){
+						
+						$this->Message->sendSuperLotteryMessage(
+							$ticketStack['buyer_user_id'], 
+							'Super Lottery Won', 
+							('You have win '.$superLottery['SuperLottery']['number_items'].' x '.$superLottery['EveItem']['name'].'. You can now claim your prize.'),
+							$this->SuperLottery->id);
 
-
+						$newSup = $this->SuperLottery->find('first', array(
+							'conditions' => array('SuperLottery.status' => 'waiting'),
+							'order' => array('SuperLottery.created' => 'asc'),
+							));
+						if(isset($newSup['SuperLottery']['id'])){
+							$newSup['SuperLottery']['status'] = 'ongoing';
+							$this->SuperLottery->save($newSup, true, array('id', 'status'));
+						}
 						break;
 					}
 

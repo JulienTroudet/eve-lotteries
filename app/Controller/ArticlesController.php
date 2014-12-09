@@ -27,6 +27,8 @@ class ArticlesController extends AppController {
 	 * @return void
 	 */
 	public function index() {
+		
+
 		$this->Article->recursive = 0;
 		$params = array(
 			'contain' => array('User'),
@@ -35,6 +37,13 @@ class ArticlesController extends AppController {
 			);
 		$this->Paginator->settings = $params;
 		$this->set('articles', $this->Paginator->paginate());
+
+		if($this->Auth->loggedIn()){
+			$this->loadModel('User');
+			$userId = $this->Auth->user('id');
+			$this->User->id = $userId;
+			$this->User->saveField('nb_unread_news', 0);
+		}
 	}
 
 	/**
@@ -69,7 +78,7 @@ class ArticlesController extends AppController {
 	 * @return void
 	 */
 	public function admin_add() {
-
+		$this->loadModel('User');
 		$userId = $this->Auth->user('id');
 
 
@@ -84,6 +93,10 @@ class ArticlesController extends AppController {
 					'The article has been saved.',
 					'FlashMessage',
 					array('type' => 'success')
+					);
+				$this->User->updateAll(
+					array('User.nb_unread_news' => 'User.nb_unread_news+1'),                    
+					true
 					);
 				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
@@ -145,16 +158,16 @@ class ArticlesController extends AppController {
 		$this->request->allowMethod('post', 'delete');
 		if ($this->Article->delete()) {
 			$this->Session->setFlash(
-					'The article has been deleted.',
-					'FlashMessage',
-					array('type' => 'success')
-					);
+				'The article has been deleted.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
 		} else {
 			$this->Session->setFlash(
-					'The article could not be deleted. Please, try again.',
-					'FlashMessage',
-					array('type' => 'error')
-					);
+				'The article could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}

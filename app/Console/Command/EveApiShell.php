@@ -2,15 +2,11 @@
 
 class EveApiShell extends AppShell {
 
-	public $uses = array('Transaction', 'User', 'Statistic', 'Config');
+	public $uses = array('Transaction', 'User', 'Statistic', 'Config', 'Message', 'Award', 'UserAward');
 
 	private $pheal = null;
 
 	public function main() {
-		$this->out('Ok');
-	}
-
-	public function update_wallet() {
 
 		$corpoKeyID = $this->Config->findByName("corpoKeyID");
 		$corpoKeyIDValue = $corpoKeyID['Config']['value'];
@@ -49,7 +45,7 @@ class EveApiShell extends AppShell {
 
 						$check_user_deposit = $this->User->findById($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
 						if(!empty($check_user_deposit)){
-
+							
 							$transactions++;
 							$this->Transaction->create();
 							$newTransaction = array('Transaction'=>array(
@@ -65,6 +61,14 @@ class EveApiShell extends AppShell {
 							if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
 
 								$this->Statistic->saveStat($check_user_deposit['User']['id'], 'deposit_isk', $this->Transaction->id, $entry->amount, null);
+
+								$this->Message->sendMessage(
+									$check_user_deposit['User']['id'], 
+									'ISK Credited', 
+									('You have deposited '.number_format($entry->amount, 00).' ISK to your EVE-Lotteries account.'),
+									'transactions', 
+									'index'
+									);
 
 								$this->log('Wallet Update : name['.$check_user_deposit['User']['eve_name'].'], id['.$check_user_deposit['User']['id'].'], amount['.$entry->amount.'], total['.$check_user_deposit['User']['wallet'].']', 'eve-lotteries');
 							}
@@ -109,6 +113,54 @@ class EveApiShell extends AppShell {
 		//debug($response);
 		$this->out($response->cached_until);
 		//die($response->cached_until);
+		
+		$db = $this->UserAward->getDataSource();
 
+		$params = array(
+			'contain' => array('UserAward' => array('fields' => array('UserAward.award_id'))),
+			'fields'  => array('User.id'),
+			);
+		$users = $this->User->find('all', $params);
+		$users = Set::combine($users, '{n}.User.id', '{n}.UserAward.{n}.award_id');
+
+		$params = array(
+			'conditions' => array('Award.status' => 'active'),
+			);
+		$awards = $this->Award->find('all', $params);
+
+
+		foreach ($users as $userId => $user) {
+			foreach ($awards as $key => $award) {
+
+				if(!in_array ($award['Award']['id'] , $user )){
+					$result = $db->fetchAll($award['Award']['request'], array($userId));
+					if(isset($result[0])){
+						$result = $result[0][0]['result'];
+					}
+					else{
+						$result = false;
+					}
+					if($result){
+						$this->UserAward->create();
+						$newUserAward = array('UserAward'=>array('award_id'=>$award['Award']['id'], 'user_id'=>$userId, 'status'=>'unclaimed'));
+
+						$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));
+
+						$this->log('Award Update : user_id['.$userId.'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
+
+						$this->Message->sendMessage(
+							$userId, 
+							'Award Completed', 
+							('You have completed the award "'.$award['Award']['name'].'". Please claim your prize in the award Menu'),
+							'awards', 
+							'index'
+							);
+					}
+				}
+				
+			}
+		}
+
+		$this->out('Update complete');
 	}
 }

@@ -388,7 +388,9 @@ img{
 .navbar a>img{
 	outline: 0px;
 }
-
+.navbar-site ul{
+	padding: 0;
+}
 .panel-news{
 	border: 1px solid rgba(68, 68, 68, 1);
 }
