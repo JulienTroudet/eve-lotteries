@@ -1,10 +1,13 @@
 <?php
 App::uses('AppModel', 'Model');
 /**
- * Award Model
+ * SuperLottery Model
  *
+ * @property EveItem $EveItem
+ * @property CreatorUser $CreatorUser
+ * @property LotteryStatus $LotteryStatus
  */
-class Award extends AppModel {
+class SuperLottery extends AppModel {
 
 /**
  * Display field
@@ -13,116 +16,114 @@ class Award extends AppModel {
  */
 	public $displayField = 'name';
 
+	public $actsAs = array('Containable');
+
 /**
  * Validation rules
  *
  * @var array
  */
 	public $validate = array(
+		'eve_item_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'number_items' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
 		'name' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
-				'required' => true,
+				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
-			'minLength' => array(
-				'rule' => array('minLength', '6'),
-				'message' => 'Please give a name with 6 or more characters.',
+		),
+		'creator_user_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'description' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
+		'nb_tickets' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				'required' => true,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-			'minLength' => array(
-				'rule' => array('minLength', '20'),
-				'message' => 'Please give a description with 20 or more characters.',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'group' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				'required' => true,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'request' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				'required' => true,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-			'minLength' => array(
-				'rule' => array('minLength', '20'),
-				'message' => 'Please give a request with 20 or more characters.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
-		'award_credits' => array(
+		'ticket_value' => array(
 			'decimal' => array(
 				'rule' => array('decimal'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
-				'required' => true,
+				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'status' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
+		'lottery_status_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
-				'required' => true,
+				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
 	);
 
-	/**
-	 * hasMany associations
-	 *
-	 * @var array
-	 */
-	public $hasMany = array(
-		'UserAwards' => array(
-			'className' => 'UserAwards',
-			'foreignKey' => 'award_id',
-			'dependent' => true,
+	//The Associations below have been created with all possible keys, those that are not needed can be removed
+
+/**
+ * belongsTo associations
+ *
+ * @var array
+ */
+	public $belongsTo = array(
+		'EveItem' => array(
+			'className' => 'EveItem',
+			'foreignKey' => 'eve_item_id',
 			'conditions' => '',
 			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-			),
-		);
+			'order' => ''
+		),
+		'User' => array(
+			'className' => 'User',
+			'foreignKey' => 'creator_user_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'LotteryStatus' => array(
+			'className' => 'LotteryStatus',
+			'foreignKey' => 'lottery_status_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		)
+	);
 }

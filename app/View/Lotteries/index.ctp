@@ -6,68 +6,70 @@
 	
 
 	<div class="row">
-		<div class="panel panel-default col-md-12 col-sm-12">
-			<div id="collapse-item" class="panel-collapse collapse">
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-md-2 cols-sm-12 pull-left">
-							<a class="btn btn-warning" data-toggle="collapse" href="#collapse-item">Close</a>
-						</div>
-						<div class="col-md-8 cols-sm-12 pull-right">
-							<form class="form-inline pull-right" role="form">
-								<div class="form-group pull-right">
-									<label class="sr-only" for="item-search">Search : </label>
-									<input type="text" class="form-control" id="item-search" placeholder="Item name" style="margin-left:5px;">
-								</div>
-								<div class="form-group pull-right">
-									<label class="sr-only" for="item-select">Search : </label>
-
-									<?php 
-
-									echo $this->Form->select(
-										'field',
-										$eveCategories,
-										array(
-											'div' => array(
-												'class' => 'form-group'
-												),
-											'class' => 'form-control',
-											'id' => 'item-filter',
-											'label' => 'Item Category',
-											'placeholder' => 'Item Category',
-											)
-										);
-										?>
-
-
-
-									</div>
-								</form>
-							</div>
-						</div>
+	<div class="col-md-12 col-sm-12">
+			<div class="panel panel-default">
+				<div id="collapse-item" class="panel-collapse collapse">
+					<div class="panel-body">
 						<div class="row">
-							<?php foreach ($eveItems as $eveItem){echo $this->element('ItemPanel', array(
-							"eveItem" => $eveItem));} ?>
+							<div class="col-md-2 cols-sm-12 pull-left">
+								<a class="btn btn-warning" data-toggle="collapse" href="#collapse-item">Close</a>
+							</div>
+							<div class="col-md-8 cols-sm-12 pull-right">
+								<form class="form-inline pull-right" role="form">
+									<div class="form-group pull-right">
+										<label class="sr-only" for="item-search">Search : </label>
+										<input type="text" class="form-control" id="item-search" placeholder="Item name" style="margin-left:5px;">
+									</div>
+									<div class="form-group pull-right">
+										<label class="sr-only" for="item-select">Search : </label>
+
+										<?php 
+
+										echo $this->Form->select(
+											'field',
+											$eveCategories,
+											array(
+												'div' => array(
+													'class' => 'form-group'
+													),
+												'class' => 'form-control',
+												'id' => 'item-filter',
+												'label' => 'Item Category',
+												'placeholder' => 'Item Category',
+												)
+											);
+											?>
+
+
+
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="row">
+								<?php foreach ($eveItems as $eveItem){echo $this->element('ItemPanel', array(
+								"eveItem" => $eveItem));} ?>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
 		<div id="list-lotteries">
+			<?php if (isset($superLottery)){ echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery ));} ?>
 			<h2>Ongoing Lotteries</h2>
 			<div class="row">
-				<?php foreach ($lotteries as $lottery){ echo $this->element('LotteryPanel', array(
+				<?php foreach ($lotteries as $lottery){ echo $this->element('Lotteries/LotteryPanel', array(
 				"lottery" => $lottery ));} ?>
 			</div>
 			<h2>Last won lotteries</h2>
 			<div class="row">
-				<?php foreach ($old_lotteries as $lottery){echo $this->element('OldLotteryPanel', array(
+				<?php foreach ($old_lotteries as $lottery){echo $this->element('Lotteries/OldLotteryPanel', array(
 				"lottery" => $lottery ));}?>
 			</div>
 			<div class="row">
 				<div class="col-md-3 pull-right">
-					<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
+					<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
 				</div>
 			</div>
 

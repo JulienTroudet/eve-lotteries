@@ -66,10 +66,15 @@
 	background-color: rgba(92, 184, 92, 0.4);
 }
 
+.ticket-old-col{
+	padding-left: 5px;
+	padding-right: 5px;
+}
 .ticket-old{
 	border-bottom: 1px solid #2c2c2c;
-	height:2em;
+	margin: 0 0 0.5em 0;
 	padding: 0 0.5em 0 0.5em;
+	height:2em;
 	border-radius: 3px;
 }
 .ticket-old>span{
@@ -78,8 +83,8 @@
 	line-height:normal;
 	text-align:left;
 }
-.panel-old-lot{
-	padding: 0;
+.row-old-lot{
+	padding: 0.5em 15px 0em 0.5em;
 }
 
 .panel-lot{
@@ -269,19 +274,70 @@ body {
 
 /* [END] ITEM PANEL */
 
-/* [START] AWARD PANEL */
+/* [START] WON-LOT PANEL */
 
-.panel-body-awards{
+.panel-body-won-lot{
 	min-height: 13em;
 }
 
-.panel-body-awards>.well{
+.panel-body-won-lot>.well{
 	margin-bottom: 0.5em;
 	margin-top: 0.5em;
 }
 
 
+/* [END] WON-LOT PANEL */
+
+
+
+/* [START] AWARD PANEL */
+.title-award{
+	margin-top: 9px;
+	margin-bottom: 0px;
+}
+
+.award-value {
+	margin: 0 0 0px;
+}
+
 /* [END] AWARD PANEL */
+
+/* [START] SUPER LOTTERY PANEL */
+.super-lot h3, .super-lot h5{
+	margin-top: 0px;
+	margin-bottom: 6px;
+
+}
+.super-lot .btn-group-vertical > .form-control:not(:first-child):not(:last-child) {
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.super-lot .btn-group-vertical > .form-control + .btn {
+	margin-top: -1px;
+	margin-left: 0;
+}
+
+.super-lot .btn{
+	line-height: 1.3;
+}
+.super-lot .form-control{
+	height: 32px;
+	border-color: #3F607C;
+	background-color: #2B4357;
+	text-align: center;
+}
+
+.super-lot .btn-group{
+	float: right;
+}
+.super-lot .progress{
+	background-color: #2c2c2c;
+	height: 18px;
+	margin-bottom: 0px;
+}
+/* [END] SUPER LOTTERY PANEL */
 
 img{
 	border-radius: 4px;

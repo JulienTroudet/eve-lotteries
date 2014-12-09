@@ -26,6 +26,30 @@ class AwardsController extends AppController {
 	 *
 	 * @return void
 	 */
+	public function index() {
+		$userGlobal = $this->Auth->user();
+
+		$params = array(
+			'conditions' => array('Award.status' => 'active'),
+			'order' => array('Award.group asc', 'Award.order desc')
+			);
+		$this->set('awards', $this->Award->find('all', $params));
+
+		
+		$this->loadModel('UserAward');
+		$params = array(
+			'conditions' => array('UserAward.user_id' => $userGlobal['id']),
+			);
+		$userAwards = $this->UserAward->find('all', $params);
+		$userAwards = Set::combine($userAwards, '{n}.UserAward.award_id', '{n}');
+		$this->set('userAwards', $userAwards);
+	}
+
+	/**
+	 * admin index method
+	 *
+	 * @return void
+	 */
 	public function admin_index() {
 		$this->set('awards', $this->Paginator->paginate());
 	}
@@ -61,7 +85,7 @@ class AwardsController extends AppController {
 			$this->Award->create();
 			$dataProxy = $this->request->data;
 
-			if ($this->Award->save($dataProxy, true, array('name', 'description', 'json_value', 'award_credits', 'status'))) {
+			if ($this->Award->save($dataProxy, true, array('name', 'description', 'group', 'order', 'request', 'award_credits', 'status'))) {
 				$this->Session->setFlash(
 					'The Award has been saved.',
 					'FlashMessage',
@@ -90,7 +114,7 @@ class AwardsController extends AppController {
 			throw new NotFoundException(__('Invalid Award'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Award->save($this->request->data)) {
+			if ($this->Award->save($this->request->data, true, array('id', 'name', 'description', 'group', 'order', 'request', 'award_credits', 'status'))) {
 				$this->Session->setFlash(
 					'The Award has been saved.',
 					'FlashMessage',

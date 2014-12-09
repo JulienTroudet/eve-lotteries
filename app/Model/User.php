@@ -132,9 +132,9 @@ App::uses('AuthComponent', 'Controller/Component');
 	 */
 	public $hasMany = array(
 		'Ticket' => array(
-			'className' => 'ticket',
+			'className' => 'Ticket',
 			'foreignKey' => 'buyer_user_id',
-			'dependent' => false,
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',
@@ -147,7 +147,7 @@ App::uses('AuthComponent', 'Controller/Component');
 		'Withdrawal' => array(
 			'className' => 'Withdrawal',
 			'foreignKey' => 'user_id',
-			'dependent' => false,
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',
@@ -158,9 +158,9 @@ App::uses('AuthComponent', 'Controller/Component');
 			'counterQuery' => ''
 			),
 		'Article' => array(
-			'className' => 'article',
+			'className' => 'Article',
 			'foreignKey' => 'creator_user_id',
-			'dependent' => false,
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',
@@ -171,9 +171,35 @@ App::uses('AuthComponent', 'Controller/Component');
 			'counterQuery' => ''
 			),
 		'Lottery' => array(
-			'className' => 'lottery',
+			'className' => 'Lottery',
 			'foreignKey' => 'creator_user_id',
-			'dependent' => false,
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		'SuperLottery' => array(
+			'className' => 'SuperLottery',
+			'foreignKey' => 'creator_user_id',
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		'Statistic' => array(
+			'className' => 'Statistic',
+			'foreignKey' => 'user_id',
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',
@@ -184,9 +210,22 @@ App::uses('AuthComponent', 'Controller/Component');
 			'counterQuery' => ''
 			),
 		'Transaction' => array(
-			'className' => 'transaction',
+			'className' => 'Transaction',
 			'foreignKey' => 'user_id',
-			'dependent' => false,
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		'UserAward' => array(
+			'className' => 'UserAward',
+			'foreignKey' => 'user_id',
+			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',

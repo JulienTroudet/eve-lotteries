@@ -59,7 +59,20 @@ class LotteryStatus extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
-	);
+			),
+		'SuperLottery' => array(
+			'className' => 'SuperLottery',
+			'foreignKey' => 'lottery_status_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			)
+		);
 
 }

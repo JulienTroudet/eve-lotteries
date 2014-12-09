@@ -26,7 +26,30 @@
 						'class' => 'form-control',
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
-					echo $this->Form->input('json_value', array(
+					echo $this->Form->input('group', array(
+						'options' => array(
+							'ticket' => 'ticket', 
+							'items' => 'item',
+							'win' => 'win',
+							'special' => 'special',
+							'deposit' => 'deposit',
+							'presence' => 'presence',
+							),
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('order', array(
+						'step' => '1',
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('request', array(
 						'div' => array(
 							'class' => 'form-group'
 							),

@@ -12,6 +12,8 @@
 					<thead>
 						<tr>
 							<th><?php echo $this->Paginator->sort('name'); ?></th>
+							<th><?php echo $this->Paginator->sort('group'); ?></th>
+							<th><?php echo $this->Paginator->sort('order'); ?></th>
 							<th><?php echo $this->Paginator->sort('award_credits'); ?></th>
 							<th><?php echo $this->Paginator->sort('status'); ?></th>
 							<th><?php echo $this->Paginator->sort('modified'); ?></th>
@@ -22,6 +24,8 @@
 						<?php foreach ($awards as $award): ?>
 							<tr>
 								<td><?php echo h($award['Award']['name']); ?>&nbsp;</td>
+								<td><?php echo h($award['Award']['group']); ?>&nbsp;</td>
+								<td><?php echo h($award['Award']['order']); ?>&nbsp;</td>
 								<td><?php echo h($award['Award']['award_credits']); ?>&nbsp;</td>
 								<td><?php echo h($award['Award']['status']); ?>&nbsp;</td>
 								<td><?php echo h($award['Award']['modified']); ?>&nbsp;</td>

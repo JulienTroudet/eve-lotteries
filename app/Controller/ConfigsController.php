@@ -24,6 +24,17 @@ class ConfigsController extends AppController {
 	public function beforeFilter() {
 		$this->Auth->allow('update_api_check');
 
+		
+	}
+
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function update_api_check() {
+
 		$corpoKeyID = $this->Config->findByName("corpoKeyID");
 		$corpoKeyIDValue = $corpoKeyID['Config']['value'];
 		$corpoVCode = $this->Config->findByName("corpoVCode");
@@ -40,15 +51,6 @@ class ConfigsController extends AppController {
 		Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\PdoStorage($dsn, $dsc['login'], $dsc['password']);
 
 		$this->pheal = new Pheal\Pheal($corpoKeyIDValue, $corpoVCodeValue, "corp");
-	}
-
-
-	/**
-	 * index method
-	 *
-	 * @return void
-	 */
-	public function update_api_check() {
 		
 		$apiCheckTime = $this->Config->findByName("apiCheck");
 		$apiCheckTimeValue = $apiCheckTime['Config']['value'];
@@ -135,7 +137,7 @@ class ConfigsController extends AppController {
 		}
 
 		//debug($response);
-		die();
+		die($response->cached_until);
 		
 	}
 }

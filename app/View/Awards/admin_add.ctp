@@ -25,7 +25,29 @@
 						'class' => 'form-control',
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
-					echo $this->Form->input('json_value', array(
+					echo $this->Form->input('group', array(
+						'options' => array(
+							'Ticket' => 'ticket', 
+							'Items' => 'item',
+							'Win' => 'win',
+							'Special' => 'special',
+							'Deposit' => 'deposit',
+							),
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('order', array(
+						'step' => '1',
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('request', array(
 						'div' => array(
 							'class' => 'form-group'
 							),
@@ -34,7 +56,7 @@
 						));
 					echo $this->Form->input('award_credits', array(
 						'step' => '1000000',
-						'max' => '100000000',
+						'max' => '500000000',
 						'min' => '1000000',
 						'div' => array(
 							'class' => 'form-group'

@@ -54,7 +54,7 @@ class TicketsController extends AppController {
 				
 				$choosenTicket = $this->Ticket->findById($ticketId);
 				$choosenLottery = $this->Lottery->findById($choosenTicket['Ticket']['lottery_id']);
-				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet'));
+				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet', 'User.tokens'));
 
 				if($choosenTicket['Ticket']['buyer_user_id'] != null){
 					$data = array('error' => 'Ticket already bought.');
@@ -66,10 +66,11 @@ class TicketsController extends AppController {
 
 				else{
 					$buyer['User']['wallet'] -= $choosenTicket['Ticket']['value'];
+					$buyer['User']['tokens'] += $choosenTicket['Ticket']['value']/10000000;
 
 					$choosenTicket['Ticket']['buyer_user_id'] = $buyer['User']['id'];
 
-					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Ticket->save($choosenTicket)) {
+					if ($this->User->save($buyer, true, array('id', 'wallet', 'tokens')) && $this->Ticket->save($choosenTicket)) {
 
 						$this->Statistic->saveStat($buyer['User']['id'], 'buy_ticket', $ticketId, $choosenTicket['Ticket']['value'], $choosenLottery['Lottery']['eve_item_id']);
 
@@ -81,8 +82,8 @@ class TicketsController extends AppController {
 							'buyerWallet' => number_format($buyer['User']['wallet'], 2)
 							);
 
-						$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.'], wallet['.number_format($buyer['User']['wallet'], 2).']', 'eve-lotteries');
-
+						$this->log('Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.']', 'eve-lotteries');
+						$this->log('User state : name['.$buyer['User']['eve_name'].'], wallet['.number_format($buyer['User']['wallet'], 2).'], tokens['.number_format($buyer['User']['tokens'], 2).']', 'eve-lotteries');
 						$this->_checkWinner($choosenTicket['Ticket']['lottery_id'], $buyer['User']['id']);
 
 					}
@@ -160,7 +161,7 @@ class TicketsController extends AppController {
 				$ticketPrice = $this->EveItem->getTicketPrice($choosenItem);
 				$totalPrice = count($listPositions)*$ticketPrice;
 
-				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet'));
+				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet', 'User.tokens'));
 
 				//vas voir si l'item est déjà en lotterie
 				$params = array(
@@ -179,6 +180,7 @@ class TicketsController extends AppController {
 				}
 				else{
 					$buyer['User']['wallet'] -= $totalPrice;
+					$buyer['User']['tokens'] += $totalPrice/10000000;
 
 					$this->Lottery->create();
 					$newLottery = array('Lottery'=>array(
@@ -190,7 +192,7 @@ class TicketsController extends AppController {
 						'name'=> $choosenItem['EveItem']['name'],
 						));
 
-					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Lottery->save($newLottery)) {
+					if ($this->User->save($buyer, true, array('id', 'wallet', 'tokens')) && $this->Lottery->save($newLottery)) {
 
 						$this->Statistic->saveStat($buyer['User']['id'], 'init_lottery', $this->Lottery->id, $choosenItem['EveItem']['eve_value'], $choosenItem['EveItem']['id']);
 
@@ -208,7 +210,7 @@ class TicketsController extends AppController {
 								$this->Ticket->save($newTicket);
 
 								$this->Statistic->saveStat($buyer['User']['id'], 'buy_ticket', $this->Ticket->id, $ticketPrice, $choosenItem['EveItem']['id']);
-								$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$this->Ticket->id.']', 'eve-lotteries');
+								$this->log('Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$this->Ticket->id.']', 'eve-lotteries');
 							}
 							else{
 								$this->Ticket->save($newTicket);
@@ -217,6 +219,9 @@ class TicketsController extends AppController {
 
 							$this->_checkWinner($this->Lottery->id, $buyer['User']['id']);
 						}
+
+						//$this->log('User state : name['.$buyer['User']['eve_name'].'], wallet['.number_format($buyer['User']['wallet'], 2).'], tokens['.number_format($buyer['User']['tokens'], 2).']', 'eve-lotteries');
+
 						$data = array (
 							'success' => true,
 							'message' => 'Ticket bought.',

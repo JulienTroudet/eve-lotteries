@@ -30,6 +30,7 @@ class LotteriesController extends AppController {
 
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
+		$this->loadModel('SuperLottery');
 
 		//vas chercher les lotteries actuelles
 		$params = array(
@@ -69,7 +70,6 @@ class LotteriesController extends AppController {
 		//vas chercher la liste des catégories d'item
 		$params = array(
 			'conditions' => array('EveCategory.status' => '1'),
-			'recursive' => -1,
 			'order' => array('EveCategory.name ASC'),
 			'fields' => array('EveCategory.id', 'EveCategory.name'),
 
@@ -90,6 +90,14 @@ class LotteriesController extends AppController {
 			$eveItems[$key]['EveItem']['ticket_price'] = $this->EveItem->getTicketPrice($value);
 		}
 		$this->set('eveItems', $eveItems);
+
+		$params = array(
+			'contain' => 'EveItem',
+			'conditions' => array('SuperLottery.lottery_status_id'=>'1'), 
+			);
+
+		$superLottery = $this->SuperLottery->find('first', $params);
+		$this->set('superLottery', $superLottery);
 	}
 
 
@@ -99,6 +107,7 @@ class LotteriesController extends AppController {
 	 * @return void
 	 */
 	public function list_lotteries() {
+		$this->loadModel('SuperLottery');
 
 		$this->layout = false;
 		$params = array(
@@ -132,6 +141,9 @@ class LotteriesController extends AppController {
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');
 		$this->set('old_lotteries', $oldLotteries);
+
+		$superLot = $this->SuperLottery->find('first', array('conditions' => array('lottery_status_id'=>'1')));
+		$this->set('superLottery', $superLot);
 	}
 
 	/**

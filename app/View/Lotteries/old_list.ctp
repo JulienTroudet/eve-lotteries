@@ -8,7 +8,7 @@
 	
 	<div id="list-lotteries">
 		<div class="row">
-			<?php foreach ($old_lotteries as $lottery){ echo $this->element('LotteryPanel', array(
+			<?php foreach ($old_lotteries as $lottery){ echo $this->element('Lotteries/LotteryPanel', array(
 			"lottery" => $lottery ));} ?>
 		</div>		
 	</div>

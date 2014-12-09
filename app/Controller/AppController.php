@@ -70,14 +70,21 @@ class AppController extends Controller {
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
 
-		$this->loadModel('Withdrawal');
-		$params = array(
-			'conditions' => array('Withdrawal.status' => 'new', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => 'award'),
-			);
+		
 		
 		if ($userGlobal != null) {
-			$userGlobal['new_awards'] = $this->Withdrawal->find('count', $params);
+			$this->loadModel('Withdrawal');
+			$params = array(
+				'conditions' => array('Withdrawal.status' => 'new', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => 'award'),
+				);
+			$userGlobal['new_lot_won'] = $this->Withdrawal->find('count', $params);
+			$this->loadModel('UserAwards');
+			$params = array(
+				'conditions' => array('UserAwards.status' => 'unclaimed', 'UserAwards.user_id' => $userGlobal['id']),
+				);
+			$userGlobal['new_awards'] = $this->UserAwards->find('count', $params);
 		}
+
 
 		$this->loadModel('Lottery');
 		$params = array(

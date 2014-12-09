@@ -9,7 +9,7 @@
 				<p><?php echo number_format($unclaimed_award['Ticket']['Lottery']['value']); ?> <span class="badge">ISK</span></p>
 			</div>
 		</div>
-		<div class="panel-body panel-body-awards">
+		<div class="panel-body panel-body-won-lot">
 			<?php switch ($unclaimed_award['Withdrawal']['status']) {
 				case 'new':
 				?>
