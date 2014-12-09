@@ -22,17 +22,32 @@
 				</div>
 				<div class="col-md-4 col-sm-4">
 					<div class="btn-group-vertical btn-block">
-						<button type="button" class="btn btn-block btn-success">Deposit <span class="badge">ISK</span></button>
+						<a onclick="CCPEVE.showInfo(2, 98342107);" class="btn btn-block btn-success" href="#" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>
 						<a class="btn btn-block btn-success" data-toggle="collapse" href="#collapse-item">Create lottery</a>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-4">
 					<div class="btn-group-vertical btn-block">
 						<button type="button" class="btn btn-block btn-primary">My profile</button>
-						<button type="button" class="btn btn-block btn-primary">My Awards</button>
+						<?php
+
+						$label = 'My Awards';
+						if($userGlobal['new_awards']>0){
+							$label= $label.' <span class="badge">'.$userGlobal['new_awards'].' New';
+						}
+
+
+						echo $this->Html->link(
+							$label, 
+							array('controller' => 'users', 'action' => 'awards'),
+							array(
+								'class' => 'btn btn-block btn-primary',
+								'escape' => false)
+							);
+							?>
+						</div>
 					</div>
 				</div>
-			</div>
-		</div><!--/.nav-collapse -->
-	</div><!--/.container-fluid -->
-</div>
+			</div><!--/.nav-collapse -->
+		</div><!--/.container-fluid -->
+	</div>

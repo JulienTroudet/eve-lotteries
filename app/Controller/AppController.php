@@ -62,9 +62,23 @@ class AppController extends Controller {
 	}
 
 	public function beforeRender() {
-		//$this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
 		$userGlobal = $this->Auth->user();
+
+		$this->loadModel('Ticket');
+		$params = array(
+			'conditions' => array('Ticket.status' => 'unclaimed', 'Ticket.buyer_user_id' => $userGlobal['id'], 'Ticket.is_winner' => true),
+			);
+		
+		if ($userGlobal != null) {
+			$userGlobal['new_awards'] = $this->Ticket->find('count', $params);
+		}
+
 		$this->set('userGlobal', $userGlobal);
+
+		$this->loadModel('Config');
+		$apiCheckTime = $this->Config->findByName("apiCheck");
+		$apiCheckTimeValue = $apiCheckTime['Config']['value'];
+		$this->set('apiCheckTime', $apiCheckTimeValue);
 	}
 
 }

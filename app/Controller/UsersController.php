@@ -147,13 +147,13 @@ class UsersController extends AppController {
 		$this->redirect($this->Auth->logout());
 	}
 
-	function register(){
+	public function register(){
 		if ($this->Session->read('Auth.User')) {
 			$this->Session->setFlash(
-					'You are logged in!',
-					'FlashMessage',
-					array('type' => 'success')
-					);
+				'You are logged in!',
+				'FlashMessage',
+				array('type' => 'success')
+				);
 			return $this->redirect('/');
 		}
 		if (!empty($this->data)){
@@ -170,12 +170,12 @@ class UsersController extends AppController {
 					$this->redirect('/');
 				}
 				else{
-				$this->Session->setFlash(
-					'Error in account creation.',
-					'FlashMessage',
-					array('type' => 'danger')
-					);
-			}
+					$this->Session->setFlash(
+						'Error in account creation.',
+						'FlashMessage',
+						array('type' => 'danger')
+						);
+				}
 			}
 			else{
 				$this->Session->setFlash(
@@ -187,14 +187,21 @@ class UsersController extends AppController {
 		}
 	}
 
+	public function awards() {
+		
+	}
+
 	/**
 	 * index method
 	 *
 	 * @return void
 	 */
 	public function user_navbar() {
-	$this->layout = false;
+		$this->layout = false;
 	}
+
+	
+
 
 	// public function initDB() {
 	// 	$group = $this->User->Group;

@@ -57,6 +57,7 @@
 				</button>
 				<a class="navbar-brand" href="<?php echo $this->webroot; ?>">EVE-Lotteries</a>
 			</div>
+			<p class="navbar-text">Next API Check : <?php echo $apiCheckTime; ?></p>
 			<div class="navbar-collapse collapse navbar-site">
 				<?php 
 				if ($userGlobal != null) {

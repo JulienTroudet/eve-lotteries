@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::Import('ConnectionManager');
 /**
  * Configs Controller
  *
@@ -9,97 +10,112 @@ App::uses('AppController', 'Controller');
  */
 class ConfigsController extends AppController {
 
+
+
 	/**
 	 * Components
 	 *
 	 * @var array
 	 */
-		public $components = array('Paginator', 'Session');
+	public $components = array('Session');
+
+	private $pheal = null;
+
+	public function beforeFilter() {
+
+		$corpoKeyID = $this->Config->findByName("corpoKeyID");
+		$corpoKeyIDValue = $corpoKeyID['Config']['value'];
+		$corpoVCode = $this->Config->findByName("corpoVCode");
+		$corpoVCodeValue = $corpoVCode['Config']['value'];
+		
+		
+		Pheal\Core\Config::getInstance()->access = new \Pheal\Access\StaticCheck();
+
+		$ds = ConnectionManager::getDataSource('default');
+		$dsc = $ds->config;
+		$dsn = 'mysql:host='.$dsc['host'].';dbname='.$dsc['database'];
+
+
+		Pheal\Core\Config::getInstance()->cache = new \Pheal\Cache\PdoStorage($dsn, $dsc['login'], $dsc['password']);
+
+		$this->pheal = new Pheal\Pheal($corpoKeyIDValue, $corpoVCodeValue, "corp");
+	}
+
 
 	/**
 	 * index method
 	 *
 	 * @return void
 	 */
-		public function index() {
-			$this->Config->recursive = 0;
-			$this->set('configs', $this->Paginator->paginate());
-		}
+	public function update_api_check() {
+		
+		$apiCheckTime = $this->Config->findByName("apiCheck");
+		$apiCheckTimeValue = $apiCheckTime['Config']['value'];
+		
+		
+		$response = null;
+		try {
+			$response = $this->pheal->walletjournal(array(''));
+			$transactions = 0;
+			if($response->cached_until != $apiCheckTimeValue)
+			{
+				$this->loadModel('Transaction');
+				$this->loadModel('User');
 
-	/**
-	 * view method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-		public function view($id = null) {
-			if (!$this->Config->exists($id)) {
-				throw new NotFoundException(__('Invalid config'));
-			}
-			$options = array('conditions' => array('Config.' . $this->Config->primaryKey => $id));
-			$this->set('config', $this->Config->find('first', $options));
-		}
+				foreach($response->entries as $entry)
+				{
+					$check_api = $this->Transaction->findByRefid($entry->refID);
 
-	/**
-	 * add method
-	 *
-	 * @return void
-	 */
-		public function add() {
-			if ($this->request->is('post')) {
-				$this->Config->create();
-				if ($this->Config->save($this->request->data)) {
-					$this->Session->setFlash(__('The config has been saved.'));
-					return $this->redirect(array('action' => 'index'));
-				} else {
-					$this->Session->setFlash(__('The config could not be saved. Please, try again.'));
+					if(empty($check_api))
+					{
+						$check_user = $this->User->findByEveId($entry->ownerID1);
+
+						if(!empty($check_user))
+						{
+							
+							$transactions++;
+							$this->Transaction->create();
+							$newTransaction = array('Transaction'=>array(
+								'refid' =>  $entry->refID,
+								'amount' => $entry->amount,
+								'user_id' => $check_user['User']['id'],
+								'eve_date' => $entry->date,
+								));
+
+							$this->log($newTransaction);
+
+							$check_user['User']['wallet'] += $entry->amount;
+
+							if ($this->User->save($check_user) && $this->Transaction->save($newTransaction)){
+								$this->log('Wallet Update : name['.$check_user['User']['wallet'].'], id['.$check_user['User']['eve_name'].'], amount['.$entry->amount.'], total['.$check_user['User']['wallet']);
+							}
+						}
+					}
+
+
 				}
-			}
-		}
-
-	/**
-	 * edit method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-		public function edit($id = null) {
-			if (!$this->Config->exists($id)) {
-				throw new NotFoundException(__('Invalid config'));
-			}
-			if ($this->request->is(array('post', 'put'))) {
-				if ($this->Config->save($this->request->data)) {
-					$this->Session->setFlash(__('The config has been saved.'));
-					return $this->redirect(array('action' => 'index'));
-				} else {
-					$this->Session->setFlash(__('The config could not be saved. Please, try again.'));
+				$apiCheckTime['Config']['value'] = $response->cached_until;
+				if ($this->Config->save($apiCheckTime)) {
+					$this->Session->setFlash(
+						'Api Updated',
+						'FlashMessage',
+						array('type' => 'info')
+						);
 				}
-			} else {
-				$options = array('conditions' => array('Config.' . $this->Config->primaryKey => $id));
-				$this->request->data = $this->Config->find('first', $options);
+				//mysql_query("UPDATE config SET value = '".$response->cached_until."' WHERE id = '1'");
 			}
+			$this->log($transactions.' transactions imported');
+
+		} catch (\Pheal\Exceptions\PhealException $e) {
+			echo sprintf(
+				"an exception was caught! Type: %s Message: %s",
+				get_class($e),
+				$e->getMessage()
+				);
 		}
 
-	/**
-	 * delete method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-		public function delete($id = null) {
-			$this->Config->id = $id;
-			if (!$this->Config->exists()) {
-				throw new NotFoundException(__('Invalid config'));
-			}
-			$this->request->allowMethod('post', 'delete');
-			if ($this->Config->delete()) {
-				$this->Session->setFlash(__('The config has been deleted.'));
-			} else {
-				$this->Session->setFlash(__('The config could not be deleted. Please, try again.'));
-			}
-			return $this->redirect(array('action' => 'index'));
-		}
+		debug($response);
+		die();
+		
 	}
+}

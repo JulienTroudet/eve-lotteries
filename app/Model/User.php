@@ -187,6 +187,19 @@ App::uses('AuthComponent', 'Controller/Component');
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
+			),
+		'Transaction' => array(
+			'className' => 'transaction',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
 			)
 		);
 

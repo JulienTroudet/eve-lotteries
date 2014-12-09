@@ -96,6 +96,8 @@
 	<script>
 		$(document).ready(function() {
 
+			$("[data-toggle='tooltip']").tooltip(); 
+
 			instanciateButtons();
 
 			$('.item-random-button').click(function(){
