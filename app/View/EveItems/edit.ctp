@@ -8,6 +8,7 @@
 		<div class="container-fluid">
 			<div class="eveItems form">
 				<?php echo $this->Form->create('EveItem'); ?>
+				<img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']?>_64.png">
 				<fieldset>
 					<legend><?php echo __('Edit Eve Item'); ?></legend>
 					<?php
@@ -19,7 +20,6 @@
 					echo $this->Form->input('status');
 					echo $this->Form->input('nb_tickets_default', array(
 						'options' => array(8,16),
-						'empty' => '(choose)'
 						));
 						?>
 				</fieldset>

@@ -83,106 +83,95 @@ App::uses('AuthComponent', 'Controller/Component');
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				),
 			),
-		'password' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
+'password' => array(
+	'notEmpty' => array(
+		'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'minLength' => array(
-				'rule' => array('minLength', '3'),
+		),
+	'length' => array(
+		'rule'      => array('between', 8, 40),
+		'message'   => 'Your password must be between 8 and 40 characters.',
+            	'on'        => 'create',  // we only need this validation on create
+            	),
+	),
+'mail' => array(
+	'notEmpty' => array(
+		'rule'    => array('notEmpty'),
+		'message' => 'Please use a valid Email'
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'maxLength' => array(
-				'rule' => array('maxLength', '50'),
+		),
+	'mail_unique' => array(
+		'rule' => array('isUnique'),
+		'message' => 'That email is already in use.',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+		),
+	'mail_valide' => array(
+		'rule'    => array('email', true),
+		'message' => 'That email is not valid.',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+		),
+	),
+'group_id' => array(
+	'numeric' => array(
+		'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'mail' => array(
-			'notEmpty' => array(
-				'rule'    => array('notEmpty'),
-				'message' => 'Please use a valid Email'
+		),
+	'notEmpty' => array(
+		'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'mail_unique' => array(
-				'rule' => array('isUnique'),
-				'message' => 'That email is already in use.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'mail_valide' => array(
-				'rule'    => array('email', true),
-				'message' => 'That email is not valid.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'group_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
+		),
+	),
+'wallet' => array(
+	'decimal' => array(
+		'rule' => array('decimal'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
+		),
+	),
+'eve_id' => array(
+	'numeric' => array(
+		'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'wallet' => array(
-			'decimal' => array(
-				'rule' => array('decimal'),
-				//'message' => 'Your custom message here',
+		),
+	'eve_id_unique' => array(
+		'rule' => array('isUnique'),
+		'message' => 'That EVE id is already in use.',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'eve_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'eve_id_unique' => array(
-				'rule' => array('isUnique'),
-				'message' => 'That EVE id is already in use.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		);
+		),
+	),
+);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -253,9 +242,10 @@ App::uses('AuthComponent', 'Controller/Component');
 	 * @return [type]          [description]
 	 */
 	public function beforeSave($options = array()) {
-		$this->data['User']['password'] = AuthComponent::password(
-			$this->data['User']['password']
-			);
+		parent::beforeSave($options);
+		if (!empty($this->data[$this->alias]['pwd'])) {
+			$this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['pwd']);
+		}
 		return true;
 	}
 
@@ -266,12 +256,12 @@ App::uses('AuthComponent', 'Controller/Component');
 	 * @return [type]          [description]
 	 */
 	public function afterSave($created, $options = array()){
-        parent::afterSave($created,$options);
+		parent::afterSave($created,$options);
 
         //updating authentication session
-        App::uses('CakeSession', 'Model/Datasource');
-        CakeSession::write('Auth',$this->findById(AuthComponent::user('id')));
+		App::uses('CakeSession', 'Model/Datasource');
+		CakeSession::write('Auth',$this->findById(AuthComponent::user('id')));
 
-        return true;
-    }
+		return true;
+	}
 }

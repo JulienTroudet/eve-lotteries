@@ -12,7 +12,10 @@
 	<?php echo $this->Html->css('eve.lotteries'); ?>
 
 	<?php echo $this->fetch('css');?>
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<?php echo $this->Html->script('bootstrap.min');?>
+	<?php echo $this->Html->script('bootbox.min');?>
+	<?php echo $this->fetch('script');?>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -61,6 +64,9 @@
 				"userGlobal" => $userGlobal
 				));
 		} 
+		else{
+			echo $this->element('VisitorNavbar', array());
+		}
 		?>
 
 
@@ -78,8 +84,6 @@
 		</div>
 	</div>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-	<?php echo $this->Html->script('bootstrap.min');?>
-	<?php echo $this->fetch('script');?>
+	
 </body>
 </html>

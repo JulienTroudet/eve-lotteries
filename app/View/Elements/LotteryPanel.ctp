@@ -28,6 +28,7 @@ if ($ticketsCount == 8) {
 				<?php foreach ($lottery['Ticket'] as $ticket){
 					echo $this->element('TicketPanel', array(
 						"ticket" => $ticket,
+						"eveItem" => $lottery['EveItem'],
 						"ticketsCount" => $ticketsCount
 						));
 					}?>

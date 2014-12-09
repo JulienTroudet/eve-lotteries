@@ -42,19 +42,34 @@
 /* [START] TICKETS */
 .ticket-slot{
 	margin-bottom: 0.3em;
+    padding-right: 5px;
+    padding-left: 5px;
+    min-height: 3em;
 }
+.ticket-slot .media>.pull-left {
+    margin-right: 5px;
+}
+.ticket-slot .well-sm {
+    padding: 2px;
+    border-radius: 3px;
+    margin: 0px;
+    min-height: 5em;
+}
+.ticket-slot span {
+    vertical-align: -webkit-baseline-middle;
+}
+.ticket-slot .btn {
+    min-height: 5em;
+}
+
+
+
+
 /* [END] TICKETS */
 
 /* [START] ADMIN MENU */
-/*!
- * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
- * Code licensed under the Apache License v2.0.
- * For details, see http://www.apache.org/licenses/LICENSE-2.0.
- */
 
- /* Toggle Styles */
-
- #wrapper {
+#wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;

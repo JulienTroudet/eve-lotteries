@@ -14,11 +14,13 @@ class TicketsController extends AppController {
 	 *
 	 * @var array
 	 */
-	public $components = array('Paginator', 'Session');
+	public $components = array('Paginator', 'Session', 'RequestHandler');
+
+	public $uses = array('Ticket', 'User');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'view');
+		$this->Auth->allow('buy');
 	}
 
 	/**
@@ -72,18 +74,62 @@ class TicketsController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function buy($id = null) {
-		$userId = $this->Auth->user('id');
+	public function buy() {
 
-		if (!$this->Ticket->exists($id)) {
-			throw new NotFoundException(__('Invalid ticket'));
+		$this->request->onlyAllow('ajax');
+
+		if ($this->request->is('ajax')) {
+			
+			$this->disableCache();
+
+			$ticketId = $this->request->query('ticket_id');
+
+			$userId = $this->Auth->user('id');
+
+			if (!$this->Ticket->exists($ticketId)) {
+				$data = array('error' => 'Invalid Ticket.' );
+			}
+			else if (!$this->User->exists($userId)) {
+				$data = array('error' => 'You must log in to buy a ticket !');
+			}
+			else{
+				$options = array('conditions' => array('Ticket.' . $this->Ticket->primaryKey => $ticketId));
+				$choosenTicket = $this->Ticket->find('first', $options);
+
+				$options = array('conditions' => array('User.' . $this->User->primaryKey => $userId));
+				$buyer = $this->User->find('first', $options);
+
+				if($choosenTicket['Ticket']['buyer_user_id'] != null){
+					$data = array('error' => 'Ticket already bought.');
+				}
+
+				else if($buyer['User']['wallet'] < $choosenTicket['Ticket']['value']){
+					$data = array('error' => 'Not enough ISK.');
+				}
+
+				else{
+					$buyer['User']['wallet'] -= $choosenTicket['Ticket']['value'];
+
+					$choosenTicket['Ticket']['buyer_user_id'] = $buyer['User']['id'];
+
+					if ($this->User->save($buyer) && $this->Ticket->save($choosenTicket)) {
+						$data = array (
+							'success' => true,
+							'message' => 'Ticket bought.',
+							'buyerEveId' => $buyer['User']['eve_id'],
+							'buyerName' => $buyer['User']['username']
+							);
+					}
+				}
+			}
+
+
+			
+
+			$this->set(compact('data')); // Pass $data to the view
+			$this->set('_serialize', 'data');
+
 		}
-		$options = array('conditions' => array('Ticket.' . $this->Ticket->primaryKey => $id));
-		$choosenTicket = $this->Ticket->find('first', $options);
-		$this->set('choosenTicket', $choosenTicket);
-
-		// $options = array('conditions' => array('Ticket.' . $this->Ticket->Lottery->primaryKey => $choosenTicket['lottery_id']));
-		// $this->set('lottery', $this->Ticket->Lottery->find('first', $options));
 	}
 
 	

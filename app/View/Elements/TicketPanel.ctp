@@ -1,42 +1,21 @@
-<?php
-if(isset($ticket['buyer_user_id']))
-{
-	?>
-	<div class="col-md-6 col-sm-12 ticket-slot">
-		<div class="media">
-			<a class="pull-left" href="#">
-				<img src="https://image.eveonline.com/Character/<?php echo $ticket['position']; ?>_32.jpg" />
-			</a>
-			<div class="media-body">
-				<?php echo $ticket['position']; ?> <?php echo $ticket['position']; ?>
-			</div>
+<?php if ($ticketsCount == 8) { ?>
+<div  class="col-md-6 col-sm-12 ticket-slot" id="ticket-<?php echo $ticket['id'];?>">
+	<?php } ?>
+
+	<?php if ($ticketsCount == 16) { ?>
+	<div class="col-md-3 col-sm-6 ticket-slot" id="ticket-<?php echo $ticket['id'];?>">
+		<?php }?>
+		<?php if ($ticket['buyer_user_id'] == null){?>
+		<button data-ticket-id="<?php echo $ticket['id'];?>" data-item-name="<?php echo $eveItem['name'];?>" class="btn btn-block btn-primary buy-ticket"><?php echo $ticket['position']+1;?>. Buy this ticket</button>
+		<?php } ?>	
+		<?php if ($ticket['buyer_user_id'] != null){?>
+		<div class="media well well-sm" >
+			<span class="pull-left">
+				<img src="https://image.eveonline.com/Character/<?php echo $ticket['User']['eve_id']; ?>_64.jpg" /> 
+			</span>
+			<span>
+				<?php echo $ticket['User']['username']; ?>
+			</span>
 		</div>
+		<?php  }?>		
 	</div>
-	<?php
-}
-else
-{
-
-	if ($ticketsCount == 8) {
-		?>
-		<div class="col-md-6 col-sm-12 ticket-slot">
-			<?php
-		}?>
-
-		<?php if ($ticketsCount == 16) {
-			?>
-			<div class="col-md-3 col-sm-6 ticket-slot">
-				<?php
-			}?>
-
-			<?php
-			echo $this->Html->link(
-				($ticket['position']+1).'. Buy this ticket', 
-				array('controller' => 'tickets', 'action' => 'buy', $ticket['id']),
-				array('class' => 'btn btn-block btn-primary')
-				);
-				?>
-			</div>
-			<?php
-		}
-		?>

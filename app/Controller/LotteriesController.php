@@ -35,7 +35,7 @@ class LotteriesController extends AppController {
 	 */
 	public function index() {
 		$this->Paginator->settings = $this->paginate;
-		$this->Lottery->recursive = 1;
+		$this->Lottery->recursive = 2;
 		$this->set('lotteries', $this->Paginator->paginate());
 	}
 

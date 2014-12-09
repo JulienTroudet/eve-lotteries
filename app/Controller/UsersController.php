@@ -14,11 +14,11 @@ class UsersController extends AppController {
 	 *
 	 * @var array
 	 */
-	public $components = array('Paginator', 'Session');
+	public $components = array('Paginator', 'Session', 'Auth');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'logout', 'register');
+		$this->Auth->allow('login', 'logout', 'register', 'edit');
 	}
 
 	/**
@@ -99,6 +99,7 @@ class UsersController extends AppController {
 			return $this->redirect('/');
 		}
 		if ($this->request->is('post')) {
+			debug($this->request);
 			if ($this->Auth->login()) {
 				return $this->redirect(array('controller' =>'lotteries', 'action' => 'index'));
 			}
@@ -117,7 +118,7 @@ class UsersController extends AppController {
 			return $this->redirect('/');
 		}
 		if (!empty($this->data)){
-			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
+			if ($this->data['User']['pwd'] == $this->data['User']['pwd_confirm']){
 
 				$dataProxy = $this->data;
 

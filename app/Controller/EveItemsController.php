@@ -27,6 +27,16 @@ class EveItemsController extends AppController {
 	}
 
 	/**
+	 * chooseItem method
+	 *
+	 * @return void
+	 */
+	public function chooseItem() {
+		$this->EveItem->recursive = 0;
+		$this->set('eveItems', $this->Paginator->paginate());
+	}
+
+	/**
 	 * view method
 	 *
 	 * @throws NotFoundException
@@ -84,6 +94,7 @@ class EveItemsController extends AppController {
 		}
 		$eveCategories = $this->EveItem->EveCategory->find('list');
 		$this->set(compact('eveCategories'));
+		$this->set('eveItem', $this->EveItem->find('first', $options));
 	}
 
 	/**

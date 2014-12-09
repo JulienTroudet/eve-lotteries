@@ -2,7 +2,6 @@
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Admin Menu</li>
 		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'adminIndex')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lottery'), array('controller' => 'eve_categories', 'action' => 'chooseItem')); ?> </li>
 		<li>___________________</li>
 		<li><?php echo $this->Html->link(__('List Eve Items'), array('controller' => 'eve_items', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Eve Item'), array('controller' => 'eve_items', 'action' => 'add')); ?> </li>

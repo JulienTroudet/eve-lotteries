@@ -32,3 +32,43 @@
 					</ul>
 				</div>
 			</div>
+
+			<script>
+				$( document ).ready(function() {
+					$('.buy-ticket').click(function(){
+						var idTicket = $(this).data('ticket-id');
+						var itemName = $(this).data('item-name');
+						bootbox.confirm("Buy a ticket for the "+itemName+" ?", function(result) {
+							if(result){
+								$.ajax({
+									type:"get",
+									url:"<?php echo $this->Html->url(array('controller' => 'tickets', 'action' => 'buy','ext' => 'json')); ?>",
+
+									data:{
+										ticket_id:idTicket
+									},
+									beforeSend: function(xhr) {
+										xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+									},
+									success: function(response) {
+										if (response.error) {
+											bootbox.alert(response.error);
+											console.log(response.error);
+										}
+										if (response.success) {
+
+											var contentHtml = '<div class="media well well-sm" ><span class="pull-left"><img src="https://image.eveonline.com/Character/'+response.buyerEveId+'_64.jpg" /></span><span>'+response.buyerName+'</span></div>';
+											console.log($('#ticket-'+idTicket));
+											$('#ticket-'+idTicket).html(contentHtml);
+										}
+									},
+									error: function(e) {
+										alert("An error occurred: " + e.responseText.message);
+										console.log(e);
+									}
+								});
+							}
+						});
+});
+});
+</script>

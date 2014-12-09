@@ -8,6 +8,7 @@
 		<div class="container-fluid">
 			<div class="eveItems view">
 				<h2><?php echo __('Eve Item'); ?></h2>
+				<img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']?>_64.png">
 				<dl>
 					<dt><?php echo __('Id'); ?></dt>
 					<dd>

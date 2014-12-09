@@ -7,6 +7,6 @@ echo $this->Form->create('User', array(
     )
 ));
 echo $this->Form->input('User.username');
-echo $this->Form->input('User.password');
+echo $this->Form->password('User.pwd');
 echo $this->Form->end('Login');
 ?>
