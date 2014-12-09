@@ -360,3 +360,11 @@ margin: 0 0 0px;
 img{
 	border-radius: 4px;
 }
+
+.navbar a>img{
+	outline: 0px;
+}
+
+.panel-news{
+	border: 1px solid rgba(68, 68, 68, 1);
+}

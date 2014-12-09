@@ -3,9 +3,9 @@
 		<div class="row row-old-lot">
 			<div class="col-md-4 col-sm-12">
 				<div class="media">
-					<a class="pull-left" href="#">
+					<span class="pull-left" href="#">
 						<img class="media-object" src="https://image.eveonline.com/Render/<?php echo $lottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $lottery['EveItem']['name']; ?>">
-					</a>
+					</span>
 					<div class="media-body">
 						<h3 class="media-heading"><?php echo $lottery['EveItem']['name']; ?></h3>
 					</div>

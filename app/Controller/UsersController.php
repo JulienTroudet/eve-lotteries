@@ -16,11 +16,10 @@ class UsersController extends AppController {
 	 */
 	public $components = array('Paginator', 'Session', 'Auth');
 
-
-
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('logout', 'initDB', 'eve_login');
+		$this->Auth->userModel = 'User'; 
+		$this->Auth->allow('logout', 'login', 'forbidden', 'eve_login');
 	}
 
 	/**
@@ -112,7 +111,15 @@ class UsersController extends AppController {
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
+	public function login() {
+		$this->Session->setFlash('Please Log in !', 'FlashMessage', array('type' => 'warning'));
+		return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+	}
 
+	public function forbidden() {
+		$this->Session->setFlash('You don\'t have the right to go there !', 'FlashMessage', array('type' => 'warning'));
+		return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+	}
 
 	public function logout() {
 
@@ -140,54 +147,61 @@ class UsersController extends AppController {
 
 		if(isset($code) && isset($state)){
 
-			$this->loadModel('Config');
-			$this->loadModel('Statistic');
+			$sessionState = $this->Session->read('User.antiForgeryToken');
+			if($state == $sessionState){
 
-			$eveSSO_URL = $this->Config->findByName('eve_sso_url');
-			$eveSSO_URL = $eveSSO_URL['Config']['value'];
-			$appEveId = $this->Config->findByName('app_eve_id');
-			$appEveId = $appEveId['Config']['value'];
-			$appEveSecret = $this->Config->findByName('app_eve_secret');
-			$appEveSecret = $appEveSecret['Config']['value'];
+				$this->loadModel('Config');
+				$this->loadModel('Statistic');
 
-			App::uses('HttpSocket', 'Network/Http');
+				$eveSSO_URL = $this->Config->findByName('eve_sso_url');
+				$eveSSO_URL = $eveSSO_URL['Config']['value'];
+				$appEveId = $this->Config->findByName('app_eve_id');
+				$appEveId = $appEveId['Config']['value'];
+				$appEveSecret = $this->Config->findByName('app_eve_secret');
+				$appEveSecret = $appEveSecret['Config']['value'];
 
-			$HttpSocket = new HttpSocket();
+				App::uses('HttpSocket', 'Network/Http');
 
-			$autorisation = base64_encode($appEveId.':'.$appEveSecret);
+				$HttpSocket = new HttpSocket();
 
-			$options = array(
-				'header' => array(
+				$autorisation = base64_encode($appEveId.':'.$appEveSecret);
+
+				$options = array(
+					'header' => array(
 					//'Content-Type' => 'application/x-www-form-urlencoded',
 					//'Host' => 'login.eveonline.com',
-					'Authorization' => 'Basic '.$autorisation
-					),
-				'version' => '1.1',
-				);
+						'Authorization' => 'Basic '.$autorisation
+						),
+					'version' => '1.1',
+					);
 
 
-			$data = array('grant_type' => 'authorization_code', 'code' => $code);
+				$data = array('grant_type' => 'authorization_code', 'code' => $code);
 
-			$results = $HttpSocket->post($eveSSO_URL.'token', $data, $options);
+				$results = $HttpSocket->post($eveSSO_URL.'token', $data, $options);
 
-			$obj = json_decode($results,true);
+				$obj = json_decode($results,true);
 
-			$options = array(
-				'header' => array(
+				$options = array(
+					'header' => array(
 					//'Content-Type' => 'application/x-www-form-urlencoded',
 					//'Host' => 'login.eveonline.com',
-					'Authorization' => 'Bearer '.$obj['access_token'],
-					),
-				'version' => '1.1',
-				);
+						'Authorization' => 'Bearer '.$obj['access_token'],
+						),
+					'version' => '1.1',
+					);
 
-			$results = $HttpSocket->get($eveSSO_URL.'verify', null, $options);
+				$results = $HttpSocket->get($eveSSO_URL.'verify', null, $options);
 
-			$responseArray = json_decode($results,true);
+				$responseArray = json_decode($results,true);
 
 
-			$this->_connectPlayer($responseArray);
-
+				$this->_connectPlayer($responseArray);
+			}
+			else{
+				$this->Session->setFlash('Login error !', 'FlashMessage', array('type' => 'error'));
+				return $this->redirect("/");
+			}
 		}
 	}
 
@@ -213,9 +227,10 @@ class UsersController extends AppController {
 						'eve_name' => $responseArray['CharacterName'],
 						'wallet' => 0,
 						'tokens' => 0,
+						'owner_hash' => $responseArray['CharacterOwnerHash'],
 						)
 					);
-					$this->User->save($newUser, true, array('id', 'eve_name', 'group_id', 'wallet', 'tokens'));
+					$this->User->save($newUser, true, array('id', 'eve_name', 'group_id', 'wallet', 'tokens', 'owner_hash' ));
 					if ($this->Auth->login($newUser['User'])) {
 
 						$this->Statistic->saveStat($newUser['User']['id'], 'connection', 'first', null, null);
@@ -225,6 +240,7 @@ class UsersController extends AppController {
 							'FlashMessage',
 							array('type' => 'success')
 							);
+						//$this->_setCookie($this->Auth->user('id'));
 						return $this->redirect("/");
 					}
 				}
@@ -239,10 +255,11 @@ class UsersController extends AppController {
 							'FlashMessage',
 							array('type' => 'info')
 							);
+						//$this->_setCookie($this->Auth->user('id'));
 						return $this->redirect("/");
 					}
 				}
-				//$this->_setCookie($this->Auth->user('id'));
+				//
 				return $this->redirect("/");
 			}
 
@@ -297,19 +314,37 @@ class UsersController extends AppController {
     // allow users to only add and edit on posts and widgets
 		$group->id = 4;
 		$this->Acl->deny($group, 'controllers');
-		$this->Acl->allow($group, 'controllers');
-
-    // allow basic users to log out
-		$this->Acl->allow($group, 'controllers/Users/edit');
-
-		$this->Acl->allow($group, 'controllers/Configs/update_api_check');
+		$this->Acl->allow($group, 'controllers/Users/user_navbar');
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
-		$this->Acl->allow($group, 'controllers/Lotteries/old_list');
 		$this->Acl->allow($group, 'controllers/Tickets/buy');
-		$this->Acl->allow($group, 'controllers/Transactions');
-		
+		$this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
+		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
+		$this->Acl->allow($group, 'controllers/Transactions/index');
 		$this->Acl->allow($group, 'controllers/Withdrawals/index');
+		$this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
 		$this->Acl->allow($group, 'controllers/Withdrawals/old_list');
+		$this->Acl->allow($group, 'controllers/Withdrawals/claim');
+		$this->Acl->allow($group, 'controllers/Awards/index');
+		$this->Acl->allow($group, 'controllers/UserAwards/claim');
+
+		$group->id = 5;
+		$this->Acl->deny($group, 'controllers');
+		$this->Acl->allow($group, 'controllers/Users/user_navbar');
+		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
+		$this->Acl->allow($group, 'controllers/Tickets/buy');
+		$this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
+		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
+		$this->Acl->allow($group, 'controllers/Transactions/index');
+		$this->Acl->allow($group, 'controllers/Withdrawals/index');
+		$this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
+		$this->Acl->allow($group, 'controllers/Withdrawals/old_list');
+		$this->Acl->allow($group, 'controllers/Withdrawals/claim');
+		$this->Acl->allow($group, 'controllers/Awards/index');
+		$this->Acl->allow($group, 'controllers/UserAwards/claim');
+
+		// $this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
+		// $this->Acl->allow($group, 'controllers/Withdrawals/old_list');
+		
     // we add an exit to avoid an ugly "missing views" error message
 		echo "all done";
 		exit;

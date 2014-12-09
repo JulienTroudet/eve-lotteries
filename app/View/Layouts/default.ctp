@@ -7,11 +7,12 @@
 
 
 	<title><?php echo $title_for_layout; ?></title>
-
+	<?php echo $this->Html->css('../ckeditor/contents'); ?>
 	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
 	<?php echo $this->Html->css('eve.lotteries'); ?>
+	
 	<?php echo $this->fetch('css');?>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -66,6 +67,12 @@
 						array('controller' => 'pages', 'action' => 'faq', 'admin'=>false, 'plugin' => false)
 						);?>	
 					</li>
+					<li>
+						<?php echo $this->Html->link('News', array('controller' => 'articles', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>
+					</li>
+					<li>
+						<?php echo $this->Html->link('Statistics', array('controller' => 'statistics', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>	
+					</li>
 				</ul>
 				<?php 
 				if ($userGlobal != null) {
@@ -75,7 +82,8 @@
 				} 
 				else{
 					echo $this->element('LoginForm', array(
-						"userGlobal" => $userGlobal
+						"userGlobal" => $userGlobal,
+						"antiForgeryToken" => $antiForgeryToken
 						));
 				}
 				?>

@@ -61,7 +61,7 @@ class TicketsController extends AppController {
 				}
 
 				else if($buyer['User']['wallet'] < $choosenTicket['Ticket']['value']){
-					$data = array('error' => 'Not enough ISK.');
+					$data = array('error' => 'Not enough Credits.');
 				}
 
 				else{
@@ -172,7 +172,7 @@ class TicketsController extends AppController {
 				$this->log($nbSameItems);
 
 				if($buyer['User']['wallet'] < $totalPrice){
-					$data = array('error' => 'Not enough ISK.');
+					$data = array('error' => 'Not enough Credits.');
 				}
 				//vérifie si un item est déjà dans les lotteries en cours
 				else if($nbSameItems >= 1){

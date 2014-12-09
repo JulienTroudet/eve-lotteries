@@ -20,7 +20,12 @@ class SuperLotteryTicketsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('buy');
+		$this->Auth->allow('');
+
+		if (!$this->Auth->loggedIn()) {
+			$this->Session->setFlash('Please Log in !', 'FlashMessage', array('type' => 'warning'));
+			return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+		}
 	}
 
 	/**

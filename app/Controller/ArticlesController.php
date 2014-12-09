@@ -18,7 +18,23 @@ class ArticlesController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'view');
+		$this->Auth->allow('index');
+	}
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function index() {
+		$this->Article->recursive = 0;
+		$params = array(
+			'contain' => array('User'),
+			'order' => array('Article.created' => 'desc'), 
+			'limit' => 5, 
+			);
+		$this->Paginator->settings = $params;
+		$this->set('articles', $this->Paginator->paginate());
 	}
 
 	/**

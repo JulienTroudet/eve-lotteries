@@ -52,15 +52,12 @@ App::uses('AuthComponent', 'Controller/Component');
 		}
 		if (isset($this->data['User']['group_id'])) {
 			$groupId = $this->data['User']['group_id'];
-			//echo('<br><br><br>emrigpethipeothin'.$groupId);
 		} else {
 			$groupId = $this->field('group_id');
-			//echo('<br><br><br>hello'.$groupId);
 		}
 		if (!$groupId) {
 			return null;
 		} else {
-			//echo('<br><br><br>hello2'.$groupId);
 			return array('Group' => array('id' => $groupId));
 		}
 	}

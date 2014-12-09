@@ -1,7 +1,7 @@
 <div id="wrapper" >
 	<?php 
 	if ($userGlobal['group_id'] == 3) {
-		echo $this->element('ModeratorMenu', array());
+		echo $this->element('ManagerMenu', array());
 	}
 	?>
 	<div id="page-content-wrapper">

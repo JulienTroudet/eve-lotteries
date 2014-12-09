@@ -18,7 +18,12 @@ class WithdrawalsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'view');
+		$this->Auth->allow('');
+
+		if (!$this->Auth->loggedIn()) {
+			$this->Session->setFlash('Please Log in !', 'FlashMessage', array('type' => 'warning'));
+			return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+		}
 	}
 
 	/**
@@ -218,6 +223,8 @@ class WithdrawalsController extends AppController {
 						}
 						break;
 						case 'item':
+						$claimedISK = $claimedAward['Ticket']['Lottery']['value'];
+
 						$claimedValue = $claimedAward['Ticket']['Lottery']['eve_item_id'];
 
 						$claimedAward['Withdrawal']['group_id'] = $claimedAward['Withdrawal']['id'];
@@ -232,7 +239,7 @@ class WithdrawalsController extends AppController {
 								'message' => preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$claimedAward['Ticket']['Lottery']['name']),
 								);
 
-							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_item', $withdrawalId, null, $claimedAward['Ticket']['Lottery']['eve_item_id']);
+							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_item', $withdrawalId, $claimedISK, $claimedAward['Ticket']['Lottery']['eve_item_id']);
 
 							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 

@@ -8,19 +8,19 @@
 			<?php foreach ($unclaimed_awards as $unclaimed_award){ echo $this->element('Withdrawals/AwardPanel', array("unclaimed_award" => $unclaimed_award ));} ?>
 		</div>
 		<div class="row">
-			<ul class="pager">
-				<li class="previous">
-					<?php echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled')); ?>
-				</li>
-				<li>
-					<?php echo $this->Paginator->counter(array( 'format' => __('Page {:page} of {:pages}, showing {:current} waiting awards out of {:count}, starting on award {:start}, ending on {:end}') )); ?>	
-				</li>
-				<li class="next">
-					<?php
-					echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
-					?>
-				</li>
-			</ul>
+			<div class="col-md-12">
+				<ul class="pager">
+					<li class="previous">
+						<?php echo $this->Paginator->prev('Previous', array(), null, array('class' => 'prev disabled')); ?>
+					</li>
+					<li>
+						<?php echo $this->Paginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
+					</li>
+					<li class="next">
+						<?php echo $this->Paginator->next('Next', array(), null, array('class' => 'next disabled')); ?>
+					</li>
+				</ul>
+			</div>
 		</div>
 		<h2>Last Claimed Awards</h2>
 		<div class="row">
@@ -43,16 +43,16 @@
 								<?php 
 								switch ($claimed_award['Withdrawal']['type']) {
 									case 'award_credit':
-										echo number_format($claimed_award['Withdrawal']['value'], 2).' Credits';
-										break;
+									echo number_format($claimed_award['Withdrawal']['value'], 2).' Credits';
+									break;
 									case 'award_isk':
-										echo number_format($claimed_award['Withdrawal']['value'], 2).' ISK';
-										break;
+									echo number_format($claimed_award['Withdrawal']['value'], 2).' ISK';
+									break;
 									case 'award_item':
-										echo 'Item';
-										break;
+									echo 'Item';
+									break;
 								}
-								 ?>
+								?>
 							</td>
 							<td>
 								<?php echo $claimed_award['Withdrawal']['modified']; ?>

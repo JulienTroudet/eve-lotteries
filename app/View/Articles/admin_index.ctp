@@ -1,7 +1,7 @@
 <div id="wrapper">
 	<?php 
 	if ($userGlobal['group_id'] == 3) {
-		echo $this->element('ModeratorMenu', array());
+		echo $this->element('ManagerMenu', array());
 	}
 	?>
 	<div id="page-content-wrapper">
@@ -39,23 +39,16 @@
 					</tbody>
 				</table>
 				<div class="row">
-					<ul class="pager">
-						<li class="previous">
-							<?php
-							echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled'));
-							?>
-						</li>
-						<li>
-							<?php
-							echo $this->Paginator->counter(array(
-								'format' => __('Page {:page} of {:pages}, showing {:current} Articles out of {:count}, starting on article {:start}, ending on {:end}')
-								));
-								?>	
+					<div class="col-md-12">
+						<ul class="pager">
+							<li class="previous">
+								<?php echo $this->Paginator->prev('Previous', array(), null, array('class' => 'prev disabled')); ?>
+							</li>
+							<li>
+								<?php echo $this->Paginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
 							</li>
 							<li class="next">
-								<?php
-								echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
-								?>
+								<?php echo $this->Paginator->next('Next', array(), null, array('class' => 'next disabled')); ?>
 							</li>
 						</ul>
 					</div>

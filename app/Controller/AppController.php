@@ -53,20 +53,41 @@ class AppController extends Controller {
 		$this->Cookie->type('aes');
 
         //Configure AuthComponent
-		$this->Auth->authenticate = array();
+		$this->Auth->authorize = 'actions';	
+		$this->Auth->loginAction = array(
+			'controller' => 'users', 
+			'action' => 'login', 
+			'admin' => false, 
+			'plugin' => false
+			);
+		$this->Auth->loginRedirect = array(
+			'controller' => 'users', 
+			'action' => 'login', 
+			'admin' => false, 
+			'plugin' => false
+			);
+		$this->Auth->unauthorizedRedirect = array(
+			'controller' => 'users', 
+			'action' => 'forbidden', 
+			'admin' => false, 
+			'plugin' => false
+			);
 		$this->Auth->logoutRedirect = array(
-			'controller' => 'lotteries',
-			'action' => 'index',
+			'controller' => 'users',
+			'action' => 'login',
 			'admin' => false,
+			'plugin' => false
 			);
 		
 
 		$this->Auth->allow('display');
-
 		
 	}
 
 	public function beforeRender() {
+
+		$this->loadModel('Config');
+		$this->loadModel('Lottery');
 
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
@@ -85,9 +106,17 @@ class AppController extends Controller {
 				);
 			$userGlobal['new_awards'] = $this->UserAwards->find('count', $params);
 		}
+		else{
+			$this->_setAntiForgeryToken();
 
-
-		$this->loadModel('Lottery');
+			$eveSSO_URL = $this->Config->findByName('eve_sso_url');
+			$this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
+			$appEveId = $this->Config->findByName('app_eve_id');
+			$this->set('appEveId', $appEveId['Config']['value']);
+			$appReturnUrl = $this->Config->findByName('app_return_url');
+			$this->set('appReturnUrl', $appReturnUrl['Config']['value']);
+		}
+		
 		$params = array(
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
 			);
@@ -96,17 +125,18 @@ class AppController extends Controller {
 
 		$this->set('userGlobal', $userGlobal);
 
-		$this->loadModel('Config');
 
 		$apiCheckTime = $this->Config->findByName("apiCheck");
 		$this->set('apiCheckTime', CakeTime::niceShort($apiCheckTime['Config']['value']));
-		$eveSSO_URL = $this->Config->findByName('eve_sso_url');
-		$this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
-		$appEveId = $this->Config->findByName('app_eve_id');
-		$this->set('appEveId', $appEveId['Config']['value']);
-		$appReturnUrl = $this->Config->findByName('app_return_url');
-		$this->set('appReturnUrl', $appReturnUrl['Config']['value']);
+		
 
+	}
+
+	protected function _setAntiForgeryToken() {
+		$state = md5(rand());
+		$this->Session->write('User.antiForgeryToken', $state);
+		$this->set('antiForgeryToken', $state);
+		return $state;	
 	}
 
 	protected function _readConnectionCookie($userGlobal) {

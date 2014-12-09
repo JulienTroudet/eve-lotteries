@@ -1,7 +1,10 @@
+<?php echo $this->Html->script('../ckeditor/ckeditor'); ?>
+<?php echo $this->fetch('script');?>
+
 <div id="wrapper">
 	<?php 
 	if ($userGlobal['group_id'] == 3) {
-		echo $this->element('ModeratorMenu', array());
+		echo $this->element('ManagerMenu', array());
 	}
 	?>
 	<div id="page-content-wrapper">
@@ -18,23 +21,29 @@
 						'class' => 'form-control',
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
-					echo $this->Form->input('body', array(
-						'div' => array(
-							'class' => 'form-group'
-							),
-						'class' => 'form-control',
-						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-						));
-					?>
-				</fieldset>
-				<?php 
-				$optionsFormLogin = array(
-						'label' => 'Submit',
-						'div' => false,
-						'class' => 'btn btn-block btn-primary'
-						);
-						echo $this->Form->end($optionsFormLogin); ?>
+						echo $this->Form->input('body', array(
+							'div' => array(
+								'class' => 'form-group',
+								),
+							'class' => 'form-control',
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+							));
+							?>
+						</fieldset>
+						<?php 
+						$optionsFormLogin = array(
+							'label' => 'Submit',
+							'div' => false,
+							'class' => 'btn btn-block btn-primary'
+							);
+							echo $this->Form->end($optionsFormLogin); ?>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-	</div>
-</div>
+
+			<script type="text/javascript">
+				$(document).ready(function(){
+					CKEDITOR.replace('ArticleBody');
+				});
+			</script>

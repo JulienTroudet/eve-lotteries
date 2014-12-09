@@ -75,27 +75,21 @@
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<div>
-				<ul class="pager">
-					<li class="previous">
-						<?php
-						echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled'));
-						?>
-					</li>
-					<li>
-						<?php
-						echo $this->Paginator->counter(array(
-							'format' => __('Page {:page} of {:pages}, for {:count} Transactions')
-							));
-							?>	
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="pager">
+						<li class="previous">
+							<?php echo $this->Paginator->prev('Previous', array(), null, array('class' => 'prev disabled')); ?>
+						</li>
+						<li>
+							<?php echo $this->Paginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
 						</li>
 						<li class="next">
-							<?php
-							echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
-							?>
+							<?php echo $this->Paginator->next('Next', array(), null, array('class' => 'next disabled')); ?>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>

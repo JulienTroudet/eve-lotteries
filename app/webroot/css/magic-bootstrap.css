@@ -2011,7 +2011,7 @@ select[multiple].input-lg {
 }
 .btn:hover,
 .btn:focus {
-	color: #333333;
+	color: #FA9E0E;
 	text-decoration: none;
 }
 .btn:active,
@@ -4211,6 +4211,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .pager {
 	padding-left: 0;
+	padding-right: 0;
 	margin: 20px 0;
 	list-style: none;
 	text-align: center;

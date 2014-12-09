@@ -1,5 +1,5 @@
 <div id="wrapper">
-	<?php  echo $this->element('ModeratorMenu', array());?>
+	<?php  echo $this->element('ManagerMenu', array());?>
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
 			<div class="superLotteries form">
@@ -78,7 +78,7 @@
 		</div>
 		<script> 
 		$(document).ready(function(){
-			$('#SuperLotteryEveItemId, #SuperLotteryNbTickets, #SuperLotteryNumberItems').on('input', function(){
+			$('#SuperLotteryEveItemId, #SuperLotteryNbTickets, #SuperLotteryNumberItems').on('input change', function(){
 				console.log('activation');
 
 				var lotteryValue = $('#SuperLotteryEveItemId option:selected').data('price') * $('#SuperLotteryNumberItems').val();

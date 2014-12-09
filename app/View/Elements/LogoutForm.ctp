@@ -15,7 +15,7 @@
 	<?php 
 	if ($userGlobal['group_id'] == 3) {
 		echo $this->Html->link(
-			'Moderator Panel', 
+			'Manager Panel', 
 			array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true, 'plugin' => false),
 			array('class' => 'btn btn-primary')
 			);

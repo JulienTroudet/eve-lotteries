@@ -3,7 +3,6 @@
 		<div class="col-md-10 col-sm-12 col-md-offset-1 well well-sm <?php if($superLottery['SuperLottery']['lottery_status_id']==1){echo 'well-ongoing';}else{echo 'well-finished';}?>">
 			<div class="row">
 				<div class="col-md-1">
-					<!-- <?php print_r($superLottery); ?>-->				
 					<img src="https://image.eveonline.com/Render/<?php echo $superLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $superLottery['EveItem']['name']; ?>">
 				</div>
 
