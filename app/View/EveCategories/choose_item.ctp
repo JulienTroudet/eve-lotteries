@@ -7,28 +7,30 @@
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
 			<div class="eveCategories index">
-				<h2><?php echo __('Eve Categories'); ?></h2>
+				<h2><?php echo __('Choose Item'); ?></h2>
 				<table cellpadding="0" cellspacing="0">
 					<thead>
 						<tr>
-							<th><?php echo $this->Paginator->sort('id'); ?></th>
-							<th><?php echo $this->Paginator->sort('name'); ?></th>
-							<th><?php echo $this->Paginator->sort('status'); ?></th>
+							<th><?php echo $this->Paginator->sort('EveCategory.name', 'Category Name'); ?></th>
+							<th><?php echo $this->Paginator->sort('EveCategory.EveItem.name', 'Item Name'); ?></th>
+							<th><?php echo $this->Paginator->sort('EveCategory.EveItem.eve_value', 'Item Value'); ?></th>
+							<th><?php echo $this->Paginator->sort('EveCategory.status', 'Status'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach ($eveCategories as $eveCategory): ?>
+								<?php foreach ($eveCategory['EveItem'] as $EveItem): ?>
 							<tr>
-								<td><?php echo h($eveCategory['EveCategory']['id']); ?>&nbsp;</td>
 								<td><?php echo h($eveCategory['EveCategory']['name']); ?>&nbsp;</td>
+								<td><?php echo h($EveItem['name']); ?>&nbsp;</td>
+								<td><?php echo h($EveItem['eve_value']); ?>&nbsp;</td>
 								<td><?php echo h($eveCategory['EveCategory']['status']); ?>&nbsp;</td>
 								<td class="actions">
-									<?php echo $this->Html->link(__('View'), array('action' => 'view', $eveCategory['EveCategory']['id'])); ?>
-									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $eveCategory['EveCategory']['id'])); ?>
-									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $eveCategory['EveCategory']['id']), array(), __('Are you sure you want to delete # %s?', $eveCategory['EveCategory']['id'])); ?>
+									<?php echo $this->Html->link(__('Create Lottery'), array('controller' => 'lotteries', 'action' => 'add', $EveItem['id'])); ?>
 								</td>
 							</tr>
+							<?php endforeach; ?>
 						<?php endforeach; ?>
 					</tbody>
 				</table>

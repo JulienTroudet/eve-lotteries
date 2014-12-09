@@ -27,6 +27,18 @@ class EveCategoriesController extends AppController {
 	}
 
 	/**
+	 * add method
+	 *
+	 * @return void
+	 */
+	public function chooseItem() {
+		$this->EveCategory->recursive = 1 ;
+		
+
+$this->set('eveCategories', $this->Paginator->paginate());
+}
+
+	/**
 	 * view method
 	 *
 	 * @throws NotFoundException

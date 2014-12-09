@@ -47,26 +47,6 @@ class UsersController extends AppController {
 	}
 
 	/**
-	 * add method
-	 *
-	 * @return void
-	 */
-	public function add() {
-		if ($this->request->is('post')) {
-			$this->User->create();
-			print_r($this->request->data);
-			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash(__('The user has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
-			}
-		}
-		$groups = $this->User->Group->find('list');
-		$this->set(compact('groups'));
-	}
-
-	/**
 	 * edit method
 	 *
 	 * @throws NotFoundException
@@ -120,7 +100,7 @@ class UsersController extends AppController {
 		}
 		if ($this->request->is('post')) {
 			if ($this->Auth->login()) {
-				return $this->redirect($this->Auth->redirect());
+				return $this->redirect(array('controller' =>'lotteries', 'action' => 'index'));
 			}
 			$this->Session->setFlash(__('Your username or password was incorrect.'));
 		}
