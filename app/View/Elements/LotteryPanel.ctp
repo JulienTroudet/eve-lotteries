@@ -19,8 +19,8 @@ if ($ticketsCount == 8) {
 			</p>
 			<div class="media-body">
 				<h3 class="media-heading"><?php echo $lottery['EveItem']['name']; ?></h3>
-				<p>Value : <?php echo number_format($lottery['EveItem']['eve_value']); ?> ISK</p>
-				<p>Price/Ticket : <?php echo number_format($lottery['Ticket'][0]['value']); ?> ISK</p>					
+				<p>Value : <?php echo number_format($lottery['EveItem']['eve_value']); ?> <span class="badge">ISK</span></p>
+				<p>Price/Ticket : <?php echo number_format($lottery['Ticket'][0]['value']); ?> <span class="badge">ISK</span></p>					
 			</div>
 		</div>
 		<div class="panel-body">

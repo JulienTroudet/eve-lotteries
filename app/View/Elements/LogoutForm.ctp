@@ -12,7 +12,7 @@
 	if ($userGlobal['group_id'] == 3) {
 		echo $this->Html->link(
 			'Admin Panel', 
-			array('controller' => 'lotteries', 'action' => 'adminIndex'),
+			array('controller' => 'lotteries', 'action' => 'index', 'admin' => true),
 			array('class' => 'btn btn-primary')
 			);
 	}

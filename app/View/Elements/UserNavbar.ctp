@@ -22,7 +22,7 @@
 				</div>
 				<div class="col-md-4 col-sm-4">
 					<div class="btn-group-vertical btn-block">
-						<button type="button" class="btn btn-block btn-success">Deposit ISK</button>
+						<button type="button" class="btn btn-block btn-success">Deposit <span class="badge">ISK</span></button>
 						<a class="btn btn-block btn-success" data-toggle="collapse" href="#collapse-item">Create lottery</a>
 					</div>
 				</div>

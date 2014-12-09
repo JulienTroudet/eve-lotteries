@@ -17,6 +17,23 @@ public $displayField = 'name';
 
 public $actsAs = array('Containable');
 
+public function getTicketPrice($eveItem) {
+
+
+		$evePrice = $eveItem['EveItem']['eve_value'];
+
+		$nbTickets = $eveItem['EveItem']['nb_tickets_default'];
+
+		$profit = $eveItem['EveCategory']['profit'];
+
+		$newPrice = $evePrice + (($evePrice*($profit/100)));
+
+		$ticketPrice = (int) round($newPrice/$nbTickets, -6);
+
+		return $ticketPrice;
+
+	}
+
 /**
  * Validation rules
  *

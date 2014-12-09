@@ -26,14 +26,14 @@
 						<?php foreach ($lotteries as $lottery): ?>
 							<tr>
 								<td>
-									<?php echo $this->Html->link($lottery['EveItem']['name'], array('controller' => 'eve_items', 'action' => 'view', $lottery['EveItem']['id'])); ?>
+									<?php echo $this->Html->link($lottery['EveItem']['name'], array('controller' => 'eve_items', 'action' => 'view', 'admin' => true, $lottery['EveItem']['id'])); ?>
 								</td>
 								<td>
 									<?php echo h($lottery['EveItem']['eve_value']); ?>
 								</td>
 								<td><?php echo h($lottery['Lottery']['name']); ?>&nbsp;</td>
 								<td>
-									<?php echo $this->Html->link($lottery['User']['username'], array('controller' => 'users', 'action' => 'view', $lottery['User']['id'])); ?>
+									<?php echo $this->Html->link($lottery['User']['username'], array('controller' => 'users', 'action' => 'view', 'admin' => true, $lottery['User']['id'])); ?>
 								</td>
 								<td><?php echo h($lottery['Lottery']['created']); ?>&nbsp;</td>
 								<td><?php echo h($lottery['Lottery']['modified']); ?>&nbsp;</td>
@@ -42,9 +42,9 @@
 									<?php echo h($lottery['LotteryStatus']['name']); ?>
 								</td>
 								<td class="actions">
-									<?php echo $this->Html->link(__('View'), array('action' => 'adminView', $lottery['Lottery']['id'])); ?>
-									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $lottery['Lottery']['id'])); ?>
-									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $lottery['Lottery']['id']), array(), __('Are you sure you want to delete # %s?', $lottery['Lottery']['id'])); ?>
+									<?php echo $this->Html->link(__('View'), array('action' => 'adminView', 'admin' => true, $lottery['Lottery']['id'])); ?>
+									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', 'admin' => true, $lottery['Lottery']['id'])); ?>
+									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $lottery['Lottery']['id']), array(), __('Are you sure you want to delete # %s?', $lottery['Lottery']['id'])); ?>
 								</td>
 							</tr>
 						<?php endforeach; ?>

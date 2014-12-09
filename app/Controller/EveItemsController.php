@@ -22,17 +22,7 @@ class EveItemsController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function index() {
-		$this->EveItem->recursive = 0;
-		$this->set('eveItems', $this->Paginator->paginate());
-	}
-
-	/**
-	 * chooseItem method
-	 *
-	 * @return void
-	 */
-	public function chooseItem() {
+	public function admin_index() {
 		$this->EveItem->recursive = 0;
 		$this->set('eveItems', $this->Paginator->paginate());
 	}
@@ -44,7 +34,7 @@ class EveItemsController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function view($id = null) {
+	public function admin_view($id = null) {
 		if (!$this->EveItem->exists($id)) {
 			throw new NotFoundException(__('Invalid eve item'));
 		}
@@ -57,14 +47,22 @@ class EveItemsController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function add() {
+	public function admin_add() {
 		if ($this->request->is('post')) {
 			$this->EveItem->create();
 			if ($this->EveItem->save($this->request->data)) {
-				$this->Session->setFlash(__('The eve item has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					'The eve item has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The eve item could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The eve item could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'danger')
+					);
 			}
 		}
 		$eveCategories = $this->EveItem->EveCategory->find('list');
@@ -78,16 +76,24 @@ class EveItemsController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null) {
+	public function admin_edit($id = null) {
 		if (!$this->EveItem->exists($id)) {
 			throw new NotFoundException(__('Invalid eve item'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->EveItem->save($this->request->data)) {
-				$this->Session->setFlash(__('The eve item has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(
+					'The eve item has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The eve item could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The eve item could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'danger')
+					);
 			}
 		} else {
 			$options = array('conditions' => array('EveItem.' . $this->EveItem->primaryKey => $id));
@@ -105,18 +111,26 @@ class EveItemsController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function delete($id = null) {
+	public function admin_delete($id = null) {
 		$this->EveItem->id = $id;
 		if (!$this->EveItem->exists()) {
 			throw new NotFoundException(__('Invalid eve item'));
 		}
 		$this->request->allowMethod('post', 'delete');
 		if ($this->EveItem->delete()) {
-			$this->Session->setFlash(__('The eve item has been deleted.'));
+			$this->Session->setFlash(
+					'The eve item has been deleted.',
+					'FlashMessage',
+					array('type' => 'warning')
+					);
 		} else {
-			$this->Session->setFlash(__('The eve item could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+					'The eve item could not be deleted. Please, try again.',
+					'FlashMessage',
+					array('type' => 'danger')
+					);
 		}
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
 	public function update_prices() {
@@ -137,7 +151,7 @@ class EveItemsController extends AppController {
 
 			$eveId = $currentItem['EveItem']['eve_id'];
 
-			$xml = Xml::build('http://api.eve-central.com/api/marketstat?typeid='.$eveId, array('return' => 'simplexml'));
+			$xml = Xml::build('http://api.eve-central.com/api/marketstat?usesystem=30000142&typeid='.$eveId, array('return' => 'simplexml'));
 
 			$currentItem['EveItem']['eve_value'] = (string) $xml->marketstat->type->sell->avg;
 

@@ -21,7 +21,7 @@ class EveCategoriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function index() {
+	public function admin_index() {
 		$this->EveCategory->recursive = 0;
 		$this->set('eveCategories', $this->Paginator->paginate());
 	}
@@ -33,7 +33,7 @@ class EveCategoriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function view($id = null) {
+	public function admin_view($id = null) {
 		if (!$this->EveCategory->exists($id)) {
 			throw new NotFoundException(__('Invalid eve category'));
 		}
@@ -46,12 +46,12 @@ class EveCategoriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function add() {
+	public function admin_add() {
 		if ($this->request->is('post')) {
 			$this->EveCategory->create();
 			if ($this->EveCategory->save($this->request->data)) {
 				$this->Session->setFlash(__('The eve category has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
 				$this->Session->setFlash(__('The eve category could not be saved. Please, try again.'));
 			}
@@ -65,14 +65,14 @@ class EveCategoriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null) {
+	public function admin_edit($id = null) {
 		if (!$this->EveCategory->exists($id)) {
 			throw new NotFoundException(__('Invalid eve category'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->EveCategory->save($this->request->data)) {
 				$this->Session->setFlash(__('The eve category has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
 				$this->Session->setFlash(__('The eve category could not be saved. Please, try again.'));
 			}
@@ -89,7 +89,7 @@ class EveCategoriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function delete($id = null) {
+	public function admin_delete($id = null) {
 		$this->EveCategory->id = $id;
 		if (!$this->EveCategory->exists()) {
 			throw new NotFoundException(__('Invalid eve category'));
@@ -100,6 +100,6 @@ class EveCategoriesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The eve category could not be deleted. Please, try again.'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 }

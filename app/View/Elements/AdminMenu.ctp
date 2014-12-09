@@ -1,18 +1,18 @@
 <div id="sidebar-wrapper">
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Admin Menu</li>
-		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'adminIndex')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'index', 'admin' => true)); ?> </li>
 		<li>___________________</li>
-		<li><?php echo $this->Html->link(__('List Eve Items'), array('controller' => 'eve_items', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Eve Item'), array('controller' => 'eve_items', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Eve Items'), array('controller' => 'eve_items', 'action' => 'index', 'admin' => true)); ?> </li>
+		<li><?php echo $this->Html->link(__('New Eve Item'), array('controller' => 'eve_items', 'action' => 'add', 'admin' => true)); ?> </li>
 		<li>___________________</li>
-		<li><?php echo $this->Html->link(__('List Eve Categories'), array('controller' => 'eve_categories', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Eve Category'), array('controller' => 'eve_categories', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Eve Categories'), array('controller' => 'eve_categories', 'action' => 'index', 'admin' => true)); ?> </li>
+		<li><?php echo $this->Html->link(__('New Eve Category'), array('controller' => 'eve_categories', 'action' => 'add', 'admin' => true)); ?> </li>
 		<li>___________________</li>
-		<li><?php echo $this->Html->link(__('List Articles'), array('controller' => 'articles','action' => 'index')); ?></li>
-		<li><?php echo $this->Html->link(__('New Article'), array('controller' => 'articles','action' => 'add')); ?></li>
+		<li><?php echo $this->Html->link(__('List Articles'), array('controller' => 'articles','action' => 'index', 'admin' => true)); ?></li>
+		<li><?php echo $this->Html->link(__('New Article'), array('controller' => 'articles','action' => 'add', 'admin' => true)); ?></li>
 		<li>___________________</li>
-		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index', 'admin' => true)); ?> </li>
 
 	</ul>
 </div>

@@ -18,6 +18,27 @@ class Lottery extends AppModel {
 	public $displayField = 'name';
 
 	public $actsAs = array('Containable');
+
+	public function checkForWinner($lottery) {
+
+		
+		$tickets = $lottery['Ticket'];
+		$lotteryNbTickets = (int)$lottery['Lottery']['nb_tickets'];
+		$nbSell = 0;
+		foreach ($tickets as $id => $ticket) {
+			if($ticket['buyer_user_id'] != null){
+				$nbSell++;
+			}
+		}
+
+		if($lotteryNbTickets == $nbSell){
+			$winner = rand(0 , $lotteryNbTickets-1);	
+
+			return $winner;
+		}
+
+		return null;
+	}
 	
 	/**
 	 * Validation rules

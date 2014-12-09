@@ -26,7 +26,7 @@ class ArticlesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function index() {
+	public function admin_index() {
 		$this->Article->recursive = 0;
 		$this->set('articles', $this->Paginator->paginate());
 	}
@@ -38,7 +38,7 @@ class ArticlesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function view($id = null) {
+	public function admin_view($id = null) {
 		if (!$this->Article->exists($id)) {
 			throw new NotFoundException(__('Invalid article'));
 		}
@@ -51,7 +51,7 @@ class ArticlesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function add() {
+	public function admin_add() {
 
 		$userId = $this->Auth->user('id');
 
@@ -64,7 +64,7 @@ class ArticlesController extends AppController {
 
 			if ($this->Article->save($dataProxy)) {
 				$this->Session->setFlash(__('The article has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
 				$this->Session->setFlash(__('The article could not be saved. Please, try again.'));
 			}
@@ -78,14 +78,14 @@ class ArticlesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null) {
+	public function admin_edit($id = null) {
 		if (!$this->Article->exists($id)) {
 			throw new NotFoundException(__('Invalid article'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Article->save($this->request->data)) {
 				$this->Session->setFlash(__('The article has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
 				$this->Session->setFlash(__('The article could not be saved. Please, try again.'));
 			}
@@ -104,7 +104,7 @@ class ArticlesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function delete($id = null) {
+	public function admin_delete($id = null) {
 		$this->Article->id = $id;
 		if (!$this->Article->exists()) {
 			throw new NotFoundException(__('Invalid article'));
@@ -115,6 +115,6 @@ class ArticlesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The article could not be deleted. Please, try again.'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 }

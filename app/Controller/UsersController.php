@@ -26,7 +26,7 @@ class UsersController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function index() {
+	public function admin_index() {
 		$this->User->recursive = 0;
 		$this->set('users', $this->Paginator->paginate());
 	}
@@ -38,7 +38,7 @@ class UsersController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function view($id = null) {
+	public function admin_view($id = null) {
 		if (!$this->User->exists($id)) {
 			throw new NotFoundException(__('Invalid user'));
 		}
@@ -53,7 +53,7 @@ class UsersController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null) {
+	public function admin_edit($id = null) {
 		if (!$this->User->exists($id)) {
 			throw new NotFoundException(__('Invalid user'));
 		}
@@ -64,7 +64,7 @@ class UsersController extends AppController {
 					'FlashMessage',
 					array('type' => 'info')
 					);
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
 				$this->Session->setFlash(
 					'The user could not be saved. Please, try again.',
@@ -87,7 +87,7 @@ class UsersController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function delete($id = null) {
+	public function admin_delete($id = null) {
 		$this->User->id = $id;
 		if (!$this->User->exists()) {
 			throw new NotFoundException(__('Invalid user'));
@@ -106,7 +106,7 @@ class UsersController extends AppController {
 				array('type' => 'danger')
 				);
 		}
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
 	public function login() {
@@ -126,7 +126,7 @@ class UsersController extends AppController {
 					'FlashMessage',
 					array('type' => 'info')
 					);
-				return $this->redirect(array('controller' =>'lotteries', 'action' => 'index'));
+				return $this->redirect("/");
 			}
 			$this->Session->setFlash(
 				'Your username or password was incorrect.',

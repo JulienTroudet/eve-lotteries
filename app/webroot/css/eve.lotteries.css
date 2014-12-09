@@ -62,6 +62,9 @@
     min-height: 5em;
 }
 
+.ticket-slot .winner-ticket {
+    background-color: red;
+}
 
 
 
@@ -212,7 +215,7 @@ body {
     padding: 0 5px;
 }
 
-.item-panel a{
+.item-button{
     min-height: 10em;
 }
 
@@ -225,5 +228,9 @@ body {
     margin-top:3px; 
     margin-bottom:0px; 
     font-size:1.23em;
+}
+
+#collapse-item .row{
+    margin-bottom:1em;
 }
 /* [END] ITEM PANEL */

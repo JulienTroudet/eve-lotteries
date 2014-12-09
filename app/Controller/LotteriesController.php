@@ -14,7 +14,7 @@ class LotteriesController extends AppController {
 	 *
 	 * @var array
 	 */
-	public $components = array('Paginator', 'Session');
+	public $components = array('Paginator', 'Session', 'RequestHandler');
 
 
 
@@ -38,6 +38,7 @@ class LotteriesController extends AppController {
 	public function index() {
 
 		$this->loadModel('EveItem');
+		$this->loadModel('EveCategory');
 		
 		$this->Paginator->settings = $this->paginate;
 		$this->Lottery->contain(array(
@@ -48,17 +49,55 @@ class LotteriesController extends AppController {
 			)
 		);
 		$lotteries = $this->Paginator->paginate('Lottery');
-
 		$this->set('lotteries', $lotteries);
 
 		$params = array(
-			'conditions' => array('EveItem.status' => '1'),
+			'conditions' => array('EveCategory.status' => '1'),
 			'recursive' => -1,
-			'order' => array('EveItem.name ASC'),
+			'order' => array('EveCategory.name ASC'),
+			'fields' => array('EveCategory.id', 'EveCategory.name'),
 
 			);
+		$eveCategories = $this->EveCategory->find('list', $params);
+		$this->set('eveCategories', $eveCategories);
+
+
+		$params = array(
+			'contain' => 'EveCategory',
+			'conditions' => array('EveItem.status' => '1'),
+			'order' => array('EveItem.name ASC'),
+			);
+
 		$eveItems = $this->EveItem->find('all', $params);
+
+		foreach ($eveItems as $key => $value) {
+			
+			$eveItems[$key]['EveItem']['ticket_price'] = $this->EveItem->getTicketPrice($value);
+			
+		}
+
 		$this->set('eveItems', $eveItems);
+	}
+
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function list_lotteries() {
+
+		
+		$this->Paginator->settings = $this->paginate;
+		$this->Lottery->contain(array(
+			'EveItem', 
+			'Ticket' => array(
+				'User' => array('id', 'eve_id', 'eve_name')
+				)
+			)
+		);
+		$lotteries = $this->Paginator->paginate('Lottery');
+		$this->set('lotteries', $lotteries);
 	}
 
 	/**
@@ -66,7 +105,7 @@ class LotteriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function adminIndex() {
+	public function admin_index() {
 		$this->Lottery->recursive = 1;
 		$this->set('lotteries', $this->Paginator->paginate());
 	}
@@ -93,7 +132,7 @@ class LotteriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function adminView($id = null) {
+	public function admin_view($id = null) {
 		if (!$this->Lottery->exists($id)) {
 			throw new NotFoundException(__('Invalid lottery'));
 		}
@@ -106,39 +145,91 @@ class LotteriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function add($eve_item_id = null) {
-		if (!$this->Lottery->EveItem->exists($eve_item_id)) {
-			throw new NotFoundException(__('Invalid Eve Item'));
-		}
+	public function add() {
 
-		$id = $this->Auth->user('id');
-		if ($this->request->is('post')) {
-			$this->Lottery->create();
+		$this->request->onlyAllow('ajax');
 
-			$dataProxy = $this->request->data;
+		if ($this->request->is('ajax')) {
 
-			$dataProxy['Lottery']['creator_user_id'] = $id;
-			$dataProxy['Lottery']['eve_item_id'] = $eve_item_id;
+			$this->loadModel('EveItem');
+			$this->loadModel('Ticket');
+			$this->loadModel('User');
+			
+			$this->disableCache();
 
-			if ($this->Lottery->save($dataProxy)) {
+			$itemId = $this->request->query('item_id');
 
-				$this->Session->setFlash(__('The lottery has been created.'));
+			$userId = $this->Auth->user('id');
 
-				$lottery_id = $this->Lottery->getLastInsertId();
 
-				return $this->redirect(array('controller' => 'Tickets', 'action' => 'add', $lottery_id, $dataProxy['Lottery']['lottery_value']));
-
-			} else {
-				$this->Session->setFlash(__('The lottery could not be saved. Please, try again.'));
+			if (!$this->EveItem->exists($itemId)) {
+				$data = array('error' => 'Invalid Eve Item.' );
 			}
-		}
+			else if (!$this->User->exists($userId)) {
+				$data = array('error' => 'You must log in to buy a ticket !');
+			}
+			else{
 
-		$oneEveItem = $this->Lottery->EveItem->find('first', array(
-			'conditions' => array('EveItem.id' => $eve_item_id)
-			));
-		$lotteryStatuses = $this->Lottery->LotteryStatus->find('list');
-		$this->set(compact('lotteryStatuses', 'users'));
-		$this->set('eveItem', $oneEveItem);
+				$this->EveItem->contain(array('EveCategory'));
+				$choosenItem = $this->EveItem->findById($itemId);
+
+				$ticketPrice = $this->EveItem->getTicketPrice($choosenItem);
+
+				$buyer = $this->User->findById($userId);
+
+				//TODO TESTS DIVERS
+
+				if($buyer['User']['wallet'] < $ticketPrice){
+					$data = array('error' => 'Not enough ISK.');
+				}
+
+				else{
+					$buyer['User']['wallet'] -= $ticketPrice;
+					$buyer['User']['password'] ="";
+
+					$this->Lottery->create();
+					$newLottery = array('Lottery'=>array(
+						'eve_item_id' =>  $itemId,
+						'creator_user_id' => $userId,
+						'nb_tickets' => $choosenItem['EveItem']['nb_tickets_default'],
+						'lottery_status_id' => 1,
+						));
+
+					if ($this->User->save($buyer) && $this->Lottery->save($newLottery)) {
+
+
+						for ($i=0; $i < $choosenItem['EveItem']['nb_tickets_default']; $i++) {
+							$this->Ticket->create();
+							$newTicket = array('Ticket'=>array(
+								'lottery_id' => $this->Lottery->id,
+								'position' => $i,
+								'value' => $ticketPrice,
+								));
+							if ($i==0) {
+								$newTicket['Ticket']['buyer_user_id'] = $userId;
+							}
+							$this->Ticket->save($newTicket);
+						}
+
+
+						$data = array (
+							'success' => true,
+							'message' => 'Ticket bought.',
+							'buyerEveId' => $buyer['User']['eve_id'],
+							'buyerName' => $buyer['User']['eve_name'],
+							'buyerWallet' => number_format($buyer['User']['wallet'], 2),
+							'itemName' => $choosenItem['EveItem']['name']
+							);
+
+						
+					}
+				}
+			}			
+
+			$this->set(compact('data')); // Pass $data to the view
+			$this->set('_serialize', 'data');
+
+		}
 	}
 
 	/**
@@ -148,14 +239,14 @@ class LotteriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null) {
+	public function admin_edit($id = null) {
 		if (!$this->Lottery->exists($id)) {
 			throw new NotFoundException(__('Invalid lottery'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Lottery->save($this->request->data)) {
 				$this->Session->setFlash(__('The lottery has been saved.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
 				$this->Session->setFlash(__('The lottery could not be saved. Please, try again.'));
 			}
@@ -176,7 +267,7 @@ class LotteriesController extends AppController {
 	 * @param string $id
 	 * @return void
 	 */
-	public function delete($id = null) {
+	public function admin_delete($id = null) {
 		$this->Lottery->id = $id;
 		if (!$this->Lottery->exists()) {
 			throw new NotFoundException(__('Invalid lottery'));
@@ -187,7 +278,7 @@ class LotteriesController extends AppController {
 		} else {
 			$this->Session->setFlash(__('The lottery could not be deleted. Please, try again.'));
 		}
-		return $this->redirect(array('action' => 'index'));
+		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
 
