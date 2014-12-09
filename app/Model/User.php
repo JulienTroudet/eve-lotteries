@@ -183,9 +183,22 @@ App::uses('AuthComponent', 'Controller/Component');
 			'finderQuery' => '',
 			'counterQuery' => ''
 			),
-		'SuperLottery' => array(
+		'SuperLotteryCreator' => array(
 			'className' => 'SuperLottery',
 			'foreignKey' => 'creator_user_id',
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		'SuperLotteryWinner' => array(
+			'className' => 'SuperLottery',
+			'foreignKey' => 'winner_user_id',
 			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',

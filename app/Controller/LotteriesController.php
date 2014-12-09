@@ -31,6 +31,7 @@ class LotteriesController extends AppController {
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
 		$this->loadModel('SuperLottery');
+		$this->loadModel('SuperLotteryTicket');
 
 		//vas chercher les lotteries actuelles
 		$params = array(
@@ -81,7 +82,7 @@ class LotteriesController extends AppController {
 		//vas chercher la liste des items
 		$params = array(
 			'contain' => 'EveCategory',
-			'conditions' => array('EveItem.status' => '1'),
+			'conditions' => array('EveItem.status' => '1', 'EveCategory.type' => 'Ship'),
 			'order' => array('EveItem.name ASC'),
 			);
 
@@ -91,13 +92,28 @@ class LotteriesController extends AppController {
 		}
 		$this->set('eveItems', $eveItems);
 
+		//vas chercher la première super lotterie
 		$params = array(
-			'contain' => 'EveItem',
+			'contain' => array('EveItem', 'SuperLotteryTicket'),
 			'conditions' => array('SuperLottery.lottery_status_id'=>'1'), 
 			);
-
 		$superLottery = $this->SuperLottery->find('first', $params);
-		$this->set('superLottery', $superLottery);
+
+		if(!isset($superLottery['SuperLottery'])){
+			$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()'), 
+			'order' => array('SuperLottery.created' => 'desc'), 
+			);
+			$superLottery = $this->SuperLottery->find('first', $params);
+		}
+		
+		if(isset($superLottery['SuperLottery'])){
+			
+			$superLottery['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+			$superLottery['percentage'] = ($superLottery['SuperLottery']['nb_ticket_bought']*100)/$superLottery['SuperLottery']['nb_tickets'];
+			$this->set('superLottery', $superLottery);
+		}
 	}
 
 
@@ -108,6 +124,7 @@ class LotteriesController extends AppController {
 	 */
 	public function list_lotteries() {
 		$this->loadModel('SuperLottery');
+		$this->loadModel('SuperLotteryTicket');
 
 		$this->layout = false;
 		$params = array(
@@ -144,6 +161,19 @@ class LotteriesController extends AppController {
 
 		$superLot = $this->SuperLottery->find('first', array('conditions' => array('lottery_status_id'=>'1')));
 		$this->set('superLottery', $superLot);
+
+		$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket'),
+			'conditions' => array('SuperLottery.lottery_status_id'=>'1'), 
+			);
+		$superLottery = $this->SuperLottery->find('first', $params);
+		
+		if(isset($superLottery['SuperLottery'])){
+			
+			$superLottery['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+			$superLottery['percentage'] = ($superLottery['SuperLottery']['nb_ticket_bought']*100)/$superLottery['SuperLottery']['nb_tickets'];
+			$this->set('superLottery', $superLottery);
+		}
 	}
 
 	/**

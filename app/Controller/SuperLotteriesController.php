@@ -22,8 +22,18 @@ class SuperLotteriesController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->SuperLottery->recursive = 0;
-		$this->set('superLotteries', $this->Paginator->paginate());
+		$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'order' => array('SuperLottery.created' => 'desc'), 
+			);
+		$this->Paginator->settings = $params;
+		$superLotteries = $this->Paginator->paginate();
+		foreach ($superLotteries as $key => $superLottery) {
+			$superLotteries[$key]['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+			$superLotteries[$key]['percentage'] = ($superLottery['SuperLottery']['nb_ticket_bought']*100)/$superLottery['SuperLottery']['nb_tickets'];
+		}
+
+		$this->set('superLotteries', $superLotteries);
 	}
 
 /**
@@ -34,6 +44,43 @@ class SuperLotteriesController extends AppController {
 	public function admin_index() {
 		$this->SuperLottery->recursive = 0;
 		$this->set('superLotteries', $this->Paginator->paginate());
+	}
+
+	/**
+ * admin_view method
+ *
+ * @throws NotFoundException
+ * @param string $id
+ * @return void
+ */
+	public function admin_complete($id = null) {
+		$this->SuperLottery->recursive = 0;
+		if (!$this->SuperLottery->exists($id)) {
+			throw new NotFoundException(__('Invalid super lottery'));
+		}
+
+		$superlottery = $this->SuperLottery->findById($id);
+
+		$superlottery['SuperLottery']['lottery_status_id'] = 2;
+
+		if ($this->SuperLottery->save($superlottery, true, array('id', 'lottery_status_id'))) {
+			$this->Session->setFlash(
+				'The super lottery has been completed.',
+				'FlashMessage',
+				array('type' => 'info')
+				);
+			return $this->redirect(array('action' => 'index', 'admin' => true));
+		}
+		else{
+			$this->Session->setFlash(
+				'The super lottery couldn\'t been completed ! Please try again.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
+			return $this->redirect(array('action' => 'index', 'admin' => true));
+		}
+
+		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
 /**

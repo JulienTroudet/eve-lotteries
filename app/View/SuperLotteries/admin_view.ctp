@@ -1,7 +1,7 @@
 <div id="wrapper">
 	<?php  echo $this->element('AdminMenu', array());?>
 	<div id="page-content-wrapper">
-		<div class="container-fluid">
+		<div class="container">
 			<div class="superLotteries view">
 				<h2><?php echo __('Super Lottery'); ?></h2>
 				<dl>
@@ -25,9 +25,9 @@
 						<?php echo h($superLottery['SuperLottery']['name']); ?>
 						&nbsp;
 					</dd>
-					<dt><?php echo __('User'); ?></dt>
+					<dt><?php echo __('Creator'); ?></dt>
 					<dd>
-						<?php echo $this->Html->link($superLottery['User']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['User']['id'])); ?>
+						<?php echo $this->Html->link($superLottery['Creator']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Creator']['id'])); ?>
 						&nbsp;
 					</dd>
 					<dt><?php echo __('Created'); ?></dt>
@@ -53,6 +53,11 @@
 					<dt><?php echo __('Lottery Status'); ?></dt>
 					<dd>
 						<?php echo $this->Html->link($superLottery['LotteryStatus']['name'], array('controller' => 'lottery_statuses', 'action' => 'view', $superLottery['LotteryStatus']['id'])); ?>
+						&nbsp;
+					</dd>
+					<dt><?php echo __('Winner'); ?></dt>
+					<dd>
+						<?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Winner']['id'])); ?>
 						&nbsp;
 					</dd>
 				</dl>

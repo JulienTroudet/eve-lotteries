@@ -111,9 +111,16 @@ class SuperLottery extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'User' => array(
+		'Creator' => array(
 			'className' => 'User',
 			'foreignKey' => 'creator_user_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Winner' => array(
+			'className' => 'User',
+			'foreignKey' => 'winner_user_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -126,4 +133,25 @@ class SuperLottery extends AppModel {
 			'order' => ''
 		)
 	);
+
+	/**
+	 * hasMany associations
+	 *
+	 * @var array
+	 */
+	public $hasMany = array(
+		'SuperLotteryTicket' => array(
+			'className' => 'SuperLotteryTicket',
+			'foreignKey' => 'super_lottery_id',
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		);
 }

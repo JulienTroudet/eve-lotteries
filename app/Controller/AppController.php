@@ -20,6 +20,7 @@
  */
 
 App::uses('Controller', 'Controller');
+App::uses('CakeTime', 'Utility');
 
 App::import('Vendor', 'Pheal', array('file' => 'Pheal' . DS . 'Pheal.php'));
 /**
@@ -98,7 +99,7 @@ class AppController extends Controller {
 		$this->loadModel('Config');
 
 		$apiCheckTime = $this->Config->findByName("apiCheck");
-		$this->set('apiCheckTime', $apiCheckTime['Config']['value']);
+		$this->set('apiCheckTime', CakeTime::niceShort($apiCheckTime['Config']['value']));
 		$eveSSO_URL = $this->Config->findByName('eve_sso_url');
 		$this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
 		$appEveId = $this->Config->findByName('app_eve_id');
