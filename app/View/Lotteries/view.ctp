@@ -38,7 +38,7 @@
 		</dd>
 		<dt><?php echo __('Lottery Status'); ?></dt>
 		<dd>
-			<?php echo $this->Html->link($lottery['LotteryStatus']['name'], array('controller' => 'lottery_statuses', 'action' => 'view', $lottery['LotteryStatus']['id'])); ?>
+			<?php echo h($lottery['LotteryStatus']['name']); ?>
 			&nbsp;
 		</dd>
 	</dl>
@@ -52,8 +52,6 @@
 		<li><?php echo $this->Html->link(__('New Lottery'), array('action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Eve Items'), array('controller' => 'eve_items', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Eve Item'), array('controller' => 'eve_items', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Lottery Statuses'), array('controller' => 'lottery_statuses', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lottery Status'), array('controller' => 'lottery_statuses', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Tickets'), array('controller' => 'tickets', 'action' => 'index')); ?> </li>

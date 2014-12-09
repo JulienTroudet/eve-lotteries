@@ -1,16 +1,20 @@
 <div class="tickets form">
 <?php echo $this->Form->create('Ticket'); ?>
+
+	<div>
+		<p>With the current Lottery</p>
+		<p>Each ticket will cost : <?php echo(number_format ($ticket_value)); ?></p>
+		<p>The Item value on Eve is : <?php echo(number_format ($lottery['EveItem']['eve_value'])); ?></p>
+		<p>The lottery total value is : <?php echo(number_format ($ticket_value*$lottery['Lottery']['nb_tickets'])); ?></p>
+		<p>The net gain will be : <?php echo(number_format (($ticket_value*$lottery['Lottery']['nb_tickets'])-($lottery['EveItem']['eve_value']))); ?></p>
+	</div>
 	<fieldset>
-		<legend><?php echo __('Add Ticket'); ?></legend>
+		<legend><?php echo __('Confirm Ticket Price'); ?></legend>
 	<?php
-		echo $this->Form->input('lottery_id');
-		echo $this->Form->input('position');
-		echo $this->Form->input('buyer_user_id');
-		echo $this->Form->input('is_winner');
-		echo $this->Form->input('value');
+	echo $this->Form->input('value', array( 'type' => 'number', 'step' => '0.01',  'default' => $ticket_value) );
 	?>
 	</fieldset>
-<?php echo $this->Form->end(__('Submit')); ?>
+<?php echo $this->Form->end(__('Confirm')); ?>
 </div>
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>

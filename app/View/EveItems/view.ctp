@@ -16,9 +16,9 @@
 			<?php echo h($eveItem['EveItem']['name']); ?>
 			&nbsp;
 		</dd>
-		<dt><?php echo __('Eve Category Id'); ?></dt>
+		<dt><?php echo __('Eve Category'); ?></dt>
 		<dd>
-			<?php echo h($eveItem['EveItem']['eve_category_id']); ?>
+			<?php echo h($eveItem['EveCategory']['name']); ?>
 			&nbsp;
 		</dd>
 		<dt><?php echo __('Eve Value'); ?></dt>
@@ -48,7 +48,7 @@
 		<li><?php echo $this->Html->link(__('List Eve Categories'), array('controller' => 'eve_categories', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Eve Category'), array('controller' => 'eve_categories', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lottery'), array('controller' => 'lotteries', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('Create Lottery for this item'), array('controller' => 'lotteries', 'action' => 'add', $eveItem['EveItem']['id'])); ?> </li>
 	</ul>
 </div>
 <div class="related">
@@ -88,7 +88,7 @@
 
 	<div class="actions">
 		<ul>
-			<li><?php echo $this->Html->link(__('New Lottery'), array('controller' => 'lotteries', 'action' => 'add')); ?> </li>
+			<li><?php echo $this->Html->link(__('Create Lottery for this item'), array('controller' => 'lotteries', 'action' => 'add', $eveItem['EveItem']['id'])); ?> </li>
 		</ul>
 	</div>
 </div>

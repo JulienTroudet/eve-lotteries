@@ -37,7 +37,7 @@
 		<th><?php echo __('Id'); ?></th>
 		<th><?php echo __('Eve Id'); ?></th>
 		<th><?php echo __('Name'); ?></th>
-		<th><?php echo __('Category Id'); ?></th>
+		<th><?php echo __('Eve Category Id'); ?></th>
 		<th><?php echo __('Eve Value'); ?></th>
 		<th><?php echo __('Status'); ?></th>
 		<th><?php echo __('Nb Tickets Default'); ?></th>
@@ -48,7 +48,7 @@
 			<td><?php echo $eveItem['id']; ?></td>
 			<td><?php echo $eveItem['eve_id']; ?></td>
 			<td><?php echo $eveItem['name']; ?></td>
-			<td><?php echo $eveItem['category_id']; ?></td>
+			<td><?php echo $eveItem['eve_category_id']; ?></td>
 			<td><?php echo $eveItem['eve_value']; ?></td>
 			<td><?php echo $eveItem['status']; ?></td>
 			<td><?php echo $eveItem['nb_tickets_default']; ?></td>

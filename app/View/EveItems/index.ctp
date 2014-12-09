@@ -19,11 +19,12 @@
 		<td><?php echo h($eveItem['EveItem']['id']); ?>&nbsp;</td>
 		<td><?php echo h($eveItem['EveItem']['eve_id']); ?>&nbsp;</td>
 		<td><?php echo h($eveItem['EveItem']['name']); ?>&nbsp;</td>
-		<td><?php echo h($eveItem['EveItem']['eve_category_id']); ?>&nbsp;</td>
+		<td><?php echo h($eveItem['EveCategory']['name']); ?>&nbsp;</td>
 		<td><?php echo h($eveItem['EveItem']['eve_value']); ?>&nbsp;</td>
 		<td><?php echo h($eveItem['EveItem']['status']); ?>&nbsp;</td>
 		<td><?php echo h($eveItem['EveItem']['nb_tickets_default']); ?>&nbsp;</td>
 		<td class="actions">
+			<?php echo $this->Html->link(__('Create Lottery'), array('controller' => 'lotteries', 'action' => 'add', $eveItem['EveItem']['id'])); ?>
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $eveItem['EveItem']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $eveItem['EveItem']['id'])); ?>
 			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $eveItem['EveItem']['id']), array(), __('Are you sure you want to delete # %s?', $eveItem['EveItem']['id'])); ?>
@@ -53,6 +54,5 @@
 		<li><?php echo $this->Html->link(__('List Eve Categories'), array('controller' => 'eve_categories', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Eve Category'), array('controller' => 'eve_categories', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lottery'), array('controller' => 'lotteries', 'action' => 'add')); ?> </li>
 	</ul>
 </div>

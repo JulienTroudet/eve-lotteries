@@ -3,8 +3,8 @@
 	<table cellpadding="0" cellspacing="0">
 	<thead>
 	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
 			<th><?php echo $this->Paginator->sort('eve_item_id'); ?></th>
+			<th><?php echo $this->Paginator->sort('EveItem.eve_value', 'Eve Value'); ?></th>
 			<th><?php echo $this->Paginator->sort('name'); ?></th>
 			<th><?php echo $this->Paginator->sort('creator_user_id'); ?></th>
 			<th><?php echo $this->Paginator->sort('created'); ?></th>
@@ -17,9 +17,11 @@
 	<tbody>
 	<?php foreach ($lotteries as $lottery): ?>
 	<tr>
-		<td><?php echo h($lottery['Lottery']['id']); ?>&nbsp;</td>
 		<td>
 			<?php echo $this->Html->link($lottery['EveItem']['name'], array('controller' => 'eve_items', 'action' => 'view', $lottery['EveItem']['id'])); ?>
+		</td>
+		<td>
+			<?php echo h($lottery['EveItem']['eve_value']); ?>
 		</td>
 		<td><?php echo h($lottery['Lottery']['name']); ?>&nbsp;</td>
 		<td>
@@ -29,7 +31,7 @@
 		<td><?php echo h($lottery['Lottery']['modified']); ?>&nbsp;</td>
 		<td><?php echo h($lottery['Lottery']['nb_tickets']); ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($lottery['LotteryStatus']['name'], array('controller' => 'lottery_statuses', 'action' => 'view', $lottery['LotteryStatus']['id'])); ?>
+			<?php echo h($lottery['LotteryStatus']['name']); ?>
 		</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View'), array('action' => 'view', $lottery['Lottery']['id'])); ?>
@@ -57,11 +59,8 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Lottery'), array('action' => 'add')); ?></li>
 		<li><?php echo $this->Html->link(__('List Eve Items'), array('controller' => 'eve_items', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Eve Item'), array('controller' => 'eve_items', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Lottery Statuses'), array('controller' => 'lottery_statuses', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Lottery Status'), array('controller' => 'lottery_statuses', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New User'), array('controller' => 'users', 'action' => 'add')); ?> </li>
 		<li><?php echo $this->Html->link(__('List Tickets'), array('controller' => 'tickets', 'action' => 'index')); ?> </li>

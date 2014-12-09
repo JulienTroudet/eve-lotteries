@@ -52,7 +52,7 @@ class EveCategory extends AppModel {
 	public $hasMany = array(
 		'EveItem' => array(
 			'className' => 'EveItem',
-			'foreignKey' => 'category_id',
+			'foreignKey' => 'eve_category_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',

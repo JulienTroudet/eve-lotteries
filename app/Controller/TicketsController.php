@@ -21,96 +21,64 @@ class TicketsController extends AppController {
 		$this->Auth->allow('index', 'view');
 	}
 
-	/**
-	 * index method
-	 *
-	 * @return void
-	 */
-	public function index() {
-		$this->Ticket->recursive = 0;
-		$this->set('tickets', $this->Paginator->paginate());
-	}
+	
 
-	/**
-	 * view method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-	public function view($id = null) {
-		if (!$this->Ticket->exists($id)) {
-			throw new NotFoundException(__('Invalid ticket'));
-		}
-		$options = array('conditions' => array('Ticket.' . $this->Ticket->primaryKey => $id));
-		$this->set('ticket', $this->Ticket->find('first', $options));
-	}
+	
 
 	/**
 	 * add method
 	 *
 	 * @return void
 	 */
-	public function add() {
+	public function add($lottery_id = null, $lottery_value = null) {
+
+		if (!$this->Ticket->Lottery->exists($lottery_id)) {
+			throw new NotFoundException(__('Invalid Lottery'));
+		}
+
+		$lottery = $this->Ticket->Lottery->find('first', array('conditions' => array('Lottery.id' => $lottery_id)));
+
+		$ticket_value = round($lottery_value/$lottery['Lottery']['nb_tickets'], 0);
+
+
 		if ($this->request->is('post')) {
-			$this->Ticket->create();
-			if ($this->Ticket->save($this->request->data)) {
-				$this->Session->setFlash(__('The ticket has been saved.'));
+			
+			$nbCreated = 0;
+			for ($i=0; $i < $lottery['Lottery']['nb_tickets']; $i++) { 
+
+				$this->Ticket->create();
+				$dataProxy = $this->request->data;
+				$dataProxy['Ticket']['lottery_id'] = $lottery_id;
+				$dataProxy['Ticket']['position'] = $i;
+
+				if ($this->Ticket->save($dataProxy)) {
+					$nbCreated++;
+				}
+			}
+			
+			if ($nbCreated == $lottery['Lottery']['nb_tickets']) {
+				$this->Session->setFlash(__('All the tickets have been created.'));
 				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The ticket could not be saved. Please, try again.'));
+				$this->Session->setFlash(__('The tickets could not be saved. Please, try again.'));
 			}
 		}
-		$lotteries = $this->Ticket->Lottery->find('list');
-		$users = $this->Ticket->User->find('list');
-		$this->set(compact('lotteries', 'users'));
+
+		$this->set('ticket_value', $ticket_value);
+		$this->set('lottery', $lottery);
+
 	}
 
 	/**
-	 * edit method
+	 * buy method
 	 *
 	 * @throws NotFoundException
 	 * @param string $id
 	 * @return void
 	 */
-	public function edit($id = null) {
-		if (!$this->Ticket->exists($id)) {
-			throw new NotFoundException(__('Invalid ticket'));
-		}
-		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Ticket->save($this->request->data)) {
-				$this->Session->setFlash(__('The ticket has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The ticket could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('Ticket.' . $this->Ticket->primaryKey => $id));
-			$this->request->data = $this->Ticket->find('first', $options);
-		}
-		$lotteries = $this->Ticket->Lottery->find('list');
-		$users = $this->Ticket->User->find('list');
-		$this->set(compact('lotteries', 'users'));
+	public function buy($id = null) {
+		$userId = $this->Auth->user('id');
 	}
 
-	/**
-	 * delete method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-	public function delete($id = null) {
-		$this->Ticket->id = $id;
-		if (!$this->Ticket->exists()) {
-			throw new NotFoundException(__('Invalid ticket'));
-		}
-		$this->request->allowMethod('post', 'delete');
-		if ($this->Ticket->delete()) {
-			$this->Session->setFlash(__('The ticket has been deleted.'));
-		} else {
-			$this->Session->setFlash(__('The ticket could not be deleted. Please, try again.'));
-		}
-		return $this->redirect(array('action' => 'index'));
-	}
+	
 }
