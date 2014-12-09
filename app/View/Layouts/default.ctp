@@ -12,9 +12,8 @@
 	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
 	<?php echo $this->Html->css('eve.lotteries'); ?>
-	
-
 	<?php echo $this->fetch('css');?>
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<?php echo $this->Html->script('bootstrap.min');?>
 	<?php echo $this->Html->script('toastr.min'); ?>
@@ -57,15 +56,17 @@
 				</button>
 				<a class="navbar-brand" href="<?php echo $this->webroot; ?>">EVE-Lotteries</a>
 			</div>
-			<p class="navbar-text">Next API Check : <?php echo $apiCheckTime; ?></p>
-			<ul class="nav navbar-nav">
-				<li><?php echo $this->Html->link(
-					'F.A.Q.', 
-					array('controller' => 'pages', 'action' => 'faq', 'admin'=>false, 'plugin' => false)
-					);?>	
-				</li>
-			</ul>
+			
+			
 			<div class="navbar-collapse collapse navbar-site">
+				<p class="navbar-text">Next API Check : <?php echo $apiCheckTime; ?></p>
+				<ul class="nav navbar-nav">
+					<li><?php echo $this->Html->link(
+						'F.A.Q.', 
+						array('controller' => 'pages', 'action' => 'faq', 'admin'=>false, 'plugin' => false)
+						);?>	
+					</li>
+				</ul>
 				<?php 
 				if ($userGlobal != null) {
 					echo $this->element('LogoutForm', array(

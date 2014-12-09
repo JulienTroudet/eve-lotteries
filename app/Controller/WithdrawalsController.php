@@ -137,6 +137,7 @@ class WithdrawalsController extends AppController {
 			$this->disableCache();
 			$this->loadModel('Ticket');
 			$this->loadModel('User');
+			$this->loadModel('Statistic');
 
 			$withdrawalId = $this->request->query('withdrawal_id');
 			$claimType = $this->request->query('claim_type');
@@ -186,6 +187,8 @@ class WithdrawalsController extends AppController {
 								'message' => $claimedValue.' EVE-Lotteries Credits',
 								);
 
+							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_credits', $withdrawalId, $claimedValue, $claimedAward['Ticket']['Lottery']['eve_item_id']);
+
 							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
 
@@ -207,6 +210,8 @@ class WithdrawalsController extends AppController {
 								'message' => $claimedValue.' ISK',
 								);
 
+							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_isk', $withdrawalId, $claimedValue, $claimedAward['Ticket']['Lottery']['eve_item_id']);
+
 							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
 
@@ -226,6 +231,8 @@ class WithdrawalsController extends AppController {
 								'success' => true,
 								'message' => preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$claimedAward['Ticket']['Lottery']['name']),
 								);
+
+							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_item', $withdrawalId, null, $claimedAward['Ticket']['Lottery']['eve_item_id']);
 
 							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 

@@ -13,7 +13,7 @@
 		</div>
 		<div class="navbar-collapse collapse navbar-user">
 			<div class="nav navbar-nav hidden-xs hidden-sm">
-				<h1><?php echo $userGlobal['eve_name']; ?></h1>
+				<h2><?php echo $userGlobal['eve_name']; ?></h2>
 			</div>
 			<div class="row nav navbar-nav navbar-right navbar-user-info">
 				<?php
@@ -25,7 +25,6 @@
 					$buttonDeposit = '<a onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>';
 				}
 				?>
-
 				<div class="well col-md-4 col-sm-4">
 					<p><span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i></p>
 					<p><span id="points"><?php echo number_format($userGlobal['tokens']); ?></span> <span class="badge">Points</span></p>

@@ -1,5 +1,5 @@
 <div class="navbar-form navbar-right" role="form">
-<a href="https://sisilogin.testeveonline.com/oauth/authorize/?response_type=code&redirect_uri=http://localhost/little/users/eve_login&client_id=4fcdfaa4f0eb48538b44b842a9d16089&scope=&state=uniquestate123"><?php echo $this->Html->image('EVE_SSO.png', array('alt' => 'Eve Login')); ?></a>
+<a href="<?php echo $eveSSO_URL ?>authorize/?response_type=code&redirect_uri=<?php echo $appReturnUrl ?>&client_id=<?php echo $appEveId ?>&scope=&state=uniquestate123"><?php echo $this->Html->image('EVE_SSO.png', array('alt' => 'Eve Login')); ?></a>
 </div>
 
 <script>

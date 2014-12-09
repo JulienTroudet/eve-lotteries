@@ -22,6 +22,7 @@ class ConfigsController extends AppController {
 	private $pheal = null;
 
 	public function beforeFilter() {
+		$this->Auth->allow('update_api_check');
 
 		$corpoKeyID = $this->Config->findByName("corpoKeyID");
 		$corpoKeyIDValue = $corpoKeyID['Config']['value'];
@@ -61,6 +62,7 @@ class ConfigsController extends AppController {
 			{
 				$this->loadModel('Transaction');
 				$this->loadModel('User');
+				$this->loadModel('Statistic');
 
 				foreach($response->entries as $entry)
 				{
@@ -84,6 +86,9 @@ class ConfigsController extends AppController {
 							$check_user_deposit['User']['wallet'] += $entry->amount;
 
 							if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+
+								$this->Statistic->saveStat($check_user_deposit['User']['id'], 'deposit_isk', $this->Transaction->id, $entry->amount, null);
+
 								$this->log('Wallet Update : name['.$check_user_deposit['User']['eve_name'].'], id['.$check_user_deposit['User']['id'].'], amount['.$entry->amount.'], total['.$check_user_deposit['User']['wallet'].']', 'eve-lotteries');
 							}
 						}

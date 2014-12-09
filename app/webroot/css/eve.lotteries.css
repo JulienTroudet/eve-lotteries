@@ -53,13 +53,13 @@
 	padding: 2px;
 	border-radius: 3px;
 	margin: 0px;
-	min-height: 5em;
+	height: 4.9em;
 }
 .ticket-slot span {
 	vertical-align: -webkit-baseline-middle;
 }
 .ticket-slot .btn {
-	min-height: 5em;
+	height: 4.9em;
 }
 
 .ticket-slot .winner-ticket {
@@ -152,12 +152,10 @@
 .sidebar-nav li a {
 	display: block;
 	text-decoration: none;
-	color: #999999;
 }
 
 .sidebar-nav li a:hover {
-	text-decoration: none;
-	color: #fff;
+	text-decoration: underline;
 	background: rgba(255,255,255,0.2);
 }
 

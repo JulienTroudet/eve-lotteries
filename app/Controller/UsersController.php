@@ -20,7 +20,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'logout', 'initDB', 'eve_login');
+		$this->Auth->allow('logout', 'initDB', 'eve_login');
 	}
 
 	/**
@@ -141,16 +141,21 @@ class UsersController extends AppController {
 		if(isset($code) && isset($state)){
 
 			$this->loadModel('Config');
+			$this->loadModel('Statistic');
 
-			$eveSSO_URL = $this->Config->findByName('eve_sso_url')['Config']['value'];
-			$appEveId = $this->Config->findByName('app_eve_id')['Config']['value'];
-			$appEveSecret = $this->Config->findByName('app_eve_secret')['Config']['value'];
+			$eveSSO_URL = $this->Config->findByName('eve_sso_url');
+			$eveSSO_URL = $eveSSO_URL['Config']['value'];
+			$appEveId = $this->Config->findByName('app_eve_id');
+			$appEveId = $appEveId['Config']['value'];
+			$appEveSecret = $this->Config->findByName('app_eve_secret');
+			$appEveSecret = $appEveSecret['Config']['value'];
 
 			App::uses('HttpSocket', 'Network/Http');
 
 			$HttpSocket = new HttpSocket();
 
 			$autorisation = base64_encode($appEveId.':'.$appEveSecret);
+
 			$options = array(
 				'header' => array(
 					//'Content-Type' => 'application/x-www-form-urlencoded',
@@ -197,7 +202,6 @@ class UsersController extends AppController {
 		}
 
 		if (isset($responseArray)) {
-
 			if (isset($responseArray['CharacterID'])) {
 				$this->User->id = $responseArray['CharacterID'];
 
@@ -207,10 +211,15 @@ class UsersController extends AppController {
 						'id' => $responseArray['CharacterID'],
 						'group_id' => 4,
 						'eve_name' => $responseArray['CharacterName'],
+						'wallet' => 0,
+						'tokens' => 0,
 						)
 					);
-					$this->User->save($newUser, true, array('id', 'eve_name', 'group_id'));
+					$this->User->save($newUser, true, array('id', 'eve_name', 'group_id', 'wallet', 'tokens'));
 					if ($this->Auth->login($newUser['User'])) {
+
+						$this->Statistic->saveStat($newUser['User']['id'], 'connection', 'first', null, null);
+
 						$this->Session->setFlash(
 							'First Login succcessfull !',
 							'FlashMessage',
@@ -220,7 +229,11 @@ class UsersController extends AppController {
 					}
 				}
 				else{
-					if ($this->Auth->login($this->User->findById($responseArray['CharacterID'])['User'])) {
+					$user = $this->User->findById($responseArray['CharacterID']);
+					if ($this->Auth->login($user['User'])) {
+
+						$this->Statistic->saveStat($user['User']['id'], 'connection', null, null, null);
+
 						$this->Session->setFlash(
 							'Login succcessfull !',
 							'FlashMessage',
@@ -230,7 +243,7 @@ class UsersController extends AppController {
 					}
 				}
 				//$this->_setCookie($this->Auth->user('id'));
-				//return $this->redirect("/");
+				return $this->redirect("/");
 			}
 
 			else if (isset($responseArray['error'])) {
@@ -241,8 +254,6 @@ class UsersController extends AppController {
 					);
 			}
 		}
-
-
 	}
 
 	protected function _setCookie($id) {

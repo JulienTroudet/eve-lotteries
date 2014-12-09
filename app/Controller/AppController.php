@@ -35,10 +35,10 @@ class AppController extends Controller {
 	public $components = array(
 		'Acl',
 		'Auth' => array(
-            'authorize' => array(
-                'Actions' => array('actionPath' => 'controllers')
-            )
-        ),
+			'authorize' => array(
+				'Actions' => array('actionPath' => 'controllers')
+				)
+			),
 		'Session',
 		'Cookie'
 		);
@@ -61,6 +61,8 @@ class AppController extends Controller {
 		
 
 		$this->Auth->allow('display');
+
+		
 	}
 
 	public function beforeRender() {
@@ -87,9 +89,16 @@ class AppController extends Controller {
 		$this->set('userGlobal', $userGlobal);
 
 		$this->loadModel('Config');
+
 		$apiCheckTime = $this->Config->findByName("apiCheck");
-		$apiCheckTimeValue = $apiCheckTime['Config']['value'];
-		$this->set('apiCheckTime', $apiCheckTimeValue);
+		$this->set('apiCheckTime', $apiCheckTime['Config']['value']);
+		$eveSSO_URL = $this->Config->findByName('eve_sso_url');
+		$this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
+		$appEveId = $this->Config->findByName('app_eve_id');
+		$this->set('appEveId', $appEveId['Config']['value']);
+		$appReturnUrl = $this->Config->findByName('app_return_url');
+		$this->set('appReturnUrl', $appReturnUrl['Config']['value']);
+
 	}
 
 	protected function _readConnectionCookie($userGlobal) {

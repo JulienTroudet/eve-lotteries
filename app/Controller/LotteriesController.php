@@ -40,7 +40,7 @@ class LotteriesController extends AppController {
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
-			'order' => array('Lottery.id ASC'),
+			'order' => array('Lottery.id desc'),
 			'limit' => 10
 			);
 		$lotteries = $this->Lottery->find('all', $params);
@@ -109,7 +109,7 @@ class LotteriesController extends AppController {
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
-			'order' => array('Lottery.id ASC'),
+			'order' => array('Lottery.id desc'),
 			);
 		
 		$lotteries = $this->Lottery->find('all', $params);
@@ -209,7 +209,5 @@ class LotteriesController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
-
-
-	
 }
+

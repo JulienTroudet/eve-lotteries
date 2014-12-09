@@ -49,7 +49,11 @@ class TicketsController extends AppController {
 				$data = array('error' => 'You must log in to buy a ticket !');
 			}
 			else{
+				$this->loadModel('Lottery');
+				$this->loadModel('Statistic');
+				
 				$choosenTicket = $this->Ticket->findById($ticketId);
+				$choosenLottery = $this->Lottery->findById($choosenTicket['Ticket']['lottery_id']);
 				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet'));
 
 				if($choosenTicket['Ticket']['buyer_user_id'] != null){
@@ -67,6 +71,8 @@ class TicketsController extends AppController {
 
 					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Ticket->save($choosenTicket)) {
 
+						$this->Statistic->saveStat($buyer['User']['id'], 'buy_ticket', $ticketId, $choosenTicket['Ticket']['value'], $choosenLottery['Lottery']['eve_item_id']);
+
 						$data = array (
 							'success' => true,
 							'message' => 'Ticket bought.',
@@ -77,7 +83,7 @@ class TicketsController extends AppController {
 
 						$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.'], wallet['.number_format($buyer['User']['wallet'], 2).']', 'eve-lotteries');
 
-						$this->_checkWinner($choosenTicket['Ticket']['lottery_id']);
+						$this->_checkWinner($choosenTicket['Ticket']['lottery_id'], $buyer['User']['id']);
 
 					}
 				}
@@ -101,6 +107,7 @@ class TicketsController extends AppController {
 			$this->loadModel('EveItem');
 			$this->loadModel('Lottery');
 			$this->loadModel('User');
+			$this->loadModel('Statistic');
 			
 			$this->disableCache();
 
@@ -130,19 +137,21 @@ class TicketsController extends AppController {
 				$proceed = false;
 			}
 
+			$this->EveItem->contain(array('EveCategory'));	
+			$choosenItem = $this->EveItem->findById($itemId);
+
 			//vérification du nombre de grosses lotteries
 			$params = array(
 				'conditions' => array('Lottery.lottery_status_id' => '1', 'Lottery.nb_tickets' => '16'),
 				);
 			$nbFreeBigLotteries = 3 - $this->Lottery->find('count', $params);
-			if ($proceed && $nbFreeBigLotteries <= 0) {
+			if ($proceed && $nbFreeBigLotteries <= 0 && $choosenItem['EveItem']['nb_tickets_default'] == 16) {
 				$data = array('error' => 'There is already 3 big lotteries ! Please complete a big lottery befor starting a new one.');
 				$proceed = false;
 			}
 
 			if ($proceed){
-				$this->EveItem->contain(array('EveCategory'));
-				$choosenItem = $this->EveItem->findById($itemId);
+				
 
 				if(empty($listPositions)){
 					$listPositions = array(rand(0, $choosenItem['EveItem']['nb_tickets_default']-1));
@@ -183,6 +192,8 @@ class TicketsController extends AppController {
 
 					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Lottery->save($newLottery)) {
 
+						$this->Statistic->saveStat($buyer['User']['id'], 'init_lottery', $this->Lottery->id, $choosenItem['EveItem']['eve_value'], $choosenItem['EveItem']['id']);
+
 						$this->log('New Lottery : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], lottery['.$this->Lottery->id.'], item['.$choosenItem['EveItem']['name'].']', 'eve-lotteries');
 
 						for ($i=0; $i < $choosenItem['EveItem']['nb_tickets_default']; $i++) {
@@ -194,19 +205,18 @@ class TicketsController extends AppController {
 								));
 							if (in_array($i, $listPositions)) {
 								$newTicket['Ticket']['buyer_user_id'] = $userId;
+								$this->Ticket->save($newTicket);
+
+								$this->Statistic->saveStat($buyer['User']['id'], 'buy_ticket', $this->Ticket->id, $ticketPrice, $choosenItem['EveItem']['id']);
 								$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$this->Ticket->id.']', 'eve-lotteries');
 							}
-							$this->Ticket->save($newTicket);
-
+							else{
+								$this->Ticket->save($newTicket);
+							}
 							
 
-							$this->_checkWinner($this->Lottery->id);
+							$this->_checkWinner($this->Lottery->id, $buyer['User']['id']);
 						}
-
-						
-
-
-
 						$data = array (
 							'success' => true,
 							'message' => 'Ticket bought.',
@@ -227,8 +237,8 @@ class TicketsController extends AppController {
 		}
 	}
 
-	protected  function _checkWinner($lotteryId) {
-
+	protected  function _checkWinner($lotteryId, $userId) {
+		$this->loadModel('Statistic');
 		$this->loadModel('Lottery');
 		$this->Lottery->contain(array(
 			'EveItem', 
@@ -244,10 +254,13 @@ class TicketsController extends AppController {
 
 		if ($winner >= 0) {
 
+
 			$this->loadModel('Withdrawal');
 
 			$lottery['Lottery']['lottery_status_id'] = 2;
 			$this->Lottery->save($lottery['Lottery']);
+
+			$this->Statistic->saveStat($userId, 'end_lottery', $lottery['Lottery']['id'], $lottery['Lottery']['value'], $lottery['Lottery']['eve_item_id']);
 
 			foreach ($lottery['Ticket'] as $id => $ticket) {
 
@@ -258,6 +271,8 @@ class TicketsController extends AppController {
 
 					$proxyTicket['is_winner'] = true;
 					$proxyTicket['status'] = 'unclaimed';
+
+					$this->Statistic->saveStat($ticket['buyer_user_id'], 'win_lottery', $lottery['Lottery']['id'], $lottery['Lottery']['value'], $lottery['Lottery']['eve_item_id']);
 
 					$this->log('Lottery won : lottery['.$lotteryId.'], user_id['.$ticket['buyer_user_id'].'], ticket['.$ticket['id'].']', 'eve-lotteries');
 
