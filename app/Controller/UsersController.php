@@ -215,8 +215,6 @@ class UsersController extends AppController {
 
 		if( $this->User->save($loggedUser, true, array('id', 'cookie_value')) ){
 
-			$this->log('cookie created');
-
 			$data = array(
 				'user' => $id,
 				'token' => $token

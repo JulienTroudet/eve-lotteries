@@ -1,12 +1,16 @@
 <div class="navbar-form navbar-right">
 
 	<?php echo $this->Html->link(
+		'Account', 
+		array('controller' => 'users', 'action' => 'account'),
+		array('class' => 'btn btn-primary')
+		);?>
+
+	<?php echo $this->Html->link(
 		'Logout', 
 		array('controller' => 'users', 'action' => 'logout'),
 		array('class' => 'btn btn-danger')
-		); ?>
-
-		
+		);?>	
 
 	<?php 
 	if ($userGlobal['group_id'] == 3) {

@@ -40,10 +40,10 @@
 							<ul class="dropdown-menu" role="menu">
 								<li><?php echo $buttonDeposit; ?></li>
 								<li><?php
-								echo $this->Html->link(
-											'My transactions',
-											array('controller' => 'transactions', 'action' => 'index')										
-											);
+									echo $this->Html->link(
+										'My transactions',
+										array('controller' => 'transactions', 'action' => 'index')										
+										);
 										?>
 									</li>
 								</ul>
@@ -72,15 +72,12 @@
 					</div>
 					<div class="col-md-4 col-sm-4">
 						<div class="btn-group-vertical btn-block">
-							<button type="button" class="btn btn-block btn-primary">My profile</button>
+							
 							<?php
-
-							$label = 'My Awards';
+							$label = 'My Lotteries';
 							if($userGlobal['new_awards']>0){
 								$label= $label.' <span class="badge">'.$userGlobal['new_awards'].' New';
 							}
-
-
 							echo $this->Html->link(
 								$label, 
 								array('controller' => 'withdrawals', 'action' => 'index'),
@@ -89,6 +86,7 @@
 									'escape' => false)
 								);
 								?>
+								<button type="button" class="btn btn-block btn-primary">My Awards</button>
 							</div>
 						</div>
 					</div>

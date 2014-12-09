@@ -1,6 +1,6 @@
 <h2>Unclaimed Awards</h2>
 <div class="row">
-	<?php foreach ($unclaimed_awards as $unclaimed_award){ echo $this->element('AwardPanel', array("unclaimed_award" => $unclaimed_award ));} ?>
+	<?php foreach ($unclaimed_awards as $unclaimed_award){ echo $this->element('Withdrawals/AwardPanel', array("unclaimed_award" => $unclaimed_award ));} ?>
 </div>
 <div class="row">
 	<ul class="pager">

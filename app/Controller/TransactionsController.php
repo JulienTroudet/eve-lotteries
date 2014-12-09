@@ -14,7 +14,7 @@ class TransactionsController extends AppController {
  *
  * @var array
  */
-public $components = array('Paginator', 'Session');
+public $components = array('Paginator', 'Session', 'RequestHandler');
 
 	/**
 	 * index method
@@ -22,9 +22,19 @@ public $components = array('Paginator', 'Session');
 	 * @return void
 	 */
 	public function index() {
+		$this->loadModel('Withdrawal');
+
 		$userGlobal = $this->Auth->user();
 
-		$this->Transaction->recursive = -1;
+		$paginateVar = array(
+			'conditions' => array('Transaction.user_id' => $userGlobal['id']),
+			'order' => array(
+				'Transaction.created' => 'desc'
+				),
+			'limit' => 10
+			);
+		$this->Paginator->settings = $paginateVar;
+
 		$this->set('transactions', $this->Paginator->paginate());
 
 		$db = $this->Transaction->getDataSource();
@@ -50,6 +60,18 @@ public $components = array('Paginator', 'Session');
 			$totalW = $totalWithdrawals[0][0]['SUM(amount)'];
 		}
 		$this->set('totalWithdrawals', $totalW);
-	}
 
+		// $totalClaimedIsk = 0;
+		// $params = array(
+		// 	'conditions' => array('Withdrawal.user_id' => $userGlobal['id'], 'status' =>'claimed','type' =>'witdrawal'),
+		// 	);
+		// $iskClaim = $this->Withdrawal->find('first', $params);
+		// if(isset($iskClaim['Withdrawal'])){
+		// 	$totalClaimedIsk = $iskClaim['Withdrawal']['value'];
+		// }
+
+		// $this->set('totalClaimedIsk', $totalClaimedIsk);
+
+
+	}
 }

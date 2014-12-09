@@ -66,28 +66,34 @@ class ConfigsController extends AppController {
 				{
 					$check_api = $this->Transaction->findByRefid($entry->refID);
 
-					if(empty($check_api))
-					{
-						$check_user = $this->User->findByEveId($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
+					if(empty($check_api)){
 
-						if(!empty($check_user))
-						{
+						$check_user_deposit = $this->User->findByEveId($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
+						$check_user_withdrawal = $this->User->findByEveId($entry->ownerID2, array('User.id', 'User.eve_name','User.wallet'));
+						$chekUser = null;
+						if(!empty($check_user_deposit)){
+							$chekUser = $check_user_deposit;
+						}
+						else if(!empty($check_user_withdrawal)){
+							$chekUser = $check_user_withdrawal;
+						}
+						
+						if(!empty($chekUser)){
 							
 							$transactions++;
 							$this->Transaction->create();
 							$newTransaction = array('Transaction'=>array(
 								'refid' =>  $entry->refID,
 								'amount' => $entry->amount,
-								'user_id' => $check_user['User']['id'],
+								'user_id' => $chekUser['User']['id'],
 								'eve_date' => $entry->date,
 								));
 
-							$this->log($newTransaction);
 
-							$check_user['User']['wallet'] += $entry->amount;
+							$chekUser['User']['wallet'] += $entry->amount;
 
-							if ($this->User->save($check_user, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
-								$this->log('Wallet Update : name['.$check_user['User']['eve_name'].'], id['.$check_user['User']['id'].'], amount['.$entry->amount.'], total['.$check_user['User']['wallet']);
+							if ($this->User->save($chekUser, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+								$this->log('Wallet Update : name['.$chekUser['User']['eve_name'].'], id['.$chekUser['User']['id'].'], amount['.$entry->amount.'], total['.$chekUser['User']['wallet'], 'eve-lotteries');
 							}
 						}
 					}
@@ -104,7 +110,7 @@ class ConfigsController extends AppController {
 				}
 				//mysql_query("UPDATE config SET value = '".$response->cached_until."' WHERE id = '1'");
 			}
-			$this->log($transactions.' transactions imported');
+			$this->log($transactions.' transactions imported', 'eve-lotteries');
 
 		} catch (\Pheal\Exceptions\PhealException $e) {
 			echo sprintf(

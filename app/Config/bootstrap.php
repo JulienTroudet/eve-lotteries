@@ -70,7 +70,7 @@ Cache::config('default', array('engine' => 'File'));
  *
  */
 
-CakePlugin::load('AclExtras');
+CakePlugin::loadAll();
 
 /**
  * You can attach event listeners to the request lifecycle as Dispatcher Filter. By default CakePHP bundles two filters:
@@ -99,17 +99,7 @@ Configure::write('Dispatcher.filters', array(
  */
 App::uses('CakeLog', 'Log');
 
-CakeLog::config('debug', array(
-	'engine' => 'File',
-	'types' => array('notice', 'info', 'debug'),
-	'file' => 'debug',
-));
-
-CakeLog::config('error', array(
-	'engine' => 'File',
-	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
-	'file' => 'error',
-));
+CakeLog::config('default', array('engine' => 'DatabaseLogger.DatabaseLog'));
 
 spl_autoload_register(function ($class) {
     foreach (App::path('Vendor') as $base) {

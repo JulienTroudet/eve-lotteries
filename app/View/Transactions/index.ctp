@@ -3,15 +3,7 @@
 	else{echo $this->element('VisitorNavbar', array());}?>
 </div>
 
-<?php
-$buttonDeposit = '';
-if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'){
-	$buttonDeposit = '<a class="btn btn-lg btn-block btn-success" href="#" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="The deposits made to EVE-Lotteries will be available at the next API check.">Deposit <span class="badge">ISK</span></a>';
-}
-else {
-	$buttonDeposit = '<a class="btn btn-lg btn-block btn-success" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>';
-}
-?>
+
 
 
 <div class="transactions index">
@@ -19,11 +11,21 @@ else {
 
 	
 	<div class="row">
-		<div class="col-md-6 col-sm-12">
+		<div id="wallet-resume" class="col-md-6 col-sm-12">
+			<?php
+			$buttonDeposit = '';
+			if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'){
+				$buttonDeposit = '<a class="btn btn-lg btn-block btn-success" href="#" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="The deposits made to EVE-Lotteries will be available at the next API check.">Deposit <span class="badge">ISK</span></a>';
+			}
+			else {
+				$buttonDeposit = '<a class="btn btn-lg btn-block btn-success" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>';
+			}
+			?>
+
 			<h3>My Wallet</h3>
 			<div class="well well-sm">
 				<h3>
-					<small>Actual credits : </small><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i>
+					<small>Actual credits : </small><?php echo number_format($userGlobal['wallet'],2); ?> <i class="fa fa-money"></i>
 				</h3>
 			</div>
 			<p>
@@ -33,17 +35,8 @@ else {
 				<p>You can only deposit ISK in game. You can freely deposit any amount to the account of the EVE-Lotteries Corporation. No justification is needed. Your account will be updated on the next API check at : <?php echo $apiCheckTime; ?></p>
 			</div>
 
-			<p>
-				<div class="input-group">
-					<input id="withdraw-value" type="text" class="form-control">
-					<span class="input-group-btn">
-						<button class="btn btn-primary" type="button">Withdraw <span class="badge">ISK</span></button>
-					</span>
-				</div>
-				
-			</p>
 			<div class="well well-sm">
-				<small>Waiting withdrawal : </small><?php echo number_format($userGlobal['wallet'],2); ?></span> <span class="badge">ISK</span>
+				<small>Waiting withdrawal : </small>00000000000000000000<span class="badge">ISK</span>
 			</div>
 			<div class="alert alert-info" role="alert">
 				<p>The ISK you withdraw will be added to your in game account by our team. Thank you for your patience.</p>
@@ -54,10 +47,10 @@ else {
 				</div>
 				<div class="panel-body">
 					<div class="alert alert-success" role="alert">
-						Total deposits : <?php echo number_format($totalDeposit,2); ?></span> <span class="badge">ISK</span>
+						Total deposits : <?php echo number_format($totalDeposit,2); ?><span class="badge">ISK</span>
 					</div>
 					<div class="alert alert-danger" role="alert">
-						Total withdrawals : <?php echo number_format($totalWithdrawals,2); ?></span> <span class="badge">ISK</span>
+						Total withdrawals : 00000000000000000000<span class="badge">ISK</span>
 					</div>
 				</div>
 			</div>
@@ -106,7 +99,3 @@ else {
 			</div>
 		</div>
 	</div>
-
-
-
-

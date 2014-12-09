@@ -65,7 +65,7 @@ class TicketsController extends AppController {
 
 					$choosenTicket['Ticket']['buyer_user_id'] = $buyer['User']['id'];
 
-					if ($this->User->save($buyer) && $this->Ticket->save($choosenTicket)) {
+					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Ticket->save($choosenTicket)) {
 
 						$data = array (
 							'success' => true,
@@ -75,7 +75,7 @@ class TicketsController extends AppController {
 							'buyerWallet' => number_format($buyer['User']['wallet'], 2)
 							);
 
-						$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.'], wallet['.number_format($buyer['User']['wallet'], 2).']');
+						$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.'], wallet['.number_format($buyer['User']['wallet'], 2).']', 'eve-lotteries');
 
 						$this->_checkWinner($choosenTicket['Ticket']['lottery_id']);
 
@@ -148,9 +148,9 @@ class TicketsController extends AppController {
 						'name'=> $choosenItem['EveItem']['name'],
 						));
 
-					if ($this->User->save($buyer) && $this->Lottery->save($newLottery)) {
+					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Lottery->save($newLottery)) {
 
-						$this->log('New Lottery : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], lottery['.$this->Lottery->id.'], item['.$choosenItem['EveItem']['name'].']');
+						$this->log('New Lottery : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], lottery['.$this->Lottery->id.'], item['.$choosenItem['EveItem']['name'].']', 'eve-lotteries');
 
 						for ($i=0; $i < $choosenItem['EveItem']['nb_tickets_default']; $i++) {
 							$this->Ticket->create();
@@ -161,7 +161,7 @@ class TicketsController extends AppController {
 								));
 							if (in_array($i, $listPositions)) {
 								$newTicket['Ticket']['buyer_user_id'] = $userId;
-								$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$this->Ticket->id.']');
+								$this->log('Ticket Buyed : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$this->Ticket->id.']', 'eve-lotteries');
 							}
 							$this->Ticket->save($newTicket);
 
@@ -220,15 +220,13 @@ class TicketsController extends AppController {
 
 				$proxyTicket = $ticket;
 
-
-				$this->log($ticket['position']);
 				if($ticket['position'] == $winner){
 
 
 					$proxyTicket['is_winner'] = true;
 					$proxyTicket['status'] = 'unclaimed';
 
-					$this->log('Lottery won : lottery['.$lotteryId.'], user_id['.$ticket['buyer_user_id'].'], ticket['.$ticket['id'].']');
+					$this->log('Lottery won : lottery['.$lotteryId.'], user_id['.$ticket['buyer_user_id'].'], ticket['.$ticket['id'].']', 'eve-lotteries');
 
 					$this->Withdrawal->create();
 					$newWithdrawal = array('Withdrawal'=>array(
