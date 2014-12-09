@@ -19,7 +19,7 @@ class UsersController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->userModel = 'User'; 
-		$this->Auth->allow('logout', 'login', 'forbidden', 'eve_login');
+		$this->Auth->allow('logout', 'login', 'forbidden', 'eve_login', 'initDB');
 	}
 
 	/**
@@ -316,31 +316,34 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Users/user_navbar');
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
+		$this->Acl->allow($group, 'controllers/Messages/index');
 		$this->Acl->allow($group, 'controllers/Tickets/buy');
 		$this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
 		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
+		$this->Acl->allow($group, 'controllers/SuperLotteries/claim');
 		$this->Acl->allow($group, 'controllers/Transactions/index');
 		$this->Acl->allow($group, 'controllers/Withdrawals/index');
 		$this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
+		$this->Acl->allow($group, 'controllers/Withdrawals/list_super_awards');
 		$this->Acl->allow($group, 'controllers/Withdrawals/old_list');
 		$this->Acl->allow($group, 'controllers/Withdrawals/claim');
 		$this->Acl->allow($group, 'controllers/Awards/index');
 		$this->Acl->allow($group, 'controllers/UserAwards/claim');
 
-		$group->id = 5;
-		$this->Acl->deny($group, 'controllers');
-		$this->Acl->allow($group, 'controllers/Users/user_navbar');
-		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
-		$this->Acl->allow($group, 'controllers/Tickets/buy');
-		$this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
-		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
-		$this->Acl->allow($group, 'controllers/Transactions/index');
-		$this->Acl->allow($group, 'controllers/Withdrawals/index');
-		$this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
-		$this->Acl->allow($group, 'controllers/Withdrawals/old_list');
-		$this->Acl->allow($group, 'controllers/Withdrawals/claim');
-		$this->Acl->allow($group, 'controllers/Awards/index');
-		$this->Acl->allow($group, 'controllers/UserAwards/claim');
+		// $group->id = 5;
+		// $this->Acl->deny($group, 'controllers');
+		// $this->Acl->allow($group, 'controllers/Users/user_navbar');
+		// $this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
+		// $this->Acl->allow($group, 'controllers/Tickets/buy');
+		// $this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
+		// $this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
+		// $this->Acl->allow($group, 'controllers/Transactions/index');
+		// $this->Acl->allow($group, 'controllers/Withdrawals/index');
+		// $this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
+		// $this->Acl->allow($group, 'controllers/Withdrawals/old_list');
+		// $this->Acl->allow($group, 'controllers/Withdrawals/claim');
+		// $this->Acl->allow($group, 'controllers/Awards/index');
+		// $this->Acl->allow($group, 'controllers/UserAwards/claim');
 
 		// $this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
 		// $this->Acl->allow($group, 'controllers/Withdrawals/old_list');

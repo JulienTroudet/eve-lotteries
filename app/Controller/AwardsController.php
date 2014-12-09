@@ -32,13 +32,15 @@ class AwardsController extends AppController {
 	 * @return void
 	 */
 	public function index() {
+		$this->loadModel('User');
 		$userGlobal = $this->Auth->user();
 
 		$params = array(
 			'conditions' => array('Award.status' => 'active'),
-			'order' => array('Award.group asc', 'Award.order desc')
+			'order' => array('Award.group asc', 'Award.order asc')
 			);
-		$this->set('awards', $this->Award->find('all', $params));
+		$awards = $this->Award->find('all', $params);
+		
 
 		
 		$this->loadModel('UserAward');
@@ -47,7 +49,46 @@ class AwardsController extends AppController {
 			);
 		$userAwards = $this->UserAward->find('all', $params);
 		$userAwards = Set::combine($userAwards, '{n}.UserAward.award_id', '{n}');
+
+		// à partir de là on vérifie si des awards ont été gagnés
+		$db = $this->UserAward->getDataSource();
+		foreach ($awards as $key => $award) {
+			if(!array_key_exists($award['Award']['id'] , $userAwards )){
+				$result = $db->fetchAll($award['Award']['request'], array($userGlobal['id']));
+				if(isset($result[0])){
+					$result = $result[0][0]['result'];
+				}
+				else{
+					$result = false;
+				}
+				if($result){
+					$this->UserAward->create();
+					$newUserAward = array('UserAward'=>array('award_id'=>$award['Award']['id'], 'user_id'=>$userGlobal['id'], 'status'=>'unclaimed'));
+
+					$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));
+					
+					$userGlobal['nb_new_awards']++;
+					
+
+					$this->log('Award Update : user_id['.$userGlobal['id'].'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
+				}
+				
+			}
+		}
+
+		$this->User->save($userGlobal, true, array('id', 'nb_new_awards'));
+
+		$awards = Hash::remove($awards, '{n}.Award.request');
+		$awards = Hash::combine($awards, '{n}.Award.id', '{n}.Award', '{n}.Award.group');
+
+		$params = array(
+			'conditions' => array('UserAward.user_id' => $userGlobal['id']),
+			);
+		$userAwards = $this->UserAward->find('all', $params);
+		$userAwards = Set::combine($userAwards, '{n}.UserAward.award_id', '{n}');
+		
 		$this->set('userAwards', $userAwards);
+		$this->set('awards', $awards);
 	}
 
 	/**
@@ -154,16 +195,16 @@ class AwardsController extends AppController {
 		$this->request->allowMethod('post', 'delete');
 		if ($this->Award->delete()) {
 			$this->Session->setFlash(
-					'The Award has been deleted.',
-					'FlashMessage',
-					array('type' => 'success')
-					);
+				'The Award has been deleted.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
 		} else {
 			$this->Session->setFlash(
-					'The Award could not be deleted. Please, try again.',
-					'FlashMessage',
-					array('type' => 'error')
-					);
+				'The Award could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}

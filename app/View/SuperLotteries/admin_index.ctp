@@ -1,5 +1,5 @@
 <div id="wrapper">
-	<?php  echo $this->element('AdminMenu', array());?>
+	<?php  echo $this->element('ManagerMenu', array());?>
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
 			<div class="row">
@@ -11,7 +11,6 @@
 							<th><?php echo $this->Paginator->sort('number_items'); ?></th>
 							<th><?php echo $this->Paginator->sort('name'); ?></th>
 							<th><?php echo $this->Paginator->sort('creator_user_id'); ?></th>
-							<th><?php echo $this->Paginator->sort('created'); ?></th>
 							<th><?php echo $this->Paginator->sort('nb_tickets'); ?></th>
 							<th><?php echo $this->Paginator->sort('ticket_value'); ?></th>
 							<th><?php echo $this->Paginator->sort('lottery_status_id'); ?></th>
@@ -27,14 +26,13 @@
 								<td><?php echo h($superLottery['SuperLottery']['number_items']); ?>&nbsp;</td>
 								<td><?php echo $this->Html->link($superLottery['SuperLottery']['name'], array('action' => 'view', $superLottery['SuperLottery']['id']));?>&nbsp;</td>
 								<td>
-									<?php echo $this->Html->link($superLottery['Creator']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Creator']['id'])); ?>
+									<?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Creator']['id'])); ?>
 								</td>
-								<td><?php echo h($superLottery['SuperLottery']['created']); ?>&nbsp;</td>
 								<td><?php echo h($superLottery['SuperLottery']['nb_tickets']); ?>&nbsp;</td>
 								<td><?php echo h($superLottery['SuperLottery']['ticket_value']); ?>&nbsp;</td>
-								<td><?php echo h($superLottery['LotteryStatus']['name']); ?>&nbsp;</td>
+								<td><?php echo h($superLottery['SuperLottery']['status']); ?>&nbsp;</td>
 								<td class="actions">
-									<?php if($superLottery['LotteryStatus']['name'] == 'claimed'):?>
+									<?php if($superLottery['SuperLottery']['status'] == 'claimed'):?>
 
 										<?php echo $this->Html->link(
 											'Complete this', 

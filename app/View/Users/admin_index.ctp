@@ -24,9 +24,7 @@
 						<?php foreach ($users as $user): ?>
 							<tr>
 								<td><?php echo h($user['User']['eve_name']); ?>&nbsp;</td>
-								<td>
-									<?php echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); ?>
-								</td>
+								<td><?php echo h($user['Group']['name']); ?></td>
 								<td><?php echo h($user['User']['created']); ?>&nbsp;</td>
 								<td><?php echo h($user['User']['modified']); ?>&nbsp;</td>
 								<td><?php echo h($user['User']['wallet']); ?>&nbsp;</td>

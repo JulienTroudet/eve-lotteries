@@ -26,7 +26,10 @@ class LotteriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function index() {
+	public function index($create = false) {
+		if($create){
+			$this->set('openCreate', $create);
+		}
 
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
@@ -95,7 +98,7 @@ class LotteriesController extends AppController {
 		//vas chercher la première super lotterie
 		$params = array(
 			'contain' => array('EveItem', 'SuperLotteryTicket'),
-			'conditions' => array('SuperLottery.lottery_status_id'=>'1'), 
+			'conditions' => array('SuperLottery.status'=>'ongoing'), 
 			);
 		$superLottery = $this->SuperLottery->find('first', $params);
 
@@ -159,14 +162,20 @@ class LotteriesController extends AppController {
 		$oldLotteries = $this->Paginator->paginate('Lottery');
 		$this->set('old_lotteries', $oldLotteries);
 
-		$superLot = $this->SuperLottery->find('first', array('conditions' => array('lottery_status_id'=>'1')));
-		$this->set('superLottery', $superLot);
-
 		$params = array(
 			'contain' => array('EveItem', 'SuperLotteryTicket'),
-			'conditions' => array('SuperLottery.lottery_status_id'=>'1'), 
+			'conditions' => array('SuperLottery.status'=>'ongoing'), 
 			);
 		$superLottery = $this->SuperLottery->find('first', $params);
+
+		if(!isset($superLottery['SuperLottery'])){
+			$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()'), 
+			'order' => array('SuperLottery.created' => 'desc'), 
+			);
+			$superLottery = $this->SuperLottery->find('first', $params);
+		}
 		
 		if(isset($superLottery['SuperLottery'])){
 			

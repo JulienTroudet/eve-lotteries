@@ -37,7 +37,7 @@ class AppController extends Controller {
 		'Acl',
 		'Auth' => array(
 			'authorize' => array(
-				'Actions' => array('actionPath' => 'controllers')
+				'Actions' => array('actionPath' => 'Controllers')
 				)
 			),
 		'Session',
@@ -53,7 +53,7 @@ class AppController extends Controller {
 		$this->Cookie->type('aes');
 
         //Configure AuthComponent
-		$this->Auth->authorize = 'actions';	
+		$this->Auth->authorize = 'Actions';	
 		$this->Auth->loginAction = array(
 			'controller' => 'users', 
 			'action' => 'login', 
@@ -88,25 +88,27 @@ class AppController extends Controller {
 
 		$this->loadModel('Config');
 		$this->loadModel('Lottery');
+		$this->loadModel('Statistic');
 
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
 
-		
-		
-		if ($userGlobal != null) {
-			$this->loadModel('Withdrawal');
-			$params = array(
-				'conditions' => array('Withdrawal.status' => 'new', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => 'award'),
-				);
-			$userGlobal['new_lot_won'] = $this->Withdrawal->find('count', $params);
-			$this->loadModel('UserAwards');
-			$params = array(
-				'conditions' => array('UserAwards.status' => 'unclaimed', 'UserAwards.user_id' => $userGlobal['id']),
-				);
-			$userGlobal['new_awards'] = $this->UserAwards->find('count', $params);
+		$params = array(
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+			);
+		$total = $this->Statistic->find('first', $params);
+		if(isset($total[0])){
+			$this->set('totalWon', $total[0]['totalAmount']);
 		}
 		else{
+			$this->set('totalWon', 0);
+		}
+
+		
+		
+		if (!isset($userGlobal)) {
+		
 			$this->_setAntiForgeryToken();
 
 			$eveSSO_URL = $this->Config->findByName('eve_sso_url');

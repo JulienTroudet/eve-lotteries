@@ -69,13 +69,17 @@ class SuperLotteryTicketsController extends AppController {
 				$superLottery = $this->SuperLottery->findById($superLotteryId);
 				$buyer = $this->User->findById($userId);
 
-				if ($superLottery['SuperLottery']['lottery_status_id'] != 1) {
+				if ($superLottery['SuperLottery']['status'] != 'ongoing') {
 
 					$this->Session->setFlash('Invalid super Lottery !',	'FlashMessage',	array('type' => 'error'));
 					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 				}
 				else if ($nbTicketsBuy>($superLottery['SuperLottery']['nb_tickets']-$superLottery['SuperLottery']['nb_ticket_bought'])) {
 					$this->Session->setFlash('There is not enough tickets to buy.', 'FlashMessage', array('type' => 'info'));
+					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+				}
+				else if (($superLottery['SuperLottery']['nb_ticket_bought']+$nbTicketsBuy)>($superLottery['SuperLottery']['nb_tickets']/4)) {
+					$this->Session->setFlash('You can\'t buy more than one fourth of the tickets.', 'FlashMessage', array('type' => 'info'));
 					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 				}
 				else if($buyer['User']['tokens'] < ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy)){
@@ -88,6 +92,7 @@ class SuperLotteryTicketsController extends AppController {
 					$buyer['User']['tokens'] -= ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy);
 
 					$superLottery['SuperLottery']['nb_ticket_bought'] += $nbTicketsBuy;
+					unset($superLottery['SuperLottery']['modified']);
 
 					$superLotTicket = $this->SuperLotteryTicket->findBySuperLotteryIdAndBuyerUserId($superLottery['SuperLottery']['id'], $buyer['User']['id']);
 
@@ -111,7 +116,7 @@ class SuperLotteryTicketsController extends AppController {
 
 						$this->Session->setFlash('You have bought '.$nbTicketsBuy.' Super tickets !', 'FlashMessage', array('type' => 'success'));
 
-						$this->_checkWinner($superLottery['SuperLottery']['id'], $buyer['User']['id']);
+						$this->_checkWinner($superLottery['SuperLottery']['id']);
 
 						return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 					}
@@ -129,12 +134,15 @@ class SuperLotteryTicketsController extends AppController {
 	}
 
 
-	protected  function _checkWinner($lotteryId, $userId) {
+	protected  function _checkWinner($lotteryId) {
 		$this->loadModel('Statistic');
 		$this->loadModel('SuperLottery');
+		$this->loadModel('User');
 
-		$this->SuperLottery->contain(array('SuperLotteryTicket'));
+		$this->SuperLottery->contain(array('SuperLotteryTicket', 'EveItem'));
 		$superLottery = $this->SuperLottery->findById($lotteryId);
+
+		
 
 		if($superLottery['SuperLottery']['nb_ticket_bought'] == $superLottery['SuperLottery']['nb_tickets']){
 			$winner = rand(1, $superLottery['SuperLottery']['nb_tickets']);
@@ -143,10 +151,21 @@ class SuperLotteryTicketsController extends AppController {
 				$currentCount += (int)$ticketStack['nb_tickets'];
 				if($winner<=$currentCount){
 
-					$superLottery['SuperLottery']['winner_user_id'] = $ticketStack['buyer_user_id'];
-					$superLottery['SuperLottery']['lottery_status_id'] = 4;
 
-					if ($this->SuperLottery->save($superLottery, true, array('id', 'winner_user_id', 'lottery_status_id'))){
+					$superLottery['SuperLottery']['winner_user_id'] = $ticketStack['buyer_user_id'];
+					$superLottery['SuperLottery']['status'] = 'unclaimed';
+					unset($superLottery['SuperLottery']['modified']);
+
+					$this->Statistic->saveStat($ticketStack['buyer_user_id'], 'win_super_lottery', $superLottery['SuperLottery']['id'], ($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items']), $superLottery['SuperLottery']['eve_item_id']);
+
+					$this->log('Super Lottery won : lottery['.$superLottery['SuperLottery']['id'].'], user_id['.$ticketStack['buyer_user_id'].']', 'eve-lotteries');
+
+					$winnerUser = $this->User->findById($ticketStack['buyer_user_id']);
+					$winnerUser['User']['nb_new_won_super_lotteries']++;
+
+					if ($this->User->save($winnerUser, true, array('id', 'nb_new_won_super_lotteries')) && $this->SuperLottery->save($superLottery, true, array('id', 'winner_user_id', 'status'))){
+
+
 						break;
 					}
 

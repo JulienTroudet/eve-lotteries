@@ -9,26 +9,27 @@ App::uses('AppController', 'Controller');
  */
 class SuperLotteriesController extends AppController {
 
-/**
- * Components
- *
- * @var array
- */
-	public $components = array('Paginator', 'Session');
+	/**
+	 * Components
+	 *
+	 * @var array
+	 */
+	public $components = array('Paginator', 'Session', 'RequestHandler');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('index');
 	}
 
-/**
- * index method
- *
- * @return void
- */
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
 	public function index() {
 		$params = array(
 			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.status !=' => 'waiting'),
 			'order' => array('SuperLottery.created' => 'desc'), 
 			);
 		$this->Paginator->settings = $params;
@@ -41,60 +42,111 @@ class SuperLotteriesController extends AppController {
 		$this->set('superLotteries', $superLotteries);
 	}
 
-/**
- * admin_index method
- *
- * @return void
- */
+	public function claim() {
+
+		$this->request->onlyAllow('ajax');
+
+
+		if ($this->request->is('ajax')) {
+
+			$this->disableCache();
+			$this->loadModel('User');
+
+			$idSuperLottery = $this->request->query('super_lottery_id');
+
+			if (!$this->SuperLottery->exists($idSuperLottery)) {
+				$data = array('error' => 'Invalid Super Lottery.' );
+			}
+			else{
+				$params = array(
+					'contain' => array('Winner', 'EveItem'),
+					'conditions' => array('SuperLottery.id' => $idSuperLottery),
+					);
+
+				$superLottery = $this->SuperLottery->find('first', $params);
+
+				$claimerUser = $this->User->findById($superLottery['Winner']['id']);
+
+				if($superLottery['SuperLottery']['status'] != 'unclaimed'){
+					$data = array('error' => 'Super Lottery already claimed.');
+				}
+				else{
+					$superLottery['SuperLottery']['status'] = 'claimed';
+					$claimerUser['User']['nb_new_won_super_lotteries']--;
+
+					if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_super_lotteries')) && $this->SuperLottery->save($superLottery, true, array('id', 'status'))){
+						$data = array (
+							'success' => true,
+							'message' => 'You have claim '.$superLottery['SuperLottery']['number_items'].' '.$superLottery['EveItem']['name'].' !',
+							);
+
+						$this->log('SuperLottery claimed : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
+					}
+					else{
+						$data = array('error' => 'Super Lottery could not be claimed.');
+					}
+				}
+			}
+			$this->set(compact('data')); 
+			$this->set('_serialize', 'data');
+		}
+	}
+
+	/**
+	 * admin_index method
+	 *
+	 * @return void
+	 */
 	public function admin_index() {
 		$this->SuperLottery->recursive = 0;
 		$this->set('superLotteries', $this->Paginator->paginate());
 	}
 
+		/**
+	 * admin_view method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+		public function admin_complete($id = null) {
+			$this->SuperLottery->recursive = 0;
+			if (!$this->SuperLottery->exists($id)) {
+				throw new NotFoundException(__('Invalid super lottery'));
+			}
+
+			$superlottery = $this->SuperLottery->findById($id);
+
+			$superlottery['SuperLottery']['status'] = 'completed';
+			unset($superlottery['SuperLottery']['modified']);
+
+			if ($this->SuperLottery->save($superlottery, true, array('id', 'status'))) {
+				$this->Session->setFlash(
+					'The super lottery has been completed.',
+					'FlashMessage',
+					array('type' => 'info')
+					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
+			}
+			else{
+				$this->Session->setFlash(
+					'The super lottery couldn\'t been completed ! Please try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
+			}
+
+			return $this->redirect(array('action' => 'index', 'admin' => true));
+		}
+
 	/**
- * admin_view method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
-	public function admin_complete($id = null) {
-		$this->SuperLottery->recursive = 0;
-		if (!$this->SuperLottery->exists($id)) {
-			throw new NotFoundException(__('Invalid super lottery'));
-		}
-
-		$superlottery = $this->SuperLottery->findById($id);
-
-		$superlottery['SuperLottery']['lottery_status_id'] = 2;
-
-		if ($this->SuperLottery->save($superlottery, true, array('id', 'lottery_status_id'))) {
-			$this->Session->setFlash(
-				'The super lottery has been completed.',
-				'FlashMessage',
-				array('type' => 'info')
-				);
-			return $this->redirect(array('action' => 'index', 'admin' => true));
-		}
-		else{
-			$this->Session->setFlash(
-				'The super lottery couldn\'t been completed ! Please try again.',
-				'FlashMessage',
-				array('type' => 'error')
-				);
-			return $this->redirect(array('action' => 'index', 'admin' => true));
-		}
-
-		return $this->redirect(array('action' => 'index', 'admin' => true));
-	}
-
-/**
- * admin_view method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
+	 * admin_view method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
 	public function admin_view($id = null) {
 		$this->SuperLottery->recursive = 0;
 		if (!$this->SuperLottery->exists($id)) {
@@ -104,11 +156,11 @@ class SuperLotteriesController extends AppController {
 		$this->set('superLottery', $this->SuperLottery->find('first', $options));
 	}
 
-/**
- * admin_add method
- *
- * @return void
- */
+	/**
+	 * admin_add method
+	 *
+	 * @return void
+	 */
 	public function admin_add() {
 		$userId = $this->Auth->user('id');
 
@@ -116,20 +168,16 @@ class SuperLotteriesController extends AppController {
 			$this->SuperLottery->create();
 
 			$newSuperLottery = $this->request->data;
-			$newSuperLottery['SuperLottery']['lottery_status_id'] = 1;
+			$newSuperLottery['SuperLottery']['status'] = 'ongoing';
 			$newSuperLottery['SuperLottery']['creator_user_id'] = $userId;
 
-			$countLotOngoing = $this->SuperLottery->find('count', array('conditions' => array('lottery_status_id'=>'1')));
+			$countLotOngoing = $this->SuperLottery->find('count', array('conditions' => array('status'=>'ongoing')));
 
 			if ($countLotOngoing >= 1) {
-				$this->Session->setFlash(
-					'There is already a super lottery ongoing.',
-					'FlashMessage',
-					array('type' => 'warning')
-					);
-				return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+				$newSuperLottery['SuperLottery']['status'] = 'waiting';
 			} 
-			else if ($this->SuperLottery->save($newSuperLottery, true, array('eve_item_id', 'number_items', 'name', 'creator_user_id', 'nb_tickets', 'ticket_value', 'lottery_status_id'))) {
+
+			if ($this->SuperLottery->save($newSuperLottery, true, array('eve_item_id', 'number_items', 'name', 'creator_user_id', 'nb_tickets', 'ticket_value', 'status'))) {
 				$this->Session->setFlash(
 					'The super lottery has been saved.',
 					'FlashMessage',
@@ -150,13 +198,13 @@ class SuperLotteriesController extends AppController {
 		$this->set('eveItems', $eveItems);
 	}
 
-/**
- * admin_edit method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
+	/**
+	 * admin_edit method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
 	public function admin_edit($id = null) {
 		if (!$this->SuperLottery->exists($id)) {
 			throw new NotFoundException(__('Invalid super lottery'));
@@ -173,17 +221,16 @@ class SuperLotteriesController extends AppController {
 			$this->request->data = $this->SuperLottery->find('first', $options);
 		}
 		$eveItems = $this->SuperLottery->EveItem->find('list');
-		$lotteryStatuses = $this->SuperLottery->LotteryStatus->find('list');
-		$this->set(compact('eveItems', 'lotteryStatuses'));
+		$this->set(compact('eveItems'));
 	}
 
-/**
- * admin_delete method
- *
- * @throws NotFoundException
- * @param string $id
- * @return void
- */
+	/**
+	 * admin_delete method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
 	public function admin_delete($id = null) {
 		$this->SuperLottery->id = $id;
 		if (!$this->SuperLottery->exists()) {
@@ -192,16 +239,16 @@ class SuperLotteriesController extends AppController {
 		$this->request->allowMethod('post', 'delete');
 		if ($this->SuperLottery->delete()) {
 			$this->Session->setFlash(
-					'The super lottery has been deleted.',
-					'FlashMessage',
-					array('type' => 'info')
-					);
+				'The super lottery has been deleted.',
+				'FlashMessage',
+				array('type' => 'info')
+				);
 		} else {
 			$this->Session->setFlash(
-					'The super lottery could not be deleted. Please, try again.',
-					'FlashMessage',
-					array('type' => 'warning')
-					);
+				'The super lottery could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'warning')
+				);
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

@@ -2,9 +2,7 @@
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Manager Menu</li>
 		<li><?php echo $this->Html->link(__('Give Won Lotteries'), array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true)); ?> </li>
-		<li><?php echo $this->Html->link(__('New Super Lottery'), array('controller' => 'super_lotteries', 'action' => 'add', 'admin' => true)); ?> </li>
-		<li><?php echo $this->Html->link(__('List Articles'), array('controller' => 'articles','action' => 'index', 'admin' => true)); ?></li>
-		<li><?php echo $this->Html->link(__('New Article'), array('controller' => 'articles','action' => 'add', 'admin' => true)); ?></li>
+		<li><?php echo $this->Html->link(__('Give Won Super Lotteries'), array('controller' => 'super_lotteries', 'action' => 'index', 'admin' => true)); ?> </li>
 	</ul>
 </div>
 <div id="page-content-wrapper">

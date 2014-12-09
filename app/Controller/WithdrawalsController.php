@@ -32,6 +32,8 @@ class WithdrawalsController extends AppController {
 	 * @return void
 	 */
 	public function index() {
+		$this->loadModel('SuperLottery');
+
 		$userGlobal = $this->Auth->user();
 
 		$paginateVar = array(
@@ -69,6 +71,21 @@ class WithdrawalsController extends AppController {
 		$claimed_awards = $this->Withdrawal->find('all', $params);
 
 		$this->set('claimed_awards', $claimed_awards);
+
+		$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
+			'order' => array('SuperLottery.created' => 'desc'), 
+			'limit' => 10, 
+			);
+		$superWithdrawals = $this->SuperLottery->find('all', $params);
+		foreach ($superWithdrawals as $key => $superLottery) {
+			$superWithdrawals[$key]['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+		}
+
+		$this->set('superWithdrawals', $superWithdrawals);
+
+		$db = $this->Withdrawal->getDataSource();
 	}
 
 	public function list_awards() {
@@ -111,6 +128,27 @@ class WithdrawalsController extends AppController {
 		$this->set('claimed_awards', $claimed_awards);
 	}
 
+
+	public function list_super_awards() {
+		$this->layout = false;
+
+		$this->loadModel('SuperLottery');
+
+		$userGlobal = $this->Auth->user();
+		$params = array(
+			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
+			'order' => array('SuperLottery.created' => 'desc'), 
+			'limit' => 10, 
+			);
+		$superWithdrawals = $this->SuperLottery->find('all', $params);
+		foreach ($superWithdrawals as $key => $superLottery) {
+			$superWithdrawals[$key]['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+		}
+
+		$this->set('superWithdrawals', $superWithdrawals);
+	}
+
 	public function old_list() {
 		$userGlobal = $this->Auth->user();
 		$paginateVar = array(
@@ -148,11 +186,11 @@ class WithdrawalsController extends AppController {
 			$claimType = $this->request->query('claim_type');
 
 			if (!$this->Withdrawal->exists($withdrawalId)) {
-				$data = array('error' => 'Invalid Award.' );
+				$data = array('error' => 'Invalid Lottery.' );
 			}
 
 			if (!in_array( $claimType , array('credit', 'isk', 'item')) ){
-				$data = array('error' => 'Invalid Award claim.' );
+				$data = array('error' => 'Invalid Lottery claim.' );
 			}
 
 			else{
@@ -168,9 +206,9 @@ class WithdrawalsController extends AppController {
 
 				$claimedAward = $this->Withdrawal->find('first', $params);
 
-				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.wallet'));
+				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id']);
 				if($claimedAward['Withdrawal']['status'] != 'new'){
-					$data = array('error' => 'Award already claimed.');
+					$data = array('error' => 'Lottery already claimed.');
 				}
 				else{
 					switch ($claimType) {
@@ -179,13 +217,14 @@ class WithdrawalsController extends AppController {
 						$claimedValue = $claimedAward['Ticket']['Lottery']['value']*1.05;
 
 						$claimerUser['User']['wallet'] += $claimedValue;
+						$claimerUser['User']['nb_new_won_lotteries']--;
 
 						$claimedAward['Withdrawal']['group_id'] = $claimedAward['Withdrawal']['id'];
 						$claimedAward['Withdrawal']['status'] = 'completed';
 						$claimedAward['Withdrawal']['type'] = 'award_credit';
 						$claimedAward['Withdrawal']['value'] = $claimedValue;
 
-						if ($this->User->save($claimerUser, true, array('id', 'wallet')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
+						if ($this->User->save($claimerUser, true, array('id', 'wallet', 'nb_new_won_lotteries')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
 
 							$data = array (
 								'success' => true,
@@ -194,7 +233,7 @@ class WithdrawalsController extends AppController {
 
 							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_credits', $withdrawalId, $claimedValue, $claimedAward['Ticket']['Lottery']['eve_item_id']);
 
-							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
+							$this->log('Lottery claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
 
 						}
@@ -208,7 +247,9 @@ class WithdrawalsController extends AppController {
 						$claimedAward['Withdrawal']['type'] = 'award_isk';
 						$claimedAward['Withdrawal']['value'] = $claimedValue;
 
-						if ($this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
+						$claimerUser['User']['nb_new_won_lotteries']--;
+
+						if ($this->User->save($claimerUser, true, array('id', 'nb_new_won_lotteries')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
 
 							$data = array (
 								'success' => true,
@@ -217,7 +258,7 @@ class WithdrawalsController extends AppController {
 
 							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_isk', $withdrawalId, $claimedValue, $claimedAward['Ticket']['Lottery']['eve_item_id']);
 
-							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
+							$this->log('Lottery claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
 
 						}
@@ -232,7 +273,9 @@ class WithdrawalsController extends AppController {
 						$claimedAward['Withdrawal']['type'] = 'award_item';
 						$claimedAward['Withdrawal']['value'] = $claimedValue;
 
-						if ($this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
+						$claimerUser['User']['nb_new_won_lotteries']--;
+
+						if ($this->User->save($claimerUser, true, array('id', 'nb_new_won_lotteries')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
 
 							$data = array (
 								'success' => true,
@@ -241,7 +284,7 @@ class WithdrawalsController extends AppController {
 
 							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_item', $withdrawalId, $claimedISK, $claimedAward['Ticket']['Lottery']['eve_item_id']);
 
-							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
+							$this->log('Lottery claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
 
 						}

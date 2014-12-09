@@ -14,100 +14,105 @@
 		<div class="navbar-collapse collapse navbar-user">
 			<div class="nav navbar-nav hidden-xs hidden-sm">
 				<h2><?php echo $userGlobal['eve_name']; ?></h2>
+				<p>Next API Check : <?php echo $apiCheckTime; ?></p>
 			</div>
 			<div class="nav navbar-nav navbar-right navbar-user-info">
 				<div class="row">
 					<?php
 					$buttonDeposit = '';
 					if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'){
-						$buttonDeposit = '<a href="#" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="The deposits made to EVE-Lotteries will be available at the next API check.">Deposit <span class="badge">ISK</span></a>';
+						$buttonDeposit = '<a href="#" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="The deposits made to EVE-Lotteries will be available at the next API check."><i class="fa fa-plus-square"></i></a>';
 					}
 					else {
-						$buttonDeposit = '<a onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>';
+						$buttonDeposit = '<a onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK"><i class="fa fa-plus-square"></i></a>';
 					}
 					?>
-					<div class="col-md-4 col-sm-4">
+					<div class="col-md-4 col-sm-4 col-user-navbar">
 						<div class="well">
-							<p><span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i></p>
+							<p><span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i> <?php echo $buttonDeposit; ?></p>
 							<p><span id="points"><?php echo number_format($userGlobal['tokens']); ?></span> <span class="badge">Points</span></p>
 						</div>
 					</div>
-					<div class="col-md-4 col-sm-4">
+					<div class="col-md-3 col-sm-3 col-user-navbar">
 						<div class="btn-group-vertical btn-block">
-							<div class="btn-group">
-								<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-									My Wallet
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" role="menu">
-									<li><?php echo $buttonDeposit; ?></li>
-									<li><?php
-										echo $this->Html->link(
-											'My transactions',
-											array('controller' => 'transactions', 'action' => 'index')										
-											);
-											?>
-										</li>
-									</ul>
-								</div>
+							<?php
+							$label = 'My Wallet';
+							echo $this->Html->link(
+								$label, 
+								array('controller' => 'transactions', 'action' => 'index'),
+								array('class' => 'btn btn-block btn-success', 'escape' => false));
+								?>
+							<?php
+							$label = 'My Messages';
+							if($userGlobal['nb_new_messages']>0){
+								$label= $label.' <span class="badge">'.$userGlobal['nb_new_messages'].' New';
+							}
+							echo $this->Html->link(
+								$label, 
+								array('controller' => 'messages', 'action' => 'index'),
+								array('class' => 'btn btn-block btn-success', 'escape' => false));
+								?>
+							</div>
+						</div>
+						<div class="col-md-3 col-sm-3 col-user-navbar">
+							<div class="btn-group-vertical btn-block">
+
 								<?php
-								$label = 'Create lottery';
-								if($nbFreeLotteries>0){
-									$label= $label.' <span class="badge">'.$nbFreeLotteries.' Free';
+								$label = 'My Lotteries';
+								$nbWon = $userGlobal['nb_new_won_lotteries']+$userGlobal['nb_new_won_super_lotteries'];
+								if($nbWon>0){
+									$label= $label.' <span class="badge">'.$nbWon.' New';
 								}
-								
 								echo $this->Html->link(
 									$label, 
-									'#collapse-item',
+									array('controller' => 'withdrawals', 'action' => 'index'),
 									array(
-										'class' => 'btn btn-block btn-success new-lot-collapse',
-										'data-toggle' => 'collapse',
-										'escape' => false,
-										)
-									);
-								
-								echo $this->Html->link(
-									$label, 
-									array('controller' => 'lotteries', 'action' => 'index'),
-									array(
-										'class' => 'btn btn-block btn-success new-lot-redirect',
-										'escape' => false,)
+										'class' => 'btn btn-block btn-primary',
+										'escape' => false)
 									);
 									?>
-								</div>
-							</div>
-							<div class="col-md-4 col-sm-4">
-								<div class="btn-group-vertical btn-block">
 
 									<?php
-									$label = 'My Lotteries';
-									if($userGlobal['new_lot_won']>0){
-										$label= $label.' <span class="badge">'.$userGlobal['new_lot_won'].' New';
+									$label = 'My Awards';
+									if($userGlobal['nb_new_awards']>0){
+										$label= $label.' <span class="badge">'.$userGlobal['nb_new_awards'].' New';
 									}
 									echo $this->Html->link(
 										$label, 
-										array('controller' => 'withdrawals', 'action' => 'index'),
+										array('controller' => 'awards', 'action' => 'index'),
 										array(
 											'class' => 'btn btn-block btn-primary',
 											'escape' => false)
 										);
 										?>
 
-										<?php
-										$label = 'My Awards';
-										if($userGlobal['new_awards']>0){
-											$label= $label.' <span class="badge">'.$userGlobal['new_awards'].' New';
-										}
-										echo $this->Html->link(
-											$label, 
-											array('controller' => 'awards', 'action' => 'index'),
-											array(
-												'class' => 'btn btn-block btn-primary',
-												'escape' => false)
-											);
-											?>
+									</div>
+								</div>
+								<div class="col-md-2 col-sm-2 col-user-navbar">
+									<?php
+									$label = 'New lottery';
+									if($nbFreeLotteries>0){
+										$label= $label.'<br/> <span class="badge">'.$nbFreeLotteries.' Free';
+									}
 
-										</div>
+									echo $this->Html->link(
+										$label, 
+										'#collapse-item',
+										array(
+											'class' => 'btn btn-block btn-success new-lot-collapse btn-new-lot',
+											'data-toggle' => 'collapse',
+											'escape' => false,
+											)
+										);
+
+									echo $this->Html->link(
+										$label, 
+										array('controller' => 'lotteries', 'action' => 'index', 'create'),
+										array(
+											'class' => 'btn btn-block btn-success new-lot-redirect btn-new-lot',
+											'escape' => false,)
+										);
+										?>
 									</div>
 								</div>
 							</div>

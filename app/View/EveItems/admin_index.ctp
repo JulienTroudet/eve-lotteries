@@ -28,21 +28,22 @@
 						<?php foreach ($eveItems as $eveItem): ?>
 							<tr>
 								<td><img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']?>_64.png"></td>
-								<td><?php echo h($eveItem['EveItem']['name']); ?>&nbsp;</td>
+								<td><?php echo $this->Html->link(h($eveItem['EveItem']['name']), array(
+										'action' => 'view', 'admin' => true, $eveItem['EveItem']['id']),
+									array()
+									); ?>&nbsp;</td>
 								<td><?php echo h($eveItem['EveCategory']['name']); ?>&nbsp;</td>
 								<td><span id="price-<?php echo h($eveItem['EveItem']['id']); ?>"><?php echo number_format($eveItem['EveItem']['eve_value'], 0); ?>&nbsp;</span> <span class="badge">ISK</span></td>
 								<td><?php echo h($eveItem['EveItem']['status']); ?>&nbsp;</td>
 								<td><?php echo h($eveItem['EveItem']['nb_tickets_default']); ?>&nbsp;</td>
 								<td class="actions">
 									<button class="btn btn-xs btn-block btn-default update-price" data-item-id="<?php echo h($eveItem['EveItem']['id']); ?>" data-item-name="<?php echo h($eveItem['EveItem']['name']); ?>">Update Price</button>
-									<?php echo $this->Html->link(__('View'), array(
-										'action' => 'view', 'admin' => true, $eveItem['EveItem']['id']),
-									array('class' => 'btn btn-xs btn-primary')
-									); ?>
+									<br/>
 									<?php echo $this->Html->link(__('Edit'), array(
 										'action' => 'edit', 'admin' => true, $eveItem['EveItem']['id']),
 									array('class' => 'btn btn-xs btn-warning')
 									); ?>
+
 									<?php echo $this->Form->postLink(__('Delete'), array(
 										'action' => 'delete', 'admin' => true, $eveItem['EveItem']['id']),
 									array('class' => 'btn btn-xs btn-danger'), 
@@ -58,57 +59,62 @@
 
 	<script>
 		$( document ).ready(function() {
-			var table = $('#items').DataTable();
+			var table = $('#items').DataTable({
+				"drawCallback": function( settings ) {
+					$( ".update-price").unbind( "click" );
+					$('.update-price').click(function(){
+						var idItem = $(this).data('item-id');
+						var itemName = $(this).data('item-name');
+						$.ajax({
+							type:"get",
+							url:"<?php echo $this->Html->url(array('controller' => 'EveItems', 'action' => 'update_prices','ext' => 'json')); ?>",
 
-			$("#items thead th.filter").each( function ( i ) {
-				i = $(this).data('col-i');
-				var select = $('<select><option value=""></option></select>')
-				.prependTo( $(this).empty() )
-				.on( 'change', function () {
-					var val = $(this).val();
+							data:{
+								idItem:idItem
+							},
+							beforeSend: function(xhr) {
+								xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+							},
+							success: function(response) {
+								if (response.error) {
+									toastr.warning(response.error);
+									console.log(response.error);
+								}
+								if (response.success) {
+									console.log('success');
 
-					table.column( i )
-					.search( val ? '^'+$(this).val()+'$' : val, true, false )
-					.draw();
-				} );
+									$('#price-'+idItem).html(response.itemValue);
 
-				table.column( i ).data().unique().sort().each( function ( d, j ) {
-					select.append( '<option value="'+d+'">'+d+'</option>' )
-				} );
-			} );
+									toastr.success('You have updated the value for the '+itemName+' !');
 
-			$('.update-price').click(function(){
-				var idItem = $(this).data('item-id');
-				var itemName = $(this).data('item-name');
-				$.ajax({
-					type:"get",
-					url:"<?php echo $this->Html->url(array('controller' => 'EveItems', 'action' => 'update_prices','ext' => 'json')); ?>",
-
-					data:{
-						idItem:idItem
-					},
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-					},
-					success: function(response) {
-						if (response.error) {
-							toastr.warning(response.error);
-							console.log(response.error);
-						}
-						if (response.success) {
-							console.log('success');
-
-							$('#price-'+idItem).html(response.itemValue);
-
-							toastr.success('You have updated the value for the '+itemName+' !');
-
-						}
-					},
-					error: function(e) {
-						toastr.warning("An error occurred: " + e.responseText.message);
-						console.log(e);
-					}
-				});
+								}
+							},
+							error: function(e) {
+								toastr.warning("An error occurred: " + e.responseText.message);
+								console.log(e);
+							}
+						});
+					});
+				}
 			});
-		});
+
+$("#items thead th.filter").each( function ( i ) {
+	i = $(this).data('col-i');
+	var select = $('<select><option value=""></option></select>')
+	.prependTo( $(this).empty() )
+	.on( 'change', function () {
+		var val = $(this).val();
+
+		table.column( i )
+		.search( val ? '^'+$(this).val()+'$' : val, true, false )
+		.draw();
+	} );
+
+	table.column( i ).data().unique().sort().each( function ( d, j ) {
+		select.append( '<option value="'+d+'">'+d+'</option>' )
+	} );
+} );
+
+
+});
 </script>

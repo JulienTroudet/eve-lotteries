@@ -2065,7 +2065,7 @@ fieldset[disabled] .btn-default:active,
 .btn-default.disabled.active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
-	background-color: #ffffff;
+	background-color: #8B8B8B;
 	border-color: #cccccc;
 }
 .btn-default .badge {
@@ -3481,7 +3481,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 	max-width: none;
 }
 .nav-tabs {
-	border-bottom: 1px solid #dddddd;
+	border-bottom: 1px solid rgba(68, 68, 68, 1);
+	margin-bottom: 2em;
 }
 .nav-tabs > li {
 	float: left;
@@ -3494,14 +3495,15 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 	border-radius: 4px 4px 0 0;
 }
 .nav-tabs > li > a:hover {
-	border-color: #cfcfcf #cfcfcf #dddddd;
+	border-color: rgba(68, 68, 68, 1);
+	background-color: transparent;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-	color: #ababab;
-	background-color: #454545;
-	border: 1px solid #dddddd;
+	color: #FFFFFF;
+	background-color: #1f1f1f;
+	border: 1px solid rgba(68, 68, 68, 1);
 	border-bottom-color: transparent;
 	cursor: default;
 }

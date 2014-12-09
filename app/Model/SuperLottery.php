@@ -84,9 +84,9 @@ class SuperLottery extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'lottery_status_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
+		'status' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -121,13 +121,6 @@ class SuperLottery extends AppModel {
 		'Winner' => array(
 			'className' => 'User',
 			'foreignKey' => 'winner_user_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'LotteryStatus' => array(
-			'className' => 'LotteryStatus',
-			'foreignKey' => 'lottery_status_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''

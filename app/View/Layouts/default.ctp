@@ -4,9 +4,10 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<?php echo $this->Html->meta( 'favicon.ico', 'img/favicon.ico', array('type' => 'icon', 'rel' => 'shortcut icon'));?>
 
-
-	<title><?php echo $title_for_layout; ?></title>
+	<title>EVE-Lotteries</title>
 	<?php echo $this->Html->css('../ckeditor/contents'); ?>
 	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
@@ -60,7 +61,7 @@
 			
 			
 			<div class="navbar-collapse collapse navbar-site">
-				<p class="navbar-text">Next API Check : <?php echo $apiCheckTime; ?></p>
+				
 				<ul class="nav navbar-nav">
 					<li><?php echo $this->Html->link(
 						'F.A.Q.', 
@@ -74,6 +75,7 @@
 						<?php echo $this->Html->link('Statistics', array('controller' => 'statistics', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>	
 					</li>
 				</ul>
+				<h3 class="navbar-text" style="margin-bottom: 0px;">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
 				<?php 
 				if ($userGlobal != null) {
 					echo $this->element('LogoutForm', array(

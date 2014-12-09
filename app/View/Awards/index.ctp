@@ -5,12 +5,40 @@
 <div class="lotteries index">
 	<h2>My Awards</h2>
 
-	
-	<div id="list-awards">
-		<div class="row">
-			<?php foreach ($awards as $award){ echo $this->element('Awards/AwardPanel', array(
-			"award" => $award ));} ?>
-		</div>		
+	<ul id="award-tabs" class="nav nav-tabs" role="tablist">
+		<li class="active"><a href="#play" role="tab" data-toggle="tab">Play</a></li>
+		<li><a href="#win" role="tab" data-toggle="tab">Win</a></li>
+		<li><a href="#deposits" role="tab" data-toggle="tab">Deposits</a></li>
+		<li><a href="#items" role="tab" data-toggle="tab">Items</a></li>
+		<li><a href="#special" role="tab" data-toggle="tab">Special</a></li>
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div class="tab-pane fade in active" id="play">
+			<?php if(isset($awards['ticket'])){foreach ($awards['ticket'] as $award){ echo $this->element('Awards/AwardPanel', array("award" => $award ));}} ?>
+			<?php if(isset($awards['presence'])){foreach ($awards['presence'] as $award){ echo $this->element('Awards/AwardPanel', array("award" => $award ));}} ?>
+		</div>
+		<div class="tab-pane fade" id="win">
+			<?php if(isset($awards['win'])){foreach ($awards['win'] as $award){ echo $this->element('Awards/AwardPanel', array("award" => $award ));}} ?>
+		</div>
+		<div class="tab-pane fade" id="deposits">
+			<?php if(isset($awards['deposits'])){foreach ($awards['deposits'] as $award){ echo $this->element('Awards/AwardPanel', array("award" => $award ));}} ?>
+		</div>
+		<div class="tab-pane fade" id="items">
+			<?php if(isset($awards['items'])){foreach ($awards['items'] as $award){ echo $this->element('Awards/AwardPanel', array("award" => $award ));}} ?>
+		</div>
+		<div class="tab-pane fade" id="special">
+			<?php if(isset($awards['special'])){foreach ($awards['special'] as $award){ echo $this->element('Awards/AwardPanel', array("award" => $award ));}} ?>
+		</div>
 	</div>
 
 </div>
+<script>
+	$(document).ready(function() {
+		$('#award-tabs a').click(function (e) {
+			e.preventDefault()
+			$(this).tab('show')
+		})
+	});
+</script>

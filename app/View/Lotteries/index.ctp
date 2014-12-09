@@ -3,12 +3,10 @@
 	else{echo '<h2>Want to play ? Log in with your EVE account !</h2>';}?>
 </div>
 <div class="lotteries index">
-	
-
 	<div class="row">
-	<div class="col-md-12 col-sm-12">
+		<div class="col-md-12 col-sm-12">
 			<div class="panel panel-default">
-				<div id="collapse-item" class="panel-collapse collapse">
+				<div id="collapse-item" class="panel-collapse collapse <?php if (isset($openCreate)) { echo 'in';} ?>">
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-md-2 cols-sm-12 pull-left">

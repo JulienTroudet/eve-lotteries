@@ -1,4 +1,4 @@
-<h2>Unclaimed Awards</h2>
+<h2>Won Lotteries</h2>
 <div class="row">
 	<?php foreach ($unclaimed_awards as $unclaimed_award){ echo $this->element('Withdrawals/AwardPanel', array("unclaimed_award" => $unclaimed_award ));} ?>
 </div>
@@ -17,7 +17,7 @@
 		</li>
 	</ul>
 </div>
-<h2>Last Claimed Awards</h2>
+<h2>Last Completed Lotteries</h2>
 <div class="row">
 	<div class="col-md-10 col-md-offset-1">
 		<table class="table table-striped">
@@ -60,5 +60,5 @@
 	
 </div>
 <div class="pull-right">
-	<?php echo $this->Html->link('See all my claimed awards', array('controller' => 'withdrawals', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
+	<?php echo $this->Html->link('See all my claimed Lotteries', array('controller' => 'withdrawals', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
 </div>

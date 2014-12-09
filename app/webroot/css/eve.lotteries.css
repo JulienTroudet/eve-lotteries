@@ -23,6 +23,11 @@
 	font-size: 1.1em;
 }
 
+.navbar-user h2 {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
 .navbar-user .well {
 	min-height: 62px;
 	margin-bottom: 10px;
@@ -35,6 +40,15 @@
 
 .navbar-user-info .btn{
 	padding: 5px 12px;
+}
+
+.col-user-navbar{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.navbar-user .btn-new-lot{
+	height: 63px;
 }
 
 /* [END] USER NAVBAR */
@@ -343,7 +357,7 @@ body {
 }
 
 .super-lot p {
-margin: 0 0 0px;
+	margin: 0 0 0px;
 }
 
 .super-lot .well-finished{
@@ -354,6 +368,16 @@ margin: 0 0 0px;
 .super-lot .well-ongoing{
 	background-color: rgba(80, 128, 80, 0.2);
 	border: 1px solid rgba(80, 128, 80, 0.8);
+}
+
+.super-lot .well-unclaimed{
+	background-color: rgba(24, 47, 66, 0.2);;
+	border: 1px solid rgba(24, 47, 66, 0.8);
+}
+
+.super-lot .well-claimed{
+	background-color: rgba(255, 255, 255, 0.2);;
+	border: 1px solid rgba(255, 255, 255, 0.8);
 }
 /* [END] SUPER LOTTERY PANEL */
 

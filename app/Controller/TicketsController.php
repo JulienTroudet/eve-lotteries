@@ -245,10 +245,11 @@ class TicketsController extends AppController {
 	protected  function _checkWinner($lotteryId, $userId) {
 		$this->loadModel('Statistic');
 		$this->loadModel('Lottery');
+		$this->loadModel('User');
 		$this->Lottery->contain(array(
 			'EveItem', 
 			'Ticket' => array(
-				'User' => array('id', 'eve_name')
+				'User' => array('id', 'eve_name', 'nb_new_won_lotteries')
 				)
 			)
 		);
@@ -263,7 +264,8 @@ class TicketsController extends AppController {
 			$this->loadModel('Withdrawal');
 
 			$lottery['Lottery']['lottery_status_id'] = 2;
-			$this->Lottery->save($lottery['Lottery']);
+			unset($lottery['Lottery']['modified']);
+			$this->Lottery->save($lottery['Lottery'], true, array('id', 'lottery_status_id'));
 
 			$this->Statistic->saveStat($userId, 'end_lottery', $lottery['Lottery']['id'], $lottery['Lottery']['value'], $lottery['Lottery']['eve_item_id']);
 
@@ -291,6 +293,9 @@ class TicketsController extends AppController {
 						));
 
 					$this->Withdrawal->save($newWithdrawal, true, array('type', 'value', 'status','user_id', 'ticket_id'));
+
+					$ticket['User']['nb_new_won_lotteries']++;
+					$this->User->save($ticket['User'], true, array('id', 'nb_new_won_lotteries'));
 
 				}
 				else{

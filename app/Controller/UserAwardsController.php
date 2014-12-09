@@ -57,7 +57,7 @@ class UserAwardsController extends AppController {
 				
 				$claimedAward = $this->UserAward->find('first', $params);
 
-				$claimerUser = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet'));
+				$claimerUser = $this->User->findById($userId);
 
 				if($claimedAward['UserAward']['status'] != 'unclaimed'){
 					$data = array('error' => 'Award already claimed.');
@@ -69,10 +69,11 @@ class UserAwardsController extends AppController {
 
 					$claimedValue = $claimedAward['Award']['award_credits'];
 					$claimerUser['User']['wallet'] += $claimedValue;
+					$claimerUser['User']['nb_new_awards']--;
 
 					$claimedAward['UserAward']['status'] = 'completed';
 
-					if ($this->User->save($claimerUser, true, array('id', 'wallet')) && $this->UserAward->save($claimedAward, true, array('id', 'status'))) {
+					if ($this->User->save($claimerUser, true, array('id', 'wallet', 'nb_new_awards')) && $this->UserAward->save($claimedAward, true, array('id', 'status'))) {
 
 						$this->Session->setFlash(
 							'You have claimed the award "'.$claimedAward['Award']['name'].'" for '.$claimedAward['Award']['award_credits'].' EVE-Lotteries Credits',
@@ -92,46 +93,5 @@ class UserAwardsController extends AppController {
 		return $this->redirect(array('controller' => 'Awards', 'action' => 'index', 'admin' => false));
 	}
 	
-	public function update_awards() {
-		$db = $this->UserAward->getDataSource();
-
-
-		$this->loadModel('User');
-		$this->loadModel('Award');
-
-		$params = array(
-			'contain' => array('UserAward' => array('fields' => array('UserAward.award_id'))),
-			'fields'  => array('User.id'),
-			);
-		$users = $this->User->find('all', $params);
-		$users = Set::combine($users, '{n}.User.id', '{n}.UserAward.{n}.award_id');
-
-		$params = array(
-			'conditions' => array('Award.status' => 'active'),
-			);
-		$awards = $this->Award->find('all', $params);
-
-
-		foreach ($users as $userId => $user) {
-			foreach ($awards as $key => $award) {
-
-				if(!in_array ($award['Award']['id'] , $user )){
-					$result = $db->fetchAll($award['Award']['request'], array($userId));
-					$result = $result[0][0]['result'];
-					if($result){
-						$this->UserAward->create();
-						$newUserAward = array('UserAward'=>array('award_id'=>$award['Award']['id'], 'user_id'=>$userId, 'status'=>'unclaimed'));
-
-						$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));
-
-						$this->log('Award Update : user_id['.$userId.'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
-					}
-				}
-				
-			}
-		}
-
-		die('end');
-		
-	}
+	
 }
