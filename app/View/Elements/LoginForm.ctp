@@ -34,11 +34,35 @@ echo $this->Form->password(
 		)
 	);
 echo "&nbsp;";
+
+echo $this->Form->input(
+	'remember_me', 
+	array(
+		'type' => 'checkbox', 
+		'label'=>false,
+		'data-toggle'=>'tooltip',
+		'data-placement'=>'bottom',
+		'title'=>'Remember me',
+		'class'=>'remember-me',
+		'div' => array(
+			'class' => 'checkbox'
+			),
+		)
+	);
+
+echo "&nbsp;";
 $optionsFormLogin = array(
-    'label' => 'Log in',
-    'div' => false,
-    'class' => 'btn btn-success'
-);
+	'label' => 'Log in',
+	'div' => false,
+	'class' => 'btn btn-success'
+	);
+
+
+
 
 echo $this->Form->end($optionsFormLogin);//*/
 ?>
+
+<script>
+	$('.remember-me').tooltip()
+</script>

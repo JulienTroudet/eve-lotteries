@@ -18,6 +18,7 @@
 	}
 
 	if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes')
+	//if(true)
 	{
 		?>
 		<div class="col-md-6 col-sm-12 col-md-offset-3">

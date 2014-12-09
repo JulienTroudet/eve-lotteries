@@ -216,18 +216,19 @@ Configure::write('Routing.prefixes', array('admin'));
  *
  */
 	Configure::write('Session', array(
-    'defaults' => 'database'
+    'defaults' => 'database',
+    'cookieTimeout' => 0 // expires when browser closes
 ));
 
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'qlmrsgbhplPUM6tLKjth546drgRSG');
+	Configure::write('Security.salt', 'qlmrsgbhplPUM6tLKjth546drgRSGrthyrtrgth');
 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '5169568465196851');
+	Configure::write('Security.cipherSeed', '51695684651968516584635654684545444465469845656');
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).

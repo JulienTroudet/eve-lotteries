@@ -20,6 +20,43 @@ App::uses('AuthComponent', 'Controller/Component');
 
 	public $actsAs = array('Acl' => array('type' => 'requester', 'enabled' => false), 'Containable');
 
+	public function beforeValidate($options = array()) {
+		parent::beforeValidate($options);
+		// if($this->data['User']['password'] == ""){
+		// 	unset($this->data['User']['password']);
+		// }
+
+	}
+
+	/**
+	 * Encoding password
+	 * @param  array  $options [description]
+	 * @return [type]          [description]
+	 */
+	public function beforeSave($options = array()) {
+		parent::beforeSave($options);
+		if(!empty($this->data['User']['password'])) {
+			$this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
+		} 
+		return true;
+	}
+
+	/**
+	 * Met à jour la session user à chaque update du model
+	 * @param  [type] $created [description]
+	 * @param  array  $options [description]
+	 * @return [type]          [description]
+	 */
+	public function afterSave($created, $options = array()){
+		parent::afterSave($created,$options);
+
+        //updating authentication session
+		App::uses('CakeSession', 'Model/Datasource');
+		CakeSession::write('Auth',$this->findById(AuthComponent::user('id')));
+
+		return true;
+	}
+
 
 	public function parentNode() {
 		if (!$this->id && empty($this->data)) {
@@ -162,6 +199,19 @@ App::uses('AuthComponent', 'Controller/Component');
 			'finderQuery' => '',
 			'counterQuery' => ''
 			),
+		'Withdrawal' => array(
+			'className' => 'Withdrawal',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
 		'Article' => array(
 			'className' => 'article',
 			'foreignKey' => 'creator_user_id',
@@ -203,40 +253,5 @@ App::uses('AuthComponent', 'Controller/Component');
 			)
 		);
 
-	public function beforeValidate($options = array()) {
-		parent::beforeValidate($options);
-		if($this->data['User']['password'] == ""){
-			unset($this->data['User']['password']);
-		}
-
-	}
-
-	/**
-	 * Encoding password
-	 * @param  array  $options [description]
-	 * @return [type]          [description]
-	 */
-	public function beforeSave($options = array()) {
-		parent::beforeSave($options);
-		if(!empty($this->data['User']['password'])) {
-			$this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
-		} 
-		return true;
-	}
-
-	/**
-	 * Met à jour la session user à chaque update du model
-	 * @param  [type] $created [description]
-	 * @param  array  $options [description]
-	 * @return [type]          [description]
-	 */
-	public function afterSave($created, $options = array()){
-		parent::afterSave($created,$options);
-
-        //updating authentication session
-		App::uses('CakeSession', 'Model/Datasource');
-		CakeSession::write('Auth',$this->findById(AuthComponent::user('id')));
-
-		return true;
-	}
+	
 }

@@ -68,7 +68,7 @@ class ConfigsController extends AppController {
 
 					if(empty($check_api))
 					{
-						$check_user = $this->User->findByEveId($entry->ownerID1);
+						$check_user = $this->User->findByEveId($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
 
 						if(!empty($check_user))
 						{
@@ -86,8 +86,8 @@ class ConfigsController extends AppController {
 
 							$check_user['User']['wallet'] += $entry->amount;
 
-							if ($this->User->save($check_user) && $this->Transaction->save($newTransaction)){
-								$this->log('Wallet Update : name['.$check_user['User']['wallet'].'], id['.$check_user['User']['eve_name'].'], amount['.$entry->amount.'], total['.$check_user['User']['wallet']);
+							if ($this->User->save($check_user, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+								$this->log('Wallet Update : name['.$check_user['User']['eve_name'].'], id['.$check_user['User']['id'].'], amount['.$entry->amount.'], total['.$check_user['User']['wallet']);
 							}
 						}
 					}
@@ -95,7 +95,7 @@ class ConfigsController extends AppController {
 
 				}
 				$apiCheckTime['Config']['value'] = $response->cached_until;
-				if ($this->Config->save($apiCheckTime)) {
+				if ($this->Config->save($apiCheckTime, true, array('id', 'value'))) {
 					$this->Session->setFlash(
 						'Api Updated',
 						'FlashMessage',

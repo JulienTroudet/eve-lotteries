@@ -34,16 +34,19 @@ App::import('Vendor', 'Pheal', array('file' => 'Pheal' . DS . 'Pheal.php'));
 class AppController extends Controller {
 	public $components = array(
 		'Acl',
-		'Auth' => array(
-			'authorize' => array(
-				'Actions' => array('actionPath' => 'controllers')
-				)
-			),
-		'Session'
+		'Auth',
+		'Session',
+		'Cookie'
 		);
 	public $helpers = array('Html', 'Form', 'Session');
 
 	public function beforeFilter() {
+
+		$this->Cookie->name = 'eve-lotteries';
+		$this->Cookie->time = '1 week';
+		$this->Cookie->key = 'qSI232qsmdsflgjmsdlfkgsmdlfkjsdmlfgjlmdfhkh';
+		$this->Cookie->type('aes');
+
         //Configure AuthComponent
 		$this->Auth->loginAction = array(
 			'controller' => 'users',
@@ -62,16 +65,19 @@ class AppController extends Controller {
 	}
 
 	public function beforeRender() {
-		$userGlobal = $this->Auth->user();
 
-		$this->loadModel('Ticket');
+		$userGlobal = $this->Auth->user();
+		$userGlobal = $this->_readConnectionCookie($userGlobal);
+
+		$this->loadModel('Withdrawal');
 		$params = array(
-			'conditions' => array('Ticket.status' => 'unclaimed', 'Ticket.buyer_user_id' => $userGlobal['id'], 'Ticket.is_winner' => true),
+			'conditions' => array('Withdrawal.status' => 'new', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => 'award'),
 			);
 		
 		if ($userGlobal != null) {
-			$userGlobal['new_awards'] = $this->Ticket->find('count', $params);
+			$userGlobal['new_awards'] = $this->Withdrawal->find('count', $params);
 		}
+		
 
 		$this->set('userGlobal', $userGlobal);
 
@@ -79,6 +85,25 @@ class AppController extends Controller {
 		$apiCheckTime = $this->Config->findByName("apiCheck");
 		$apiCheckTimeValue = $apiCheckTime['Config']['value'];
 		$this->set('apiCheckTime', $apiCheckTimeValue);
+	}
+
+	protected function _readConnectionCookie($userGlobal) {
+		if ($userGlobal != null) {
+			return $userGlobal;
+		}
+
+		$cookValue = $this->Cookie->read('User');
+		if( isset($cookValue['user']) && isset($cookValue['token']) ) {
+			$this->loadModel('User');
+			$cookUser = $this->User->findByIdAndCookieValue($cookValue['user'], $cookValue['token']);
+
+			if($cookUser != null){
+				$this->Auth->login($cookUser['User']);
+				$userGlobal = $this->Auth->user();
+				return $userGlobal;
+			}
+		}
+		return null;	
 	}
 
 }

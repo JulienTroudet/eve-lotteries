@@ -17,13 +17,33 @@
 			</div>
 			<div class="row nav navbar-nav navbar-right navbar-user-info">
 				<div class="well col-md-4 col-sm-4">
-					<p><span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> <span class="badge">ISK</span></p>
+					<p><span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i></p>
 					<p><span id="points"><?php echo number_format($userGlobal['tokens']); ?></span> <span class="badge">Points</span></p>
 				</div>
 				<div class="col-md-4 col-sm-4">
 					<div class="btn-group-vertical btn-block">
 						<a onclick="CCPEVE.showInfo(2, 98342107);" class="btn btn-block btn-success" href="#" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>
-						<a class="btn btn-block btn-success" data-toggle="collapse" href="#collapse-item">Create lottery</a>
+						<?php
+						if($this->here == $this->base.'/'){
+							echo $this->Html->link(
+								'Create lottery', 
+								'#collapse-item',
+								array(
+									'class' => 'btn btn-block btn-success',
+									'data-toggle' => 'collapse'
+									)
+								);
+						}
+						else{
+							echo $this->Html->link(
+								'Create lottery', 
+								array('controller' => 'lotteries', 'action' => 'index'),
+								array(
+									'class' => 'btn btn-block btn-success')
+								);
+
+						}
+						?>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-4">
@@ -39,7 +59,7 @@
 
 						echo $this->Html->link(
 							$label, 
-							array('controller' => 'users', 'action' => 'awards'),
+							array('controller' => 'withdrawals', 'action' => 'index'),
 							array(
 								'class' => 'btn btn-block btn-primary',
 								'escape' => false)
@@ -51,3 +71,5 @@
 			</div><!--/.nav-collapse -->
 		</div><!--/.container-fluid -->
 	</div>
+
+	

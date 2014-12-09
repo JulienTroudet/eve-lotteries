@@ -3,7 +3,7 @@
 	else{echo $this->element('VisitorNavbar', array());}?>
 </div>
 <div class="lotteries index">
-	<h2>Ongoing Lotteries</h2>
+	
 
 	<div class="row">
 		<div class="panel panel-default col-md-12 col-sm-12">
@@ -55,6 +55,7 @@
 
 		</div>
 		<div id="list-lotteries">
+			<h2>Ongoing Lotteries</h2>
 			<div class="row">
 				<?php foreach ($lotteries as $lottery){ echo $this->element('LotteryPanel', array(
 				"lottery" => $lottery ));} ?>
@@ -104,7 +105,7 @@
 				var itemId = $(this).data('item-id');
 				$.ajax({
 					type:"get",
-					url:"<?php echo $this->Html->url(array('controller' => 'lotteries', 'action' => 'buy','ext' => 'json')); ?>",
+					url:"<?php echo $this->Html->url(array('controller' => 'tickets', 'action' => 'buy_firsts','ext' => 'json')); ?>",
 
 					data:{
 						item_id:itemId
@@ -249,7 +250,7 @@ function refreshUserNavbar(){
 function buyListTickets(itemId, listPos){
 	$.ajax({
 		type:"get",
-		url:"<?php echo $this->Html->url(array('controller' => 'lotteries', 'action' => 'buy','ext' => 'json')); ?>",
+		url:"<?php echo $this->Html->url(array('controller' => 'tickets', 'action' => 'buy_firsts','ext' => 'json')); ?>",
 
 		data:{
 			item_id:itemId,

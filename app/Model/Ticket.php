@@ -78,4 +78,25 @@ class Ticket extends AppModel {
 			'order' => ''
 		)
 	);
+
+	/**
+	 * hasMany associations
+	 *
+	 * @var array
+	 */
+	public $hasMany = array(
+		'Withdrawal' => array(
+			'className' => 'withdrawal',
+			'foreignKey' => 'ticket_id',
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			)
+		);
 }

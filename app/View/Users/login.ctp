@@ -32,6 +32,18 @@
 				'label' => 'Password',
 				)
 			);
+		echo $this->Form->input(
+			'remember_me', 
+			array(
+				'type' => 'checkbox', 
+				'before' => '<label>',
+				'after' => 'Remember me</label>',
+				'label'=>false,
+				'div' => array(
+					'class' => 'checkbox'
+					),
+				)
+			);
 		$optionsFormLogin = array(
 			'label' => 'Log in',
 			'div' => false,

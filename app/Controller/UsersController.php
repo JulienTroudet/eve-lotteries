@@ -21,6 +21,8 @@ class UsersController extends AppController {
 		$this->Auth->allow('login', 'logout', 'register');
 	}
 
+
+
 	/**
 	 * index method
 	 *
@@ -126,6 +128,7 @@ class UsersController extends AppController {
 					'FlashMessage',
 					array('type' => 'info')
 					);
+				$this->_setCookie($this->Auth->user('id'));
 				return $this->redirect("/");
 			}
 			$this->Session->setFlash(
@@ -143,7 +146,7 @@ class UsersController extends AppController {
 			'FlashMessage',
 			array('type' => 'info')
 			);
-
+		$this->Cookie->destroy();
 		$this->redirect($this->Auth->logout());
 	}
 
@@ -187,10 +190,6 @@ class UsersController extends AppController {
 		}
 	}
 
-	public function awards() {
-		
-	}
-
 	/**
 	 * index method
 	 *
@@ -201,7 +200,33 @@ class UsersController extends AppController {
 	}
 
 	
+	protected function _setCookie($id) {
 
+		if (!$this->request->data('User.remember_me')) {
+			return false;
+		}
+
+		$loggedUser = $this->User->findById($id);
+		$date = new DateTime();
+
+		$token = Security::hash($loggedUser['User']['username'].$date->format('Y-m-d H:i:s'), 'sha1', true);
+
+		$loggedUser['User']['cookie_value'] = $token;
+
+		if( $this->User->save($loggedUser, true, array('id', 'cookie_value')) ){
+
+			$this->log('cookie created');
+
+			$data = array(
+				'user' => $id,
+				'token' => $token
+				);
+
+			$this->Cookie->write('User', $data, true, '+2 week');
+			return true;
+		}
+		return false;	
+	}
 
 	// public function initDB() {
 	// 	$group = $this->User->Group;
