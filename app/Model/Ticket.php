@@ -15,6 +15,8 @@ class Ticket extends AppModel {
  */
 	public $displayField = 'position';
 
+	public $actsAs = array('Containable');
+
 /**
  * Validation rules
  *

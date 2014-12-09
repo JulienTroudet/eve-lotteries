@@ -118,7 +118,8 @@ class TicketsController extends AppController {
 							'success' => true,
 							'message' => 'Ticket bought.',
 							'buyerEveId' => $buyer['User']['eve_id'],
-							'buyerName' => $buyer['User']['username']
+							'buyerName' => $buyer['User']['eve_name'],
+							'buyerWallet' => number_format($buyer['User']['wallet'], 2)
 							);
 					}
 				}

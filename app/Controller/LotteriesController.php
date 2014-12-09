@@ -16,12 +16,14 @@ class LotteriesController extends AppController {
 	 */
 	public $components = array('Paginator', 'Session');
 
+
+
 	public $paginate = array(
-        'limit' => 10,
-        'order' => array(
-            'Lottery.id' => 'asc'
-        )
-    );
+		'limit' => 10,
+		'order' => array(
+			'Lottery.id' => 'asc'
+			)
+		);
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -34,9 +36,29 @@ class LotteriesController extends AppController {
 	 * @return void
 	 */
 	public function index() {
+
+		$this->loadModel('EveItem');
+		
 		$this->Paginator->settings = $this->paginate;
-		$this->Lottery->recursive = 2;
-		$this->set('lotteries', $this->Paginator->paginate());
+		$this->Lottery->contain(array(
+			'EveItem', 
+			'Ticket' => array(
+				'User' => array('id', 'eve_id', 'eve_name')
+				)
+			)
+		);
+		$lotteries = $this->Paginator->paginate('Lottery');
+
+		$this->set('lotteries', $lotteries);
+
+		$params = array(
+			'conditions' => array('EveItem.status' => '1'),
+			'recursive' => -1,
+			'order' => array('EveItem.name ASC'),
+
+			);
+		$eveItems = $this->EveItem->find('all', $params);
+		$this->set('eveItems', $eveItems);
 	}
 
 	/**
@@ -167,4 +189,7 @@ class LotteriesController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+
+
+	
 }

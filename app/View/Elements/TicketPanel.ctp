@@ -14,7 +14,7 @@
 				<img src="https://image.eveonline.com/Character/<?php echo $ticket['User']['eve_id']; ?>_64.jpg" /> 
 			</span>
 			<span>
-				<?php echo $ticket['User']['username']; ?>
+				<?php echo $ticket['User']['eve_name']; ?>
 			</span>
 		</div>
 		<?php  }?>		

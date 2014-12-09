@@ -1,5 +1,6 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('AppController', 'Controller', 'Xml', 'Utility');
+
 /**
  * EveItems Controller
  *
@@ -14,7 +15,7 @@ class EveItemsController extends AppController {
 	 *
 	 * @var array
 	 */
-	public $components = array('Paginator', 'Session');
+	public $components = array('Paginator', 'Session', 'RequestHandler');
 
 	/**
 	 * index method
@@ -117,4 +118,60 @@ class EveItemsController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+
+	public function update_prices() {
+
+		$this->request->onlyAllow('ajax');
+
+		if ($this->request->is('ajax')) {
+
+			$idItem = $this->request->query('idItem');
+
+			$this->disableCache();
+
+			if (!$this->EveItem->exists($idItem)) {
+				$data = array('error' => 'Invalid Item.' );
+			}
+			
+			$currentItem = $this->EveItem->findById($idItem);
+
+			$eveId = $currentItem['EveItem']['eve_id'];
+
+			$xml = Xml::build('http://api.eve-central.com/api/marketstat?typeid='.$eveId, array('return' => 'simplexml'));
+
+			$currentItem['EveItem']['eve_value'] = (string) $xml->marketstat->type->sell->avg;
+
+			if ($this->EveItem->save($currentItem)) {
+				$data = array (
+						'success' => true,
+						'message' => 'Ticket bought.',
+						'itemValue' => number_format($currentItem['EveItem']['eve_value'], 0),
+						);
+			}
+
+			$this->set(compact('data')); // Pass $data to the view
+			$this->set('_serialize', 'data');
+
+		}
+
+
+	}
+
+	// public function updateAllPrices() {
+	// 	$params = array(
+	// 		'recursive' => -1, 
+	// 		'fields' => array('EveItem.id', 'EveItem.eve_id'),
+	// 		'limit' => 10,
+	// 		);
+	// 	$listIds = $this->EveItem->find('list', $params);
+	// 	foreach ($listIds as $id => $eveId) {
+	// 		$currentItem = $this->EveItem->findById($id);
+	// 		$xml = Xml::build('http://api.eve-central.com/api/marketstat?typeid='.$eveId, array('return' => 'simplexml'));
+	// 		$currentItem['EveItem']['eve_value'] = (string) $xml->marketstat->type->all->median;
+	// 		if ($this->EveItem->save($currentItem)) {
+	// 			debug($currentItem); 
+	// 		}
+	// 	}
+	// 	die();
+	// }
 }

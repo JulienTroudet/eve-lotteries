@@ -3,8 +3,7 @@
 	<?php echo $this->Html->link(
 		'Logout', 
 		array('controller' => 'users', 'action' => 'logout'),
-		array('class' => 'btn btn-danger'),
-		"Are you sure you wish to log out?"
+		array('class' => 'btn btn-danger')
 		); ?>
 
 		

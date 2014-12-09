@@ -204,3 +204,26 @@ body {
     padding-left: 15px;
 }
 /* [END] FOOTER */
+
+/* [START] ITEM PANEL */
+
+.item-panel{
+    margin-bottom:0.5em;
+    padding: 0 5px;
+}
+
+.item-panel a{
+    min-height: 10em;
+}
+
+.item-panel p{
+    margin-bottom:0em;
+}
+
+.item-panel h3{
+    white-space: initial; 
+    margin-top:3px; 
+    margin-bottom:0px; 
+    font-size:1.23em;
+}
+/* [END] ITEM PANEL */

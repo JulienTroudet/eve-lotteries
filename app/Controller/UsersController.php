@@ -150,7 +150,7 @@ class UsersController extends AppController {
 	function register(){
 		if ($this->Session->read('Auth.User')) {
 			$this->Session->setFlash(
-					'Registration confirmed. You are logged in!',
+					'You are logged in!',
 					'FlashMessage',
 					array('type' => 'success')
 					);
@@ -158,16 +158,24 @@ class UsersController extends AppController {
 		}
 		if (!empty($this->data)){
 			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
-
 				$dataProxy = $this->data;
 
 				$dataProxy['User']['group_id'] = 4;
+
 				$this->User->create();
 				if($this->User->save($dataProxy)){
+					$dataProxy = $this->data;
 
 					$this->Auth->login();
-					$this->redirect(array('action' => 'index'));
+					$this->redirect('/');
 				}
+				else{
+				$this->Session->setFlash(
+					'Error in account creation.',
+					'FlashMessage',
+					array('type' => 'danger')
+					);
+			}
 			}
 			else{
 				$this->Session->setFlash(

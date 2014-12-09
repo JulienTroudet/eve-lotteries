@@ -12,6 +12,7 @@
 					<legend><?php echo __('Add Eve Category'); ?></legend>
 					<?php
 					echo $this->Form->input('name');
+					echo $this->Form->input('profit');
 					echo $this->Form->input('status');
 					?>
 				</fieldset>

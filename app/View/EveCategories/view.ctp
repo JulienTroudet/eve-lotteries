@@ -19,6 +19,11 @@
 						<?php echo h($eveCategory['EveCategory']['name']); ?>
 						&nbsp;
 					</dd>
+					<dt><?php echo __('Profit'); ?></dt>
+					<dd>
+						<?php echo h($eveCategory['EveCategory']['profit']); ?>%
+						&nbsp;
+					</dd>
 					<dt><?php echo __('Status'); ?></dt>
 					<dd>
 						<?php echo h($eveCategory['EveCategory']['status']); ?>

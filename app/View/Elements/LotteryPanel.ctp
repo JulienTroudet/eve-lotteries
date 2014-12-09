@@ -1,5 +1,5 @@
 <?php 
-$ticketsCount = count($lottery['Ticket']);
+$ticketsCount = $lottery['Lottery']['nb_tickets'];
 if ($ticketsCount == 8) {
 ?>
 <div class="col-md-4 col-sm-6">

@@ -10,12 +10,12 @@
 
 	<?php echo $this->Html->css('bootstrap.min'); ?>
 	<?php echo $this->Html->css('eve.lotteries'); ?>
+	<?php echo $this->Html->css('toastr.min'); ?>
 
 	<?php echo $this->fetch('css');?>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<?php echo $this->Html->script('bootstrap.min');?>
-	<?php echo $this->Html->script('bootbox.min');?>
-	<?php echo $this->Html->script('toastr');?>
+	<?php echo $this->Html->script('toastr.min'); ?>
 	<?php echo $this->fetch('script');?>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -23,6 +23,22 @@
 	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+	<script type="text/javascript">
+		toastr.options = {
+			"closeButton": true,
+			"debug": false,
+			"positionClass": "toast-top-right",
+			"onclick": null,
+			"showDuration": "300",
+			"hideDuration": "1000",
+			"timeOut": "5000",
+			"extendedTimeOut": "1000",
+			"showEasing": "swing",
+			"hideEasing": "linear",
+			"showMethod": "fadeIn",
+			"hideMethod": "fadeOut"
+		}
+	</script>
 </head>
 
 <body>

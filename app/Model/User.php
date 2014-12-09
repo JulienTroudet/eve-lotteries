@@ -18,7 +18,8 @@ App::uses('AuthComponent', 'Controller/Component');
 	 */
 	public $displayField = 'username';
 
-	public $actsAs = array('Acl' => array('type' => 'requester', 'enabled' => false));
+	public $actsAs = array('Acl' => array('type' => 'requester', 'enabled' => false), 'Containable');
+
 
 	public function parentNode() {
 		if (!$this->id && empty($this->data)) {
@@ -53,125 +54,77 @@ App::uses('AuthComponent', 'Controller/Component');
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
 				'message' => 'You must have a Name.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				),
-			'minLength' => array(
-				'rule' => array('minLength', '3'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'maxLength' => array(
-				'rule' => array('maxLength', '50'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			'length' => array(
+				'rule'      => array('between', 6, 40),
+				'message'   => 'Your Name must be between 6 and 40 characters.',
+				'on'        => 'create',  
 				),
 			'username_unique' => array(
 				'rule' => array('isUnique'),
-				'message' => 'That name is already in use.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'message' => 'That name is already in use.'
 				),
 			),
-			'password' => array(
-				'notEmpty' => array(
-					'rule' => array('notEmpty'),
-							//'message' => 'Your custom message here',
-							//'allowEmpty' => false,
-							//'required' => false,
-							//'last' => false, // Stop validation after this rule
-					'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
-				'length' => array(
-					'rule'      => array('between', 8, 40),
-					'message'   => 'Your password must be between 8 and 40 characters.',
-			            	'on'        => 'create',  // we only need this validation on create
-			            	),
+
+		'password' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
+				'message' => 'Your custom message here',
+
+				'on' => 'create', 
 				),
-			'mail' => array(
-				'notEmpty' => array(
-					'rule'    => array('notEmpty'),
-					'message' => 'Please use a valid Email'
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
-				'mail_unique' => array(
-					'rule' => array('isUnique'),
-					'message' => 'That email is already in use.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
-				'mail_valide' => array(
-					'rule'    => array('email', true),
-					'message' => 'That email is not valid.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
+			'length' => array(
+				'rule'      => array('between', 8, 40),
+				'message'   => 'Your password must be between 8 and 40 characters.',
+				'on'        => 'create',  
 				),
-			'group_id' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
-				'notEmpty' => array(
-					'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
+			),
+		'mail' => array(
+			'notEmpty' => array(
+				'rule'    => array('notEmpty'),
+				'message' => 'Please provide a valid Email'
 				),
-			'wallet' => array(
-				'decimal' => array(
-					'rule' => array('decimal'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
+			'mail_unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'That email is already in use.',
 				),
-			'eve_id' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
-				'eve_id_unique' => array(
-					'rule' => array('isUnique'),
-					'message' => 'That EVE id is already in use.',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-					),
+			'mail_valide' => array(
+				'rule'    => array('email', true),
+				'message' => 'That email is not valid.',
 				),
-			);
+			),
+		'group_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				'message' => 'Your custom message here',
+				),
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
+				'message' => 'Your custom message here',
+				),
+			),
+		'wallet' => array(
+			'decimal' => array(
+				'required' => false,
+				'rule' => array('decimal'),
+				'message' => 'Your custom message here',
+				),
+			),
+		'eve_id' => array(
+			'eve_id_unique' => array(
+				'rule' => array('isUnique'),
+				'required' => true,
+				'message' => 'That EVE id is already in use.',
+				),
+			),
+		'eve_name' => array(
+			'eve_name_unique' => array(
+				'rule' => array('isUnique'),
+				'required' => true,
+				'message' => 'That EVE Name is already in use.',
+				),
+			),
+		);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
