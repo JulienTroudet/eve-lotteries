@@ -106,14 +106,12 @@ App::uses('AuthComponent', 'Controller/Component');
 		'password' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
-				'message' => 'Your custom message here',
-
-				'on' => 'create', 
+				'message' => 'You have to put a password.',
+				'on'        => 'create',  
 				),
 			'length' => array(
 				'rule'      => array('between', 8, 40),
 				'message'   => 'Your password must be between 8 and 40 characters.',
-				'on'        => 'create',  
 				),
 			),
 		'mail' => array(

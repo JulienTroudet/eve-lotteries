@@ -99,19 +99,39 @@
 					)
 				);
 
-			echo $this->Form->hidden(
+			echo $this->Form->input(
 				'eve_id',
 				array(
+					'type' => 'text',
+					'readonly' => 'readonly',
 					'value' => $_SERVER['HTTP_EVE_CHARID'],
+					//'value' => 123456,
+					'div' => array(
+						'class' => 'form-group'
+						),
+					'class' => 'form-control',
+					'label' => 'Your current EVE ID',
+					'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 					)
 				);
 
-			echo $this->Form->hidden(
+			echo $this->Form->input(
 				'eve_name',
 				array(
+					'readonly' => 'readonly',
 					'value' => $_SERVER['HTTP_EVE_CHARNAME'],
+					//'value' => 'Hodor',
+					'div' => array(
+						'class' => 'form-group'
+						),
+					'class' => 'form-control',
+					'label' => 'Your EVE name (will be displayed)',
+					'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 					)
 				);
+
+
+			
 
 
 			$optionsFormLogin = array(

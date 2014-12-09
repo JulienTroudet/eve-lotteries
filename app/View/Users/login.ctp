@@ -32,6 +32,9 @@
 				'label' => 'Password',
 				)
 			);
+
+		echo $this->Html->link('Password forgotten ?', array('controller' => 'users', 'action' => 'password_reinit'), array() );
+
 		echo $this->Form->input(
 			'remember_me', 
 			array(

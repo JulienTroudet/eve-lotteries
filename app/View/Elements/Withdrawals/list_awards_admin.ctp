@@ -3,6 +3,7 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
+					<th></th>
 					<th>Date</th>
 					<th>Claimed as</th>
 					<th>Player</th>
@@ -13,6 +14,7 @@
 			<tbody>
 				<?php foreach ($claimed_awards as $claimed_award){?>
 				<tr>
+					<td><img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['eve_id']; ?>_32.jpg"></td>
 					<td>
 						<?php echo $claimed_award['Withdrawal']['modified']; ?>
 					</td>

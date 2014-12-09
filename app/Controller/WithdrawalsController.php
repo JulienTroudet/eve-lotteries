@@ -381,7 +381,7 @@ class WithdrawalsController extends AppController {
 				if($continue){
 					
 					$success = $this->Withdrawal->updateAll(
-						array('Withdrawal.status' =>'completed'),
+						array('Withdrawal.status' => '"completed"'),
 						array('Withdrawal.group_id' => $withdrawalGroupId)
 						);
 

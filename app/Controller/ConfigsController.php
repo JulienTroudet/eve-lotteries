@@ -69,31 +69,40 @@ class ConfigsController extends AppController {
 					if(empty($check_api)){
 
 						$check_user_deposit = $this->User->findByEveId($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
-						$check_user_withdrawal = $this->User->findByEveId($entry->ownerID2, array('User.id', 'User.eve_name','User.wallet'));
-						$chekUser = null;
 						if(!empty($check_user_deposit)){
-							$chekUser = $check_user_deposit;
-						}
-						else if(!empty($check_user_withdrawal)){
-							$chekUser = $check_user_withdrawal;
-						}
-						
-						if(!empty($chekUser)){
 							
 							$transactions++;
 							$this->Transaction->create();
 							$newTransaction = array('Transaction'=>array(
 								'refid' =>  $entry->refID,
 								'amount' => $entry->amount,
-								'user_id' => $chekUser['User']['id'],
+								'user_id' => $check_user_deposit['User']['id'],
 								'eve_date' => $entry->date,
 								));
 
 
-							$chekUser['User']['wallet'] += $entry->amount;
+							$check_user_deposit['User']['wallet'] += $entry->amount;
 
-							if ($this->User->save($chekUser, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
-								$this->log('Wallet Update : name['.$chekUser['User']['eve_name'].'], id['.$chekUser['User']['id'].'], amount['.$entry->amount.'], total['.$chekUser['User']['wallet'], 'eve-lotteries');
+							if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+								$this->log('Wallet Update : name['.$check_user_deposit['User']['eve_name'].'], id['.$check_user_deposit['User']['id'].'], amount['.$entry->amount.'], total['.$check_user_deposit['User']['wallet'].']', 'eve-lotteries');
+							}
+						}
+
+
+						$check_user_withdrawal = $this->User->findByEveId($entry->ownerID2, array('User.id', 'User.eve_name','User.given_isk'));
+						if(!empty($check_user_withdrawal)){
+							
+							$transactions++;
+							$this->Transaction->create();
+							$newTransaction = array('Transaction'=>array(
+								'refid' =>  $entry->refID,
+								'amount' => $entry->amount,
+								'user_id' => $check_user_withdrawal['User']['id'],
+								'eve_date' => $entry->date,
+								));
+
+							if ($this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+								$this->log('Given_isk Update : name['.$check_user_withdrawal['User']['eve_name'].'], id['.$check_user_withdrawal['User']['id'].'], amount['.$entry->amount.']', 'eve-lotteries');
 							}
 						}
 					}

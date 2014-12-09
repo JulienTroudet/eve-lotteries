@@ -2,13 +2,13 @@
 
 	<?php echo $this->Html->link(
 		'Account', 
-		array('controller' => 'users', 'action' => 'account'),
+		array('controller' => 'users', 'action' => 'edit', 'admin'=>false, 'plugin' => false),
 		array('class' => 'btn btn-primary')
 		);?>
 
 	<?php echo $this->Html->link(
 		'Logout', 
-		array('controller' => 'users', 'action' => 'logout'),
+		array('controller' => 'users', 'action' => 'logout', 'admin'=>false, 'plugin' => false),
 		array('class' => 'btn btn-danger')
 		);?>	
 
@@ -16,7 +16,7 @@
 	if ($userGlobal['group_id'] == 3) {
 		echo $this->Html->link(
 			'Admin Panel', 
-			array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true),
+			array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true, 'plugin' => false),
 			array('class' => 'btn btn-primary')
 			);
 	}

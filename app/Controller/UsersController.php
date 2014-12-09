@@ -18,10 +18,8 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'logout', 'register');
+		$this->Auth->allow('login', 'logout', 'register', 'activate', 'password_reinit');
 	}
-
-
 
 	/**
 	 * index method
@@ -161,20 +159,48 @@ class UsersController extends AppController {
 		}
 		if (!empty($this->data)){
 			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
-				$dataProxy = $this->data;
 
-				$dataProxy['User']['group_id'] = 4;
-
-				$this->User->create();
-				if($this->User->save($dataProxy)){
+				if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
 					$dataProxy = $this->data;
 
-					$this->Auth->login();
-					$this->redirect('/');
+					$dataProxy['User']['group_id'] = 4;
+					$this->log($dataProxy);
+					$this->User->create();
+					if($this->User->save($dataProxy, true, array('username', 'password', 'mail', 'eve_id', 'eve_name', 'group_id'))) {
+
+						$linkActivation = array('controller'=>'users', 'action' => 'activate', $this->User->id.'__'.md5($dataProxy['User']['eve_id']));
+
+						App::uses('CakeEmail', 'Network/Email');
+
+						$mail = new CakeEmail();
+						$mail->from('noreplay@eve-lotteries.com')
+						->to($dataProxy['User']['mail'])
+						->subject('EVE-Lotteries :: Registration')
+						->emailFormat('html')
+						->template('signup')
+						->viewVars(array('username'=>$dataProxy['User']['username'], 'linkActivation' => $linkActivation))
+						->send();
+
+
+						$this->Session->setFlash(
+							'Registration complete ! Please check your mails to activate your account.',
+							'FlashMessage',
+							array('type' => 'success')
+							);
+
+						$this->redirect('/');
+					}
+					else{
+						$this->Session->setFlash(
+							'Error in account creation.',
+							'FlashMessage',
+							array('type' => 'danger')
+							);
+					}
 				}
 				else{
 					$this->Session->setFlash(
-						'Error in account creation.',
+						'Error in Mail confirmation.',
 						'FlashMessage',
 						array('type' => 'danger')
 						);
@@ -199,7 +225,189 @@ class UsersController extends AppController {
 		$this->layout = false;
 	}
 
-	
+	public function activate($token){
+
+		$token = explode('__', $token);
+
+		$this->log($token);
+
+		$user = $this->User->find('first', array(
+			'conditions' => array('id'=>$token[0], 'MD5(User.eve_id)' => $token[1], 'active' => 0)
+			)
+		);
+		if(!empty($user)){
+
+			$this->User->id = $user['User']['id'];
+			$this->User->saveField('active', 1);
+
+			$this->Session->setFlash(
+				'Activation complete ! Please log in.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
+		}
+		else{
+			$this->Session->setFlash(
+				'Your activation link is not valid !',
+				'FlashMessage',
+				array('type' => 'warning')
+				);
+		}
+		$this->Auth->login($user['User']);
+		$this->redirect('/');
+	}
+
+	public function edit(){
+		$userGlobal = $this->Auth->user();
+		$this->User->id = $userGlobal['id'];
+		$passModif = false;
+		$mailModif = false;
+		$passError = false;
+		$mailError = false;
+		
+
+
+		if($this->request->is('post')){
+
+			$dataProxy = $this->request->data;
+			$dataProxy['User']['id'] = $userGlobal['id'];
+
+			$this->log($dataProxy);
+
+			if (!empty($dataProxy['User']['password_confirm'])){
+				$passModif = true;
+				if ($dataProxy['User']['password'] == $dataProxy['User']['password_confirm']){
+					$dataProxy['User']['password'] = $dataProxy['User']['password'];
+				}
+				else{
+					unset($dataProxy['User']['password']);
+					$passError = true;
+				}
+			}
+
+			if (!empty($dataProxy['User']['mail_confirm'])){
+				$mailModif = true;
+				if ($dataProxy['User']['mail'] == $dataProxy['User']['mail_confirm']){
+					$dataProxy['User']['mail'] = $dataProxy['User']['mail'];
+				}
+				else{
+					unset($dataProxy['User']['mail']);
+					$mailError = true;
+				}
+			}
+			if($passError){
+				$this->User->validationErrors['password_confirm'] = array('Error in Password confirmation');
+			}
+			if($mailError){
+				$this->User->validationErrors['mail_confirm'] = array('Error in Mail confirmation');
+			}
+			if(!$passError && !$mailError && ($passModif || $mailModif)){
+				if($this->User->save($dataProxy['User'], true, array('id', 'password', 'mail'))) {
+
+					$this->Session->setFlash(
+						'You have successfully edited your account !',
+						'FlashMessage',
+						array('type' => 'success')
+						);
+
+					$this->redirect('/');
+				}
+				else{
+					$this->Session->setFlash(
+						'Error with the account edition.',
+						'FlashMessage',
+						array('type' => 'warning')
+						);
+				}
+			}			
+		}
+		else{
+			$this->request->data = $this->User->read('mail');
+		}
+	}
+
+	public function password_reinit(){
+
+		if(!empty($this->request->params['named']['token'])){
+			$token = explode('__', $this->request->params['named']['token']);
+
+			$user = $this->User->find('first', array(
+				'conditions' => array('id'=>$token[0], 'MD5(User.password)' => $token[1], 'active' => 1)
+				)
+			);
+			if(!empty($user)){
+
+				$this->User->id = $user['User']['id'];
+
+				$newPassword = substr(md5(uniqid(rand(), true)), 0, 8);
+
+				$user['User']['password'] = $newPassword;
+
+				$this->User->save($user, true, array('id', 'password'));
+
+				App::uses('CakeEmail', 'Network/Email');
+				
+				$mail = new CakeEmail();
+				$mail->from('noreplay@eve-lotteries.com')
+				->to($user['User']['mail'])
+				->subject('EVE-Lotteries :: New Password')
+				->emailFormat('html')
+				->template('nmdp')
+				->viewVars(array('username'=>$user['User']['username'], 'newPassword' => $newPassword))
+				->send();
+
+				$this->Session->setFlash(
+					'Your new password has been sent to you by email !',
+					'FlashMessage',
+					array('type' => 'success')
+					);
+			}
+			else{
+				$this->Session->setFlash(
+					'Your recovery link is not valid !',
+					'FlashMessage',
+					array('type' => 'warning')
+					);
+			}
+		}
+
+		if($this->request->is('post')){
+			$dataProxy = $this->request->data;
+			$user = $this->User->find('first', array(
+				'condition' => array('mail' => $dataProxy['User']['mail'], 'active' => 1),
+				)
+			);
+
+			if(empty($user)){
+				$this->Session->setFlash(
+					'No user with this mail !',
+					'FlashMessage',
+					array('type' => 'warning')
+					);
+			}
+			else{
+				App::uses('CakeEmail', 'Network/Email');
+
+				$linkRecovery = array('controller'=>'users', 'action' => 'password_reinit', 'token' => $user['User']['id'].'__'.md5($user['User']['password']));
+
+				$mail = new CakeEmail();
+				$mail->from('noreplay@eve-lotteries.com')
+				->to($user['User']['mail'])
+				->subject('EVE-Lotteries :: Password recovery')
+				->emailFormat('html')
+				->template('mdp')
+				->viewVars(array('username'=>$user['User']['username'], 'linkRecovery' => $linkRecovery))
+				->send();
+
+				$this->Session->setFlash(
+					'The mail has been sent !',
+					'FlashMessage',
+					array('type' => 'success')
+					);
+			}
+		}
+	}
+
 	protected function _setCookie($id) {
 
 		if (!$this->request->data('User.remember_me')) {
@@ -233,7 +441,7 @@ class UsersController extends AppController {
 	// 	$group->id = 3;
 	// 	$this->Acl->allow($group, 'controllers');
 
-	
+
  //    // allow users to only add and edit on posts and widgets
 	// 	$group->id = 4;
 	// 	$this->Acl->deny($group, 'controllers');
