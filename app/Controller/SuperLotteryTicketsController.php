@@ -112,16 +112,22 @@ class SuperLotteryTicketsController extends AppController {
 						$this->Session->setFlash('You can\'t buy more than one fourth of the tickets.', 'FlashMessage', array('type' => 'info'));
 						return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 					}
-					
-					else if ($this->User->save($buyer, true, array('id', 'tokens')) && $this->SuperLottery->save($superLottery, true, array('id', 'nb_ticket_bought')) && $this->SuperLotteryTicket->save($superLotTicket)) {
+					$dataSource = $this->SuperLotteryTicket->getDataSource();
+					$dataSource->begin();
+					if ($this->User->save($buyer, true, array('id', 'tokens')) && $this->SuperLottery->save($superLottery, true, array('id', 'nb_ticket_bought')) && $this->SuperLotteryTicket->save($superLotTicket)) {
 
 						$this->log('Super Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], idSuperTickets['.$this->SuperLotteryTicket->id.'], superLottery['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
 
 						$this->Session->setFlash('You have bought '.$nbTicketsBuy.' Super tickets !', 'FlashMessage', array('type' => 'success'));
 
 						$this->_checkWinner($superLottery['SuperLottery']['id']);
-
+						$dataSource->commit();
 						return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+						
+
+					}
+					else {
+						$dataSource->rollback();
 					}
 
 					debug($buyer);

@@ -110,7 +110,7 @@
 				$.ajax({
 					type:"get",
 					url:"<?php echo $this->Html->url(array('controller' => 'tickets', 'action' => 'buy_firsts','ext' => 'json')); ?>",
-
+					dataType: 'text json',
 					data:{
 						item_id:itemId
 					},
@@ -129,7 +129,7 @@
 						}
 					},
 					error: function(e) {
-						alert("An error occurred: " + e.responseText);
+						toastr.warning(e.responseText);
 						console.log(e);
 					}
 				});
@@ -250,7 +250,7 @@ function refreshListLotteries(){
 			instanciateButtons()
 		},
 		error: function(e) {
-			alert("An error occurred: " + e.responseText);
+			toastr.warning(e.responseText);
 			console.log(e);
 		}
 	});
@@ -269,7 +269,7 @@ function refreshUserNavbar(){
 			$('#user-navbar').html(response);
 		},
 		error: function(e) {
-			alert("An error occurred: " + e.responseText);
+			toastr.warning(e.responseText);
 			console.log(e);
 		}
 	});
@@ -299,7 +299,7 @@ function buyListTickets(itemId, listPos){
 			}
 		},
 		error: function(e) {
-			alert("An error occurred: " + e.responseText);
+			toastr.warning(e.responseText);
 			console.log(e);
 		}
 	});
@@ -331,7 +331,7 @@ function instanciateButtons(){
 				}
 			},
 			error: function(e) {
-				alert("An error occurred: " + e.responseText);
+				toastr.warning(e.responseText);
 				console.log(e);
 			}
 		});

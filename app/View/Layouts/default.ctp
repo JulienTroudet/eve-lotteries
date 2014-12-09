@@ -20,15 +20,16 @@
 	<?php echo $this->Html->script('bootstrap.min');?>
 	<?php echo $this->Html->script('toastr.min'); ?>
 	<?php echo $this->Html->script('number-format'); ?>
-	<?php echo $this->fetch('script');?>
+	<?php echo $this->fetch('script'); ?>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
 	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-	<script type="text/javascript">
-		toastr.options = {
+	<script>
+		$(document).ready(function() {
+			toastr.options = {
 			"closeButton": true,
 			"debug": false,
 			"positionClass": "toast-top-right",
@@ -41,12 +42,11 @@
 			"hideEasing": "linear",
 			"showMethod": "fadeIn",
 			"hideMethod": "fadeOut"
-		}
+		};
+	});
 	</script>
 </head>
-
 <body>
-
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
@@ -82,7 +82,7 @@
 						<?php echo $this->Html->link('Statistics', array('controller' => 'statistics', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>	
 					</li>
 					<li>
-						<a href="#" onclick="CCPEVE.joinChannel('EVE-Lotteries Chat')">Join In Game Chat</a>
+						<a href="#" onclick="CCPEVE.joinChannel('EVE-Lotteries')">Join In Game Chat</a>
 					</li>
 				</ul>
 				<h3 class="navbar-text" style="margin-bottom: 0px;">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
@@ -106,7 +106,6 @@
 
 
 	<div class="container" style="margin-top:5em;margin-bottom: 12em;;">
-
 
 		<?php echo $this->Session->flash(); ?>
 

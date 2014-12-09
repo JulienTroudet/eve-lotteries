@@ -30,7 +30,6 @@ class LotteriesController extends AppController {
 		if($create){
 			$this->set('openCreate', $create);
 		}
-
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
 		$this->loadModel('SuperLottery');

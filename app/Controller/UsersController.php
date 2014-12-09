@@ -227,6 +227,11 @@ class UsersController extends AppController {
 						'eve_name' => $responseArray['CharacterName'],
 						'wallet' => 0,
 						'tokens' => 0,
+						'nb_new_won_lotteries' => 0,
+						'nb_new_won_super_lotteries' => 0,
+						'nb_new_awards' => 0,
+						'nb_new_messages' => 0,
+						'nb_unread_news' => 0,
 						'owner_hash' => $responseArray['CharacterOwnerHash'],
 						)
 					);

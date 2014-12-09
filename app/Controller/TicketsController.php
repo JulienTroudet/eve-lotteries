@@ -201,7 +201,6 @@ class TicketsController extends AppController {
 					$dataSource->begin();
 					
 					if ($this->User->save($buyer, true, array('id', 'wallet', 'tokens')) && $this->Lottery->save($newLottery)) {
-
 						$this->Statistic->saveStat($buyer['User']['id'], 'init_lottery', $this->Lottery->id, $choosenItem['EveItem']['eve_value'], $choosenItem['EveItem']['id']);
 
 						$this->log('New Lottery : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], lottery['.$this->Lottery->id.'], item['.$choosenItem['EveItem']['name'].']', 'eve-lotteries');

@@ -34,6 +34,7 @@ App::import('Vendor', 'Pheal', array('file' => 'Pheal' . DS . 'Pheal.php'));
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+
 	public $components = array(
 		'Acl',
 		'Auth' => array(
@@ -82,6 +83,8 @@ class AppController extends Controller {
 		
 
 		$this->Auth->allow('display');
+		die();
+
 		
 	}
 
