@@ -1,0 +1,17 @@
+.navbar-user-info{
+	margin: 0.7em;
+	height: 64px;
+}
+.brand{
+	margin-top:0.7em;
+}
+.navbar-user>.navbar-nav {
+	width: 35%;
+}
+.navbar-user>.navbar-right{
+	width: 55%;
+}
+
+.navbar-user-info>h1{
+	margin-top: 12px;
+}

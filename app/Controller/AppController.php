@@ -32,32 +32,39 @@ App::import('Vendor', 'Pheal', array('file' => 'Pheal' . DS . 'Pheal.php'));
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    public $components = array(
-        'Acl',
-        'Auth' => array(
-            'authorize' => array(
-                'Actions' => array('actionPath' => 'controllers')
-            )
-        ),
-        'Session'
-    );
-    public $helpers = array('Html', 'Form', 'Session');
+	public $components = array(
+		'Acl',
+		'Auth' => array(
+			'authorize' => array(
+				'Actions' => array('actionPath' => 'controllers')
+				)
+			),
+		'Session'
+		);
+	public $helpers = array('Html', 'Form', 'Session');
 
-    public function beforeFilter() {
+	public function beforeFilter() {
         //Configure AuthComponent
-        $this->Auth->loginAction = array(
-          'controller' => 'users',
-          'action' => 'login'
-        );
-        $this->Auth->logoutRedirect = array(
-          'controller' => 'users',
-          'action' => 'login'
-        );
-        $this->Auth->loginRedirect = array(
-          'controller' => 'users',
-          'action' => 'index'
-        );
+		$this->Auth->loginAction = array(
+			'controller' => 'users',
+			'action' => 'login'
+			);
+		$this->Auth->logoutRedirect = array(
+			'controller' => 'users',
+			'action' => 'login'
+			);
+		$this->Auth->loginRedirect = array(
+			'controller' => 'users',
+			'action' => 'index'
+			);
 
-        $this->Auth->allow('display');
-    }
+		$this->Auth->allow('display');
+	}
+
+	public function beforeRender() {
+    
+		$userGlobal = $this->Auth->user();
+		$this->set('userGlobal', $userGlobal);
+	}
+
 }
