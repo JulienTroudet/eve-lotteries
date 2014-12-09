@@ -18,12 +18,11 @@ if ($ticketsCount == 8) {
 				<h4 class="media-heading"><?php echo $lottery['EveItem']['name']; ?></h4>
 			</div>
 		</div>
-		<div class="panel-body">
+		<div class="panel-body panel-old-lot">
 			<div class="row">
 				<?php foreach ($lottery['Ticket'] as $ticket){
-					echo $this->element('TicketPanel', array(
+					echo $this->element('OldTicketPanel', array(
 						"ticket" => $ticket,
-						"eveItem" => $lottery['EveItem'],
 						"ticketsCount" => $ticketsCount
 						));
 					}?>

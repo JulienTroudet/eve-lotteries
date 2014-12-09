@@ -66,6 +66,21 @@
     background-color: red;
 }
 
+.ticket-old{
+    border-bottom: 1px solid #ddd;
+    height:2em;
+    padding: 0 0.5em 0 0.5em
+}
+.ticket-old>span{
+   vertical-align:middle;
+   display:inline-block;
+   line-height:normal;
+   text-align:left;
+}
+.panel-old-lot{
+    padding: 0;
+}
+
 
 
 /* [END] TICKETS */
@@ -226,7 +241,7 @@ body {
 }
 
 .item-well{
-    min-height: 10em;
+    min-height: 10.2em;
     margin-bottom: 0px;
     padding: 0.5em 1.5em 0.5em 1.5em;
 }

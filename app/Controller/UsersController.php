@@ -187,6 +187,15 @@ class UsersController extends AppController {
 		}
 	}
 
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function user_navbar() {
+	$this->layout = false;
+	}
+
 	// public function initDB() {
 	// 	$group = $this->User->Group;
 

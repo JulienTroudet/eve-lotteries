@@ -1,9 +1,13 @@
+<div id="user-navbar">
+	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
+	else{echo $this->element('VisitorNavbar', array());}?>
+</div>
 <div class="lotteries index">
-	<h2><?php echo __('Lotteries'); ?></h2>
+	<h2>Ongoing Lotteries</h2>
 
 	<div class="row">
 		<div class="panel panel-default col-md-12 col-sm-12">
-			<div id="collapse-item" class="panel-collapse collapse in">
+			<div id="collapse-item" class="panel-collapse collapse">
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-2 cols-sm-12 pull-left">
@@ -42,164 +46,139 @@
 							</div>
 						</div>
 						<div class="row">
-							<?php 
-							foreach ($eveItems as $eveItem){
-
-								echo $this->element('ItemPanel', array(
-									"eveItem" => $eveItem
-									));}
-									?>
-								</div>
-							</div>
+							<?php foreach ($eveItems as $eveItem){echo $this->element('ItemPanel', array(
+							"eveItem" => $eveItem));} ?>
 						</div>
 					</div>
-
 				</div>
-				<div id="list-lotteries">
-					<div class="row">
-						<?php 
-						foreach ($lotteries as $lottery){
+			</div>
 
-							echo $this->element('LotteryPanel', array(
-								"lottery" => $lottery
-								));}
-								?>
-							</div>
-							<div class="row">
-								<?php 
-								foreach ($old_lotteries as $lottery){
-									echo $this->element('LotteryPanel', array(
-										"lottery" => $lottery
-										));}
-										?>
-									</div>
+		</div>
+		<div id="list-lotteries">
+			<div class="row">
+				<?php foreach ($lotteries as $lottery){ echo $this->element('LotteryPanel', array(
+				"lottery" => $lottery ));} ?>
+			</div>
+			<h2>Last won lotteries</h2>
+			<div class="row">
+				<?php foreach ($old_lotteries as $lottery){echo $this->element('OldLotteryPanel', array(
+				"lottery" => $lottery ));}?>
+			</div>
+			<div class="pull-right">
+				<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
+			</div>
+		</div>
+	</div>
 
+	<div class="modal fade" id="choose-ticket-modal" tabindex="-1" role="dialog" aria-labelledby="choose-ticket-modal-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="choose-ticket-modal-label"></h4>
+				</div>
+				<div class="modal-body">
+					<div class="row" id="choose-ticket-modal-body">
 
-									<div class="row">
-										<ul class="pager">
-											<li class="previous">
-												<?php echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled')); ?>
-											</li>
-											<li>
-												<?php echo $this->Paginator->counter(array( 'format' => __('Page {:page} of {:pages}, showing {:current} lotteries out of {:count}, starting on lottery {:start}, ending on {:end}') )); ?>	
-											</li>
-											<li class="next">
-												<?php
-												echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
-												?>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-
-							<div class="modal fade" id="choose-ticket-modal" tabindex="-1" role="dialog" aria-labelledby="choose-ticket-modal-label" aria-hidden="true">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-											<h4 class="modal-title" id="choose-ticket-modal-label"></h4>
-										</div>
-										<div class="modal-body">
-											<div class="row" id="choose-ticket-modal-body">
-												
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-												<button type="button" class="btn btn-primary" id="button-buy-list">Buy</button>
-											</div>
-										</div>
-									</div>
-								</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" id="button-buy-list">Buy</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 
-								<script>
-									$(document).ready(function() {
 
-										instanciateButtons();
+	<script>
+		$(document).ready(function() {
 
-										$('.item-random-button').click(function(){
-											var itemId = $(this).data('item-id');
-											$.ajax({
-												type:"get",
-												url:"<?php echo $this->Html->url(array('controller' => 'lotteries', 'action' => 'buy','ext' => 'json')); ?>",
+			instanciateButtons();
 
-												data:{
-													item_id:itemId
-												},
-												beforeSend: function(xhr) {
-													xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-												},
-												success: function(response) {
-													if (response.error) {
-														toastr.warning(response.error);
-														console.log(response.error);
-													}
-													if (response.success) {
-														$('#wallet').html(response.buyerWallet);
-														toastr.success('You have bought a ticket for the '+response.itemName+' and created a new lottery !');
-														refreshListLotteries()
-													}
-												},
-												error: function(e) {
-													alert("An error occurred: " + e.responseText.message);
-													console.log(e);
-												}
-											});
-										});
+			$('.item-random-button').click(function(){
+				var itemId = $(this).data('item-id');
+				$.ajax({
+					type:"get",
+					url:"<?php echo $this->Html->url(array('controller' => 'lotteries', 'action' => 'buy','ext' => 'json')); ?>",
 
-
-
-$('.item-choice-button').click(function(){
-
-	<?php if(isset($_SERVER['HTTP_EVE_TRUSTED'])) { ?>
-		window.scrollTo(0,0);
-		<?php } ?>
-
-		var itemId = $(this).data('item-id');
-		var itemName = $(this).data('item-name');
-		var itemNbTickets = $(this).data('item-nbt');
-		var itemPrice = number_format($(this).data('item-price'), 0,'.',',');
-
-		$('#choose-ticket-modal').modal('show');
+					data:{
+						item_id:itemId
+					},
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+					},
+					success: function(response) {
+						if (response.error) {
+							toastr.warning(response.error);
+							console.log(response.error);
+						}
+						if (response.success) {
+							toastr.success('You have bought a ticket for the '+response.itemName+' and created a new lottery !');
+							refreshListLotteries();
+							refreshUserNavbar();
+						}
+					},
+					error: function(e) {
+						alert("An error occurred: " + e.responseText);
+						console.log(e);
+					}
+				});
+			});
 
 
 
-		$('#choose-ticket-modal-label').html(itemName +'&nbsp;&nbsp;&nbsp;'+itemPrice+' <i class="fa fa-money"></i> for one <i class="fa fa-ticket"></i>');
-		var htmlTickets = "";
-		for (var i = 1; i <= itemNbTickets; i++) {
-			htmlTickets+= '<div class="col-md-6 col-sm-12"><button class="btn btn-block btn-primary ticket-modal" data-toggle="button" data-position="'+(i-1)+'">'+i+'. Buy this ticket</button></div>';
-		};
-		$('#button-buy-list').data('item-id', itemId);
-		$('#choose-ticket-modal-body').html(htmlTickets);
-	});
+			$('.item-choice-button').click(function(){
 
-$('#button-buy-list').click(function(){
-	var itemId = $(this).data('item-id');
+				<?php if(isset($_SERVER['HTTP_EVE_TRUSTED'])) { ?>
+					window.scrollTo(0,0);
+					<?php } ?>
 
-	var choosenTickets = $('.ticket-modal.active');
-	var listPos = [];
-	for (var i = 0; i < choosenTickets.length; i++) {
-		listPos.push($(choosenTickets[i]).data('position'));
-	};
+					var itemId = $(this).data('item-id');
+					var itemName = $(this).data('item-name');
+					var itemNbTickets = $(this).data('item-nbt');
+					var itemPrice = number_format($(this).data('item-price'), 0,'.',',');
 
-	buyListTickets(itemId, listPos)
-
-	$('#choose-ticket-modal').modal('hide');
-});
+					$('#choose-ticket-modal').modal('show');
 
 
 
-$("#item-search").on('change keyup paste mouseup', function() {
-	filterItems();
-});
+					$('#choose-ticket-modal-label').html(itemName +'&nbsp;&nbsp;&nbsp;'+itemPrice+' <i class="fa fa-money"></i> for one <i class="fa fa-ticket"></i>');
+					var htmlTickets = "";
+					for (var i = 1; i <= itemNbTickets; i++) {
+						htmlTickets+= '<div class="col-md-6 col-sm-12"><button class="btn btn-block btn-primary ticket-modal" data-toggle="button" data-position="'+(i-1)+'">'+i+'. Buy this ticket</button></div>';
+					};
+					$('#button-buy-list').data('item-id', itemId);
+					$('#choose-ticket-modal-body').html(htmlTickets);
+				});
 
-$("#item-filter").on('change', function() {
-	filterItems();
-});
+			$('#button-buy-list').click(function(){
+				var itemId = $(this).data('item-id');
 
-});
+				var choosenTickets = $('.ticket-modal.active');
+				var listPos = [];
+				for (var i = 0; i < choosenTickets.length; i++) {
+					listPos.push($(choosenTickets[i]).data('position'));
+				};
+
+				buyListTickets(itemId, listPos)
+
+				$('#choose-ticket-modal').modal('hide');
+			});
+
+
+
+			$("#item-search").on('change keyup paste mouseup', function() {
+				filterItems();
+			});
+
+			$("#item-filter").on('change', function() {
+				filterItems();
+			});
+
+		});
 
 
 function filterItems(){
@@ -240,7 +219,26 @@ function refreshListLotteries(){
 			instanciateButtons()
 		},
 		error: function(e) {
-			alert("An error occurred: " + e.responseText.message);
+			alert("An error occurred: " + e.responseText);
+			console.log(e);
+		}
+	});
+}
+
+function refreshUserNavbar(){
+	$.ajax({
+		type:"get",
+		url:"<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'user_navbar')); ?>",
+
+
+		beforeSend: function(xhr) {
+			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		},
+		success: function(response) {
+			$('#user-navbar').html(response);
+		},
+		error: function(e) {
+			alert("An error occurred: " + e.responseText);
 			console.log(e);
 		}
 	});
@@ -264,13 +262,13 @@ function buyListTickets(itemId, listPos){
 				console.log(response.error);
 			}
 			if (response.success) {
-				$('#wallet').html(response.buyerWallet);
 				toastr.success('You have bought '+listPos.length+' tickets for the '+response.itemName+' and created a new lottery !');
-				refreshListLotteries()
+				refreshListLotteries();
+				refreshUserNavbar();
 			}
 		},
 		error: function(e) {
-			alert("An error occurred: " + e.responseText.message);
+			alert("An error occurred: " + e.responseText);
 			console.log(e);
 		}
 	});
@@ -296,13 +294,13 @@ function instanciateButtons(){
 					console.log(response.error);
 				}
 				if (response.success) {
-					$('#wallet').html(response.buyerWallet);
 					refreshListLotteries();
+					refreshUserNavbar();
 					toastr.success('You have bought a ticket for the '+itemName+' !');
 				}
 			},
 			error: function(e) {
-				alert("An error occurred: " + e.responseText.message);
+				alert("An error occurred: " + e.responseText);
 				console.log(e);
 			}
 		});

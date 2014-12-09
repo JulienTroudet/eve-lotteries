@@ -100,7 +100,7 @@ class LotteriesController extends AppController {
 	 */
 	public function list_lotteries() {
 
-		
+		$this->layout = false;
 		$params = array(
 			'contain' => array(
 				'EveItem', 
@@ -110,7 +110,6 @@ class LotteriesController extends AppController {
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
 			'order' => array('Lottery.id ASC'),
-			'limit' => 10
 			);
 		
 		$lotteries = $this->Lottery->find('all', $params);
@@ -128,7 +127,7 @@ class LotteriesController extends AppController {
 			'order' => array(
 				'Lottery.modified' => 'desc'
 				),
-			'limit' => '10'
+			'limit' => 6
 			);
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');
@@ -194,9 +193,7 @@ class LotteriesController extends AppController {
 
 			$itemId = $this->request->query('item_id');
 			$listPositions = $this->request->query('list_positions');
-			if(!$listPositions){
-				$listPositions = array(rand(0, $choosenItem['EveItem']['nb_tickets_default']-1));
-			}
+			
 
 			$this->log($listPositions);
 
@@ -213,6 +210,10 @@ class LotteriesController extends AppController {
 
 				$this->EveItem->contain(array('EveCategory'));
 				$choosenItem = $this->EveItem->findById($itemId);
+
+				if(!$listPositions){
+					$listPositions = array(rand(0, $choosenItem['EveItem']['nb_tickets_default']-1));
+				}
 
 				$ticketPrice = $this->EveItem->getTicketPrice($choosenItem);
 				$totalPrice = count($listPositions)*$ticketPrice;
@@ -272,6 +273,32 @@ class LotteriesController extends AppController {
 			$this->set('_serialize', 'data');
 
 		}
+	}
+
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function old_list() {
+		//vas chercher les anciennes lotteries
+		$paginateVar = array(
+			'contain' => array(
+				'EveItem', 
+				'Ticket' => array(
+					'User' => array('id', 'eve_id', 'eve_name')
+					)
+				),
+			'conditions' => array('Lottery.lottery_status_id' => '2'),
+			'order' => array(
+				'Lottery.modified' => 'desc'
+				),
+			'limit' => '10'
+			);
+		$this->Paginator->settings = $paginateVar;
+		$oldLotteries = $this->Paginator->paginate('Lottery');
+		$this->set('old_lotteries', $oldLotteries);
 	}
 
 	/**
