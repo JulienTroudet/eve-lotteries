@@ -209,7 +209,7 @@ class TicketsController extends AppController {
 		$winner = $this->Lottery->checkForWinner($lottery);
 
 
-		if ($winner != null) {
+		if ($winner >= 0) {
 
 			$this->loadModel('Withdrawal');
 
@@ -220,7 +220,10 @@ class TicketsController extends AppController {
 
 				$proxyTicket = $ticket;
 
+
+				$this->log($ticket['position']);
 				if($ticket['position'] == $winner){
+
 
 					$proxyTicket['is_winner'] = true;
 					$proxyTicket['status'] = 'unclaimed';

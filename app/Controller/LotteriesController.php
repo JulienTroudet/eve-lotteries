@@ -59,7 +59,7 @@ class LotteriesController extends AppController {
 			'order' => array(
 				'Lottery.modified' => 'desc'
 				),
-			'limit' => '10'
+			'limit' => 6
 			);
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');

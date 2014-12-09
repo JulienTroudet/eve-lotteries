@@ -37,7 +37,7 @@ class Lottery extends AppModel {
 			return $winner;
 		}
 
-		return null;
+		return -1;
 	}
 	
 	/**

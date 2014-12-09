@@ -37,7 +37,7 @@ class WithdrawalsController extends AppController {
 						)
 					),
 				),
-			'conditions' => array('Withdrawal.status !=' => 'claimed', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => 'award'),
+			'conditions' => array('Withdrawal.status' => array('new', 'claimed'), 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
 			'order' => array(
 				'Withdrawal.modified' => 'desc'
 				),
@@ -55,7 +55,7 @@ class WithdrawalsController extends AppController {
 						)
 					),
 				),
-			'conditions' => array('Withdrawal.status' => 'claimed', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array("award_credit", "award_isk", "award_item")),
+			'conditions' => array('Withdrawal.status' => 'completed', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item')),
 			'order' => array(
 				'Withdrawal.modified' => 'desc'
 				),
@@ -70,38 +70,39 @@ class WithdrawalsController extends AppController {
 		$this->layout = false;
 
 		$userGlobal = $this->Auth->user();
-		$this->loadModel('Ticket');
-
 		$paginateVar = array(
 			'contain' => array(
-				'Lottery' => array(
-					'EveItem'
-					)
+				'Ticket' => array(
+					'Lottery' => array(
+						'EveItem'
+						)
+					),
 				),
-			'conditions' => array('Ticket.status !=' => 'claimed', 'Ticket.buyer_user_id' => $userGlobal['id'], 'Ticket.is_winner' => true),
+			'conditions' => array('Withdrawal.status' => array('new', 'claimed'), 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
 			'order' => array(
-				'Lottery.modified' => 'desc'
+				'Withdrawal.modified' => 'desc'
 				),
 			'limit' => 10
 			);
 		$this->Paginator->settings = $paginateVar;
-		$unclaimed_awards = $this->Paginator->paginate('Ticket');
+		$unclaimed_awards = $this->Paginator->paginate('Withdrawal');
 		$this->set('unclaimed_awards', $unclaimed_awards);
-
 
 		$params = array(
 			'contain' => array(
-				'Lottery' => array(
-					'EveItem'
-					)
+				'Ticket' => array(
+					'Lottery' => array(
+						'EveItem'
+						)
+					),
 				),
-			'conditions' => array('Ticket.status' => 'claimed', 'Ticket.buyer_user_id' => $userGlobal['id'], 'Ticket.is_winner' => true),
+			'conditions' => array('Withdrawal.status' => 'completed', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item')),
 			'order' => array(
-				'Lottery.modified' => 'desc'
+				'Withdrawal.modified' => 'desc'
 				),
 			'limit' => 10
 			);
-		$claimed_awards = $this->Ticket->find('all', $params);
+		$claimed_awards = $this->Withdrawal->find('all', $params);
 		$this->set('claimed_awards', $claimed_awards);
 
 	}
@@ -110,24 +111,185 @@ class WithdrawalsController extends AppController {
 		$userGlobal = $this->Auth->user();
 		$paginateVar = array(
 			'contain' => array(
-				'Lottery' => array('EveItem'),
+				'Ticket' => array(
+					'Lottery' => array(
+						'EveItem'
+						)
+					),
 				),
-			'conditions' => array('Ticket.status' => 'claimed', 'Ticket.buyer_user_id' => $userGlobal['id'], 'Ticket.is_winner' => true),
+			'conditions' => array('Withdrawal.status' => 'completed', 'Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => array("award_credit", "award_isk", "award_item")),
 			'order' => array(
-				'Lottery.modified' => 'desc'
+				'Withdrawal.modified' => 'desc'
 				),
-			'limit' => 10
+			'limit' => 20
 			);
 		$this->Paginator->settings = $paginateVar;
-		$claimed_awards = $this->Paginator->paginate('Ticket');
+		$completed_awards = $this->Paginator->paginate('Withdrawal');
+		$this->set('completed_awards', $completed_awards);
+	}
+
+	public function claim() {
+
+		$this->request->onlyAllow('ajax');
+
+
+		if ($this->request->is('ajax')) {
+
+			$this->disableCache();
+			$this->loadModel('Ticket');
+			$this->loadModel('User');
+
+			$withdrawalId = $this->request->query('withdrawal_id');
+			$claimType = $this->request->query('claim_type');
+
+			if (!$this->Withdrawal->exists($withdrawalId)) {
+				$data = array('error' => 'Invalid Award.' );
+			}
+
+			if (!in_array( $claimType , array('credit', 'isk', 'item')) ){
+				$data = array('error' => 'Invalid Award claim.' );
+			}
+
+			else{
+				$params = array(
+					'contain' => array(
+						'User',
+						'Ticket' => array(
+							'Lottery',
+							),
+						),
+					'conditions' => array('Withdrawal.id' => $withdrawalId),
+					);
+
+				$claimedAward = $this->Withdrawal->find('first', $params);
+				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
+				if($claimedAward['Withdrawal']['status'] != 'new'){
+					$data = array('error' => 'Award already claimed.');
+				}
+				else{
+					switch ($claimType) {
+						case 'credit':
+
+						$claimedValue = $claimedAward['Ticket']['Lottery']['value']*1.05;
+
+						$claimerUser['User']['wallet'] += $claimedValue;
+
+						$claimedAward['Withdrawal']['status'] = 'completed';
+						$claimedAward['Withdrawal']['type'] = 'award_credit';
+						$claimedAward['Withdrawal']['value'] = $claimedValue;
+
+						if ($this->User->save($claimerUser, true, array('id', 'wallet')) && $this->Withdrawal->save($claimedAward, true, array('id', 'status', 'type', 'value'))) {
+
+							$data = array (
+								'success' => true,
+								'message' => $claimedValue.' EVE-Lotteries Credits',
+								);
+
+							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']');
+
+
+						}
+						break;
+
+						case 'isk':
+						$claimedValue = $claimedAward['Ticket']['Lottery']['value'];
+
+
+						$claimedAward['Withdrawal']['status'] = 'claimed';
+						$claimedAward['Withdrawal']['type'] = 'award_isk';
+						$claimedAward['Withdrawal']['value'] = $claimedValue;
+
+						if ($this->Withdrawal->save($claimedAward, true, array('id', 'status', 'type', 'value'))) {
+
+							$data = array (
+								'success' => true,
+								'message' => $claimedValue.' ISK',
+								);
+
+							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']');
+
+
+						}
+						break;
+						case 'item':
+						$claimedValue = $claimedAward['Ticket']['Lottery']['eve_item_id'];
+
+
+						$claimedAward['Withdrawal']['status'] = 'claimed';
+						$claimedAward['Withdrawal']['type'] = 'award_item';
+						$claimedAward['Withdrawal']['value'] = $claimedValue;
+
+						if ($this->Withdrawal->save($claimedAward, true, array('id', 'status', 'type', 'value'))) {
+
+							$data = array (
+								'success' => true,
+								'message' => preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$claimedAward['Ticket']['Lottery']['name']),
+								);
+
+							$this->log('Award claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']');
+
+
+						}
+						break;
+					}
+
+					
+				}
+			}
+			$this->set(compact('data')); // Pass $data to the view
+			$this->set('_serialize', 'data');
+		}
+	}
+
+
+	public function admin_index() {
+		$paginateVar = array(
+			'contain' => array(
+				'User',
+				'Ticket' => array(
+					'Lottery' => array(
+						'EveItem'
+						)
+					),
+				),
+			'conditions' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => array('award_isk', 'award_item')),
+			'order' => array(
+				'Withdrawal.modified' => 'desc'
+				),
+			'limit' => 20
+			);
+		$this->Paginator->settings = $paginateVar;
+		$claimed_awards = $this->Paginator->paginate('Withdrawal');
 		$this->set('claimed_awards', $claimed_awards);
-
-		$this->log($claimed_awards);
 	}
 
-	public function claim_credits() {
+	public function admin_list_awards_to_complete() {
+		$this->layout = false;
+
+		$paginateVar = array(
+			'contain' => array(
+				'User',
+				'Ticket' => array(
+					'Lottery' => array(
+						'EveItem'
+						)
+					),
+				),
+			'conditions' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => array('award_isk', 'award_item')),
+			'order' => array(
+				'Withdrawal.modified' => 'desc'
+				),
+			'limit' => 20
+			);
+		$this->Paginator->settings = $paginateVar;
+		$claimed_awards = $this->Paginator->paginate('Withdrawal');
+		$this->set('claimed_awards', $claimed_awards);
+	}
+
+	public function admin_complete_award() {
 
 		$this->request->onlyAllow('ajax');
+
 
 		if ($this->request->is('ajax')) {
 
@@ -135,50 +297,42 @@ class WithdrawalsController extends AppController {
 			$this->loadModel('Ticket');
 			$this->loadModel('User');
 
-			$ticketId = $this->request->query('ticket_id');
+			$withdrawalId = $this->request->query('withdrawal_id');
 
-			if (!$this->Ticket->exists($ticketId)) {
-				$data = array('error' => 'Invalid Ticket.' );
+			if (!$this->Withdrawal->exists($withdrawalId)) {
+				$data = array('error' => 'Invalid Award.' );
 			}
+
 
 			else{
 				$params = array(
 					'contain' => array(
-						'Lottery', 
+						'User',
+						'Ticket' => array(
+							'Lottery',
+							),
 						),
-					'conditions' => array('Ticket.id' => $ticketId),
+					'conditions' => array('Withdrawal.id' => $withdrawalId),
 					);
 
-				$claimedTicket = $this->Ticket->find('first', $params);
-
-				$buyer = $this->User->findById($claimedTicket['Ticket']['buyer_user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
-
-				if($claimedTicket['Ticket']['is_winner'] == false){
-					$data = array('error' => 'Award not won.');
+				$claimedAward = $this->Withdrawal->find('first', $params);
+				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
+				
+				if($claimedAward['Withdrawal']['status'] != 'claimed'){
+					$data = array('error' => 'Award not claimed.');
 				}
-
-				if($claimedTicket['Ticket']['status'] != 'unclaimed'){
-					$data = array('error' => 'Award already claimed.');
-				}
-
 				else{
 
+					$claimedAward['Withdrawal']['status'] = 'completed';
 
-					$buyer['User']['wallet'] += $claimedTicket['Lottery']['value']*1.05;
-
-					$claimedTicket['Ticket']['status'] = 'claimed';
-
-					if ($this->User->save($buyer, true, array('id', 'wallet')) && $this->Ticket->save($claimedTicket, true, array('id', 'status'))) {
+					if ($this->Withdrawal->save($claimedAward, true, array('id', 'status'))) {
 
 						$data = array (
 							'success' => true,
-							'message' => 'Award claimed.',
-							'valueCredits' => number_format($claimedTicket['Lottery']['value']*1.05, 2)
+							'message' => 'You have completed the Award for '.$claimerUser['User']['eve_name'],
 							);
 
-						$this->log('Award claimed : type[credits], id['.$buyer['User']['id'].'], ticket['.$ticketId.'], wallet['.number_format($buyer['User']['wallet'], 2).']');
-
-
+						$this->log('Award completed : user_name['.$claimerUser['User']['eve_name'].'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.']');
 					}
 				}
 			}
@@ -187,122 +341,5 @@ class WithdrawalsController extends AppController {
 		}
 	}
 
-	public function claim_isk() {
-
-		$this->request->onlyAllow('ajax');
-
-		if ($this->request->is('ajax')) {
-			
-			$this->disableCache();
-			$this->loadModel('Ticket');
-			$this->loadModel('User');
-
-			$ticketId = $this->request->query('ticket_id');
-
-			if (!$this->Ticket->exists($ticketId)) {
-				$data = array('error' => 'Invalid Ticket.' );
-			}
-			
-			else{
-				$params = array(
-					'contain' => array(
-						'Lottery', 
-						),
-					'conditions' => array('Ticket.id' => $ticketId),
-					);
-
-				$claimedTicket = $this->Ticket->find('first', $params);
-
-				$buyer = $this->User->findById($claimedTicket['Ticket']['buyer_user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
-
-				if($claimedTicket['Ticket']['is_winner'] == false){
-					$data = array('error' => 'Award not won.');
-				}
-
-				if($claimedTicket['Ticket']['status'] != 'unclaimed'){
-					$data = array('error' => 'Award already claimed.');
-				}
-
-				else{
-
-					$claimedTicket['Ticket']['status'] = 'waiting isk';
-
-					if ($this->Ticket->save($claimedTicket, true, array('id', 'status'))) {
-
-						$data = array (
-							'success' => true,
-							'message' => 'Award claimed.',
-							'valueCredits' => number_format($claimedTicket['Lottery']['value'], 2)
-							);
-
-						$this->log('Award claimed : type[isk], id['.$buyer['User']['id'].'], ticket['.$ticketId.']');
-
-						
-					}
-				}
-			}
-			$this->set(compact('data')); // Pass $data to the view
-			$this->set('_serialize', 'data');
-		}
-	}
-
-	public function claim_item() {
-
-		$this->request->onlyAllow('ajax');
-
-		if ($this->request->is('ajax')) {
-			
-			$this->disableCache();
-			$this->loadModel('Ticket');
-			$this->loadModel('User');
-
-			$ticketId = $this->request->query('ticket_id');
-
-			if (!$this->Ticket->exists($ticketId)) {
-				$data = array('error' => 'Invalid Ticket.' );
-			}
-			
-			else{
-				$params = array(
-					'contain' => array(
-						'Lottery', 
-						),
-					'conditions' => array('Ticket.id' => $ticketId),
-					);
-
-				$claimedTicket = $this->Ticket->find('first', $params);
-
-				$buyer = $this->User->findById($claimedTicket['Ticket']['buyer_user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
-
-				if($claimedTicket['Ticket']['is_winner'] == false){
-					$data = array('error' => 'Award not won.');
-				}
-
-				if($claimedTicket['Ticket']['status'] != 'unclaimed'){
-					$data = array('error' => 'Award already claimed.');
-				}
-
-				else{
-
-					$claimedTicket['Ticket']['status'] = 'waiting item';
-
-					if ($this->Ticket->save($claimedTicket, true, array('id', 'status'))) {
-
-						$data = array (
-							'success' => true,
-							'message' => 'Award claimed.',
-							'itemName' => preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$claimedTicket['Lottery']['name']),
-							);
-
-						$this->log('Award claimed : type[item], id['.$buyer['User']['id'].'], ticket['.$ticketId.']');
-
-						
-					}
-				}
-			}
-			$this->set(compact('data')); // Pass $data to the view
-			$this->set('_serialize', 'data');
-		}
-	}
 	
 }

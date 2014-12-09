@@ -29,15 +29,34 @@
 				<table class="table table-striped">
 					<thead>
 						<tr>
-							<th>Lottery Name</th>
+							<th>Lottery Item</th>
 							<th>Claimed as</th>
+							<th>Date</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach ($claimed_awards as $claimed_award){?>
 						<tr>
 							<td>
-								<?php echo $claimed_award['Lottery']['name']; ?>
+								<?php echo $claimed_award['Ticket']['Lottery']['name']; ?>
+							</td>
+							<td>
+								<?php 
+								switch ($claimed_award['Withdrawal']['type']) {
+									case 'award_credit':
+										echo number_format($claimed_award['Withdrawal']['value'], 2).' Credits';
+										break;
+									case 'award_isk':
+										echo number_format($claimed_award['Withdrawal']['value'], 2).' ISK';
+										break;
+									case 'award_item':
+										echo 'Item';
+										break;
+								}
+								 ?>
+							</td>
+							<td>
+								<?php echo $claimed_award['Withdrawal']['modified']; ?>
 							</td>
 						</tr>
 						<?php } ?>
@@ -60,9 +79,7 @@
 
 		$("[data-toggle='tooltip']").tooltip(); 
 
-		instanciateClaimCreditsButtons();
-		instanciateClaimISKButtons();
-		instanciateClaimItemButtons();
+		instanciateButtons();
 
 	});
 
@@ -79,9 +96,7 @@
 			},
 			success: function(response) {
 				$('#list-awards').html(response);
-				instanciateClaimCreditsButtons();
-				instanciateClaimISKButtons();
-				instanciateClaimItemButtons();
+				instanciateButtons();
 			},
 			error: function(e) {
 				alert("An error occurred: " + e.responseText);
@@ -109,15 +124,17 @@
 		});
 	}
 
-	function instanciateClaimCreditsButtons(){
-		$('.btn-claim-credits').click(function(){
-			var idTicket = $(this).data('ticket-id');
+	function instanciateButtons(){
+		$('.btn-claim').click(function(){
+			var idWithdrawal = $(this).data('award-id');
+			var claimType = $(this).data('claim-type');
 			$.ajax({
 				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'claim_credits','ext' => 'json')); ?>",
+				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'claim','ext' => 'json')); ?>",
 
 				data:{
-					ticket_id:idTicket
+					withdrawal_id:idWithdrawal,
+					claim_type:claimType
 				},
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -130,71 +147,7 @@
 					if (response.success) {
 						refreshListAwards();
 						refreshUserNavbar();
-						toastr.success('You have claim '+response.valueCredits+' credits !');
-					}
-				},
-				error: function(e) {
-					alert("An error occurred: " + e.responseText);
-					console.log(e);
-				}
-			});
-		});
-	}
-
-	function instanciateClaimISKButtons(){
-		$('.btn-claim-isk').click(function(){
-			var idTicket = $(this).data('ticket-id');
-			$.ajax({
-				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'claim_isk','ext' => 'json')); ?>",
-
-				data:{
-					ticket_id:idTicket
-				},
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				},
-				success: function(response) {
-					if (response.error) {
-						toastr.warning(response.error);
-						console.log(response.error);
-					}
-					if (response.success) {
-						refreshListAwards();
-						refreshUserNavbar();
-						toastr.success('You have claim '+response.valueCredits+' ISK !');
-					}
-				},
-				error: function(e) {
-					alert("An error occurred: " + e.responseText);
-					console.log(e);
-				}
-			});
-		});
-	}
-
-	function instanciateClaimItemButtons(){
-		$('.btn-claim-item').click(function(){
-			var idTicket = $(this).data('ticket-id');
-			$.ajax({
-				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'claim_item','ext' => 'json')); ?>",
-
-				data:{
-					ticket_id:idTicket
-				},
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				},
-				success: function(response) {
-					if (response.error) {
-						toastr.warning(response.error);
-						console.log(response.error);
-					}
-					if (response.success) {
-						refreshListAwards();
-						refreshUserNavbar();
-						toastr.success('You have claim '+response.itemName+' !');
+						toastr.success('You have claim '+response.message+' !');
 					}
 				},
 				error: function(e) {
