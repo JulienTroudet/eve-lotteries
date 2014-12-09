@@ -52,17 +52,23 @@ class ArticlesController extends AppController {
 	 * @return void
 	 */
 	public function add() {
+
+		$userId = $this->Auth->user('id');
+
+
 		if ($this->request->is('post')) {
+
 			$this->Article->create();
-			if ($this->Article->save($this->request->data)) {
+			$dataProxy = $this->request->data;
+			$dataProxy['Article']['creator_user_id'] = $userId;
+
+			if ($this->Article->save($dataProxy)) {
 				$this->Session->setFlash(__('The article has been saved.'));
 				return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The article could not be saved. Please, try again.'));
 			}
 		}
-		$users = $this->Article->User->find('list');
-		$this->set(compact('users'));
 	}
 
 	/**

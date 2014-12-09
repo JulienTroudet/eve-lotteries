@@ -3,7 +3,6 @@
 	<table cellpadding="0" cellspacing="0">
 	<thead>
 	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
 			<th><?php echo $this->Paginator->sort('title'); ?></th>
 			<th><?php echo $this->Paginator->sort('body'); ?></th>
 			<th><?php echo $this->Paginator->sort('creator_user_id'); ?></th>
@@ -15,7 +14,6 @@
 	<tbody>
 	<?php foreach ($articles as $article): ?>
 	<tr>
-		<td><?php echo h($article['Article']['id']); ?>&nbsp;</td>
 		<td><?php echo h($article['Article']['title']); ?>&nbsp;</td>
 		<td><?php echo h($article['Article']['body']); ?>&nbsp;</td>
 		<td>

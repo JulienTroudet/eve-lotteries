@@ -82,7 +82,6 @@ class LotteriesController extends AppController {
 			'conditions' => array('EveItem.id' => $eve_item_id)
 			));
 		$lotteryStatuses = $this->Lottery->LotteryStatus->find('list');
-		$users = $this->Lottery->User->find('list');
 		$this->set(compact('lotteryStatuses', 'users'));
 		$this->set('eveItem', $oneEveItem);
 	}

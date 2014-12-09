@@ -58,7 +58,7 @@ class TicketsController extends AppController {
 			
 			if ($nbCreated == $lottery['Lottery']['nb_tickets']) {
 				$this->Session->setFlash(__('All the tickets have been created.'));
-				return $this->redirect(array('action' => 'index'));
+				return $this->redirect(array('controller' => 'Lotteries', 'action' => 'view', $lottery_id));
 			} else {
 				$this->Session->setFlash(__('The tickets could not be saved. Please, try again.'));
 			}

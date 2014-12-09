@@ -1,11 +1,6 @@
 <div class="articles view">
 <h2><?php echo __('Article'); ?></h2>
 	<dl>
-		<dt><?php echo __('Id'); ?></dt>
-		<dd>
-			<?php echo h($article['Article']['id']); ?>
-			&nbsp;
-		</dd>
 		<dt><?php echo __('Title'); ?></dt>
 		<dd>
 			<?php echo h($article['Article']['title']); ?>
