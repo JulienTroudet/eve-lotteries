@@ -162,7 +162,7 @@ class WithdrawalsController extends AppController {
 
 				$claimedAward = $this->Withdrawal->find('first', $params);
 
-				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
+				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.wallet'));
 				if($claimedAward['Withdrawal']['status'] != 'new'){
 					$data = array('error' => 'Award already claimed.');
 				}
@@ -373,7 +373,7 @@ class WithdrawalsController extends AppController {
 					}
 
 					if(!isset($claimerUser)){
-						$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
+						$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id'], array('User.id', 'User.eve_name', 'User.wallet'));
 					}
 					
 				}

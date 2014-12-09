@@ -1,6 +1,6 @@
 <div id="user-navbar">
 	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
-	else{echo $this->element('VisitorNavbar', array());}?>
+	else{echo '<h2>Want to play ? Log in with your EVE account !</h2>';}?>
 </div>
 <div class="lotteries index">
 	

@@ -21,7 +21,7 @@
 					</dd>
 					<dt><?php echo __('User'); ?></dt>
 					<dd>
-						<?php echo $this->Html->link($article['User']['username'], array('controller' => 'users', 'action' => 'view', $article['User']['id'])); ?>
+						<?php echo $this->Html->link($article['User']['eve_name'], array('controller' => 'users', 'action' => 'view', $article['User']['id'])); ?>
 						&nbsp;
 					</dd>
 					<dt><?php echo __('Created'); ?></dt>

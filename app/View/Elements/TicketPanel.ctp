@@ -15,7 +15,7 @@
 		<?php if ($ticket['buyer_user_id'] != null){?>
 		<div class="media well well-sm <?php if ($ticket['is_winner']){echo 'winner-ticket';}?>" >
 			<span class="pull-left">
-				<img src="https://image.eveonline.com/Character/<?php echo $ticket['User']['eve_id']; ?>_64.jpg" /> 
+				<img src="https://image.eveonline.com/Character/<?php echo $ticket['User']['id']; ?>_64.jpg" /> 
 			</span>
 			<span>
 				<?php echo $ticket['User']['eve_name']; ?>

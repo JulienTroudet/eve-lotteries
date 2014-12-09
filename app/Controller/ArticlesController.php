@@ -42,6 +42,7 @@ class ArticlesController extends AppController {
 		if (!$this->Article->exists($id)) {
 			throw new NotFoundException(__('Invalid article'));
 		}
+		$this->Article->recursive = 0;
 		$options = array('conditions' => array('Article.' . $this->Article->primaryKey => $id));
 		$this->set('article', $this->Article->find('first', $options));
 	}

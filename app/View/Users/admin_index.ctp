@@ -11,22 +11,19 @@
 				<table class="table table-striped table-condensed">
 					<thead>
 						<tr>
-							<th><?php echo $this->Paginator->sort('username'); ?></th>
-							<th><?php echo $this->Paginator->sort('mail'); ?></th>
+							<th><?php echo $this->Paginator->sort('eve_name'); ?></th>
 							<th><?php echo $this->Paginator->sort('group_id'); ?></th>
 							<th><?php echo $this->Paginator->sort('created'); ?></th>
 							<th><?php echo $this->Paginator->sort('modified'); ?></th>
 							<th><?php echo $this->Paginator->sort('wallet'); ?></th>
 							<th><?php echo $this->Paginator->sort('tokens'); ?></th>
-							<th><?php echo $this->Paginator->sort('eve_id'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach ($users as $user): ?>
 							<tr>
-								<td><?php echo h($user['User']['username']); ?>&nbsp;</td>
-								<td><?php echo h($user['User']['mail']); ?>&nbsp;</td>
+								<td><?php echo h($user['User']['eve_name']); ?>&nbsp;</td>
 								<td>
 									<?php echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', $user['Group']['id'])); ?>
 								</td>
@@ -34,7 +31,6 @@
 								<td><?php echo h($user['User']['modified']); ?>&nbsp;</td>
 								<td><?php echo h($user['User']['wallet']); ?>&nbsp;</td>
 								<td><?php echo h($user['User']['tokens']); ?>&nbsp;</td>
-								<td><?php echo h($user['User']['eve_id']); ?>&nbsp;</td>
 								<td class="actions">
 									<?php echo $this->Html->link(__('View'), array('action' => 'view', 'admin' => true, $user['User']['id'])); ?>
 									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', 'admin' => true, $user['User']['id'])); ?>

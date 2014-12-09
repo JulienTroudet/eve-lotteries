@@ -12,20 +12,7 @@
 					<legend><?php echo __('Edit User'); ?></legend>
 					<?php
 					echo $this->Form->input('id');
-					echo $this->Form->input('username', array(
-						'div' => array(
-							'class' => 'form-group'
-							),
-						'class' => 'form-control',
-						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-						));
-					echo $this->Form->input('mail', array(
-						'div' => array(
-							'class' => 'form-group'
-							),
-						'class' => 'form-control',
-						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-						));
+					
 					echo $this->Form->input('group_id', array(
 						'div' => array(
 							'class' => 'form-group'
@@ -53,14 +40,16 @@
 							'class' => 'form-group'
 							),
 						'class' => 'form-control',
+						'disabled' => true,
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
-					echo $this->Form->input('eve_id', array(
+					echo $this->Form->input('id', array(
 						'type' => 'string',
 						'div' => array(
 							'class' => 'form-group'
 							),
 						'class' => 'form-control',
+						'disabled' => true,
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
 					?>

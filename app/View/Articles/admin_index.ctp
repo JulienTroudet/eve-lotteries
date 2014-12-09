@@ -25,7 +25,7 @@
 								<td><?php echo h($article['Article']['title']); ?>&nbsp;</td>
 								<td><?php echo h($article['Article']['body']); ?>&nbsp;</td>
 								<td>
-									<?php echo $this->Html->link($article['User']['username'], array('controller' => 'users', 'action' => 'view', $article['User']['id'])); ?>
+									<?php echo $this->Html->link($article['User']['eve_name'], array('controller' => 'users', 'action' => 'view', $article['User']['id'])); ?>
 								</td>
 								<td><?php echo h($article['Article']['created']); ?>&nbsp;</td>
 								<td><?php echo h($article['Article']['modified']); ?>&nbsp;</td>

@@ -14,7 +14,7 @@
 			<tbody>
 				<?php foreach ($claimed_awards as $claimed_award){?>
 				<tr>
-					<td><img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['eve_id']; ?>_32.jpg"></td>
+					<td><img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['id']; ?>_32.jpg"></td>
 					<td>
 						<?php echo $claimed_award['Withdrawal']['modified']; ?>
 					</td>
@@ -41,7 +41,7 @@
 						switch ($claimed_award['Withdrawal']['type']) {
 							case 'award_isk':
 							?>
-							<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.showInfo(1377, <?php echo $claimed_award['User']['eve_id']; ?>)"><?php echo $claimed_award['User']['eve_name']; ?></button>
+							<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.showInfo(1377, <?php echo $claimed_award['User']['id']; ?>)"><?php echo $claimed_award['User']['eve_name']; ?></button>
 							<?php
 							break;
 							case 'award_item':

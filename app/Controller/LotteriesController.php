@@ -36,7 +36,7 @@ class LotteriesController extends AppController {
 			'contain' => array(
 				'EveItem', 
 				'Ticket' => array(
-					'User' => array('id', 'eve_id', 'eve_name')
+					'User' => array('id', 'eve_name')
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
@@ -52,7 +52,7 @@ class LotteriesController extends AppController {
 			'contain' => array(
 				'EveItem', 
 				'Ticket' => array(
-					'User' => array('id', 'eve_id', 'eve_name')
+					'User' => array('id', 'eve_name')
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '2'),
@@ -105,7 +105,7 @@ class LotteriesController extends AppController {
 			'contain' => array(
 				'EveItem', 
 				'Ticket' => array(
-					'User' => array('id', 'eve_id', 'eve_name')
+					'User' => array('id', 'eve_name')
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
@@ -120,7 +120,7 @@ class LotteriesController extends AppController {
 			'contain' => array(
 				'EveItem', 
 				'Ticket' => array(
-					'User' => array('id', 'eve_id', 'eve_name')
+					'User' => array('id', 'eve_name')
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '2'),
@@ -167,7 +167,7 @@ class LotteriesController extends AppController {
 			'contain' => array(
 				'EveItem', 
 				'Ticket' => array(
-					'User' => array('id', 'eve_id', 'eve_name')
+					'User' => array('id', 'eve_name')
 					)
 				),
 			'conditions' => array('Lottery.lottery_status_id' => '2'),

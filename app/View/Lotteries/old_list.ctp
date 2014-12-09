@@ -1,6 +1,5 @@
 <div id="user-navbar">
-	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
-	else{echo $this->element('VisitorNavbar', array());}?>
+	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));}?>
 </div>
 
 <div class="lotteries index">

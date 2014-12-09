@@ -1,6 +1,5 @@
 <div id="user-navbar">
-	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
-	else{echo $this->element('VisitorNavbar', array());}?>
+	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));}?>
 </div>
 
 
@@ -35,12 +34,13 @@
 				<p>You can only deposit ISK in game. You can freely deposit any amount to the account of the EVE-Lotteries Corporation. No justification is needed. Your account will be updated on the next API check at : <?php echo $apiCheckTime; ?></p>
 			</div>
 
-			<!-- <div class="well well-sm">
-				<small>Waiting withdrawal : </small>00000000000000000000<span class="badge">ISK</span>
+			<div class="well well-sm">
+				<small>Waiting withdrawal : </small><?php echo number_format($waitingWithdrawals,2); ?> <span class="badge">ISK</span>
 			</div>
+
 			<div class="alert alert-info" role="alert">
 				<p>The ISK you withdraw will be added to your in game account by our team. Thank you for your patience.</p>
-			</div> -->
+			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<h3 class="panel-title">Account informations</h3>

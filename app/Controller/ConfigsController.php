@@ -68,7 +68,7 @@ class ConfigsController extends AppController {
 
 					if(empty($check_api)){
 
-						$check_user_deposit = $this->User->findByEveId($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
+						$check_user_deposit = $this->User->findById($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet'));
 						if(!empty($check_user_deposit)){
 							
 							$transactions++;
@@ -89,7 +89,7 @@ class ConfigsController extends AppController {
 						}
 
 
-						$check_user_withdrawal = $this->User->findByEveId($entry->ownerID2, array('User.id', 'User.eve_name'));
+						$check_user_withdrawal = $this->User->findById($entry->ownerID2, array('User.id', 'User.eve_name'));
 						if(!empty($check_user_withdrawal)){
 							
 							$transactions++;

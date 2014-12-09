@@ -50,7 +50,7 @@ class TicketsController extends AppController {
 			}
 			else{
 				$choosenTicket = $this->Ticket->findById($ticketId);
-				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
+				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet'));
 
 				if($choosenTicket['Ticket']['buyer_user_id'] != null){
 					$data = array('error' => 'Ticket already bought.');
@@ -70,7 +70,7 @@ class TicketsController extends AppController {
 						$data = array (
 							'success' => true,
 							'message' => 'Ticket bought.',
-							'buyerEveId' => $buyer['User']['eve_id'],
+							'buyerEveId' => $buyer['User']['id'],
 							'buyerName' => $buyer['User']['eve_name'],
 							'buyerWallet' => number_format($buyer['User']['wallet'], 2)
 							);
@@ -151,7 +151,7 @@ class TicketsController extends AppController {
 				$ticketPrice = $this->EveItem->getTicketPrice($choosenItem);
 				$totalPrice = count($listPositions)*$ticketPrice;
 
-				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
+				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet'));
 
 				//vas voir si l'item est déjà en lotterie
 				$params = array(
@@ -210,7 +210,7 @@ class TicketsController extends AppController {
 						$data = array (
 							'success' => true,
 							'message' => 'Ticket bought.',
-							'buyerEveId' => $buyer['User']['eve_id'],
+							'buyerEveId' => $buyer['User']['id'],
 							'buyerName' => $buyer['User']['eve_name'],
 							'buyerWallet' => number_format($buyer['User']['wallet'], 2),
 							'itemName' => $choosenItem['EveItem']['name']
@@ -233,7 +233,7 @@ class TicketsController extends AppController {
 		$this->Lottery->contain(array(
 			'EveItem', 
 			'Ticket' => array(
-				'User' => array('id', 'eve_id', 'eve_name')
+				'User' => array('id', 'eve_name')
 				)
 			)
 		);

@@ -14,16 +14,12 @@
 						<?php echo h($user['User']['id']); ?>
 						&nbsp;
 					</dd>
-					<dt><?php echo __('Username'); ?></dt>
+					<dt><?php echo __('Eve Name'); ?></dt>
 					<dd>
-						<?php echo h($user['User']['username']); ?>
+						<?php echo h($user['User']['eve_name']); ?>
 						&nbsp;
 					</dd>
-					<dt><?php echo __('Mail'); ?></dt>
-					<dd>
-						<?php echo h($user['User']['mail']); ?>
-						&nbsp;
-					</dd>
+					
 					<dt><?php echo __('Group'); ?></dt>
 					<dd>
 						<?php echo $this->Html->link($user['Group']['name'], array('controller' => 'groups', 'action' => 'view', 'admin' => true, $user['Group']['id'])); ?>
@@ -44,11 +40,7 @@
 						<?php echo h($user['User']['wallet']); ?>
 						&nbsp;
 					</dd>
-					<dt><?php echo __('Eve Id'); ?></dt>
-					<dd>
-						<?php echo h($user['User']['eve_id']); ?>
-						&nbsp;
-					</dd>
+					
 				</dl>
 			</div>
 			<div class="actions">

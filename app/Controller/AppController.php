@@ -52,26 +52,13 @@ class AppController extends Controller {
 		$this->Cookie->type('aes');
 
         //Configure AuthComponent
-		$this->Auth->authenticate = array(
-			'Form' => array(
-				'scope' => array('User.active' => 1)
-				)
-			);
-		$this->Auth->loginAction = array(
-			'controller' => 'users',
-			'action' => 'login',
-			'admin' => false,
-			);
+		$this->Auth->authenticate = array();
 		$this->Auth->logoutRedirect = array(
-			'controller' => 'users',
-			'action' => 'login',
-			'admin' => false,
-			);
-		$this->Auth->loginRedirect = array(
-			'controller' => 'users',
+			'controller' => 'lotteries',
 			'action' => 'index',
 			'admin' => false,
 			);
+		
 
 		$this->Auth->allow('display');
 	}

@@ -61,7 +61,6 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 		}
 		$this->set('totalWithdrawals', $totalW);
 
-		$totalClaimedIsk = 0;
 		$params = array(
 			'conditions' => array('Transaction.user_id' => $userGlobal['id'], 'Transaction.amount <=' => 0),
 			'fields' => array('SUM(Transaction.amount) as totalAmount'),
@@ -69,10 +68,23 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 			);
 		$iskClaimValue = 0;
 		$iskClaim = $this->Transaction->find('all', $params);
-		if(isset($iskClaim[0][0][totalAmount])){
-			$iskClaimValue = $iskClaim[0][0][totalAmount];
+		if(isset($iskClaim[0][0]['totalAmount'])){
+			$iskClaimValue = $iskClaim[0][0]['totalAmount'];
 		}
 		$this->set('totalClaimedIsk', $iskClaimValue);
 
+
+		$params = array(
+			'conditions' => array('Withdrawal.user_id' => $userGlobal['id'], 'Withdrawal.type' => 'award_isk', 'Withdrawal.status' => 'claimed'),
+			'fields' => array('SUM(Withdrawal.value) as totalAmount'),
+			'group' => array('Withdrawal.user_id'),
+			);
+		$totalWaitingWithdrawals = 0;
+		$waitingWithdrawals = $this->Withdrawal->find('all', $params);
+		if(isset($waitingWithdrawals[0][0]['totalAmount'])){
+			$totalWaitingWithdrawals = $waitingWithdrawals[0][0]['totalAmount'];
+		}
+		$this->log($totalWaitingWithdrawals);
+		$this->set('waitingWithdrawals', $totalWaitingWithdrawals);
 	}
 }

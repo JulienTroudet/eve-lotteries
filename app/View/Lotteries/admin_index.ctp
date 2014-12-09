@@ -33,7 +33,7 @@
 								</td>
 								<td><?php echo h($lottery['Lottery']['name']); ?>&nbsp;</td>
 								<td>
-									<?php echo $this->Html->link($lottery['User']['username'], array('controller' => 'users', 'action' => 'view', 'admin' => true, $lottery['User']['id'])); ?>
+									<?php echo $this->Html->link($lottery['User']['eve_name'], array('controller' => 'users', 'action' => 'view', 'admin' => true, $lottery['User']['id'])); ?>
 								</td>
 								<td><?php echo h($lottery['Lottery']['created']); ?>&nbsp;</td>
 								<td><?php echo h($lottery['Lottery']['modified']); ?>&nbsp;</td>

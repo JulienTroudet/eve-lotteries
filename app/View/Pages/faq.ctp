@@ -1,3 +1,6 @@
+<div id="user-navbar">
+	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));}?>
+</div>
 <h1>Frequently asked questions</h1>
 
 <h2>How do I deposit ?</h2>
