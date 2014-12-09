@@ -1,3 +1,5 @@
+
+/* [START] USER NAVBAR */
 .navbar-user-info{
 	margin: 0.7em;
 	height: 64px;
@@ -5,13 +7,40 @@
 .brand{
 	margin-top:0.7em;
 }
-.navbar-user>.navbar-nav {
-	width: 35%;
+	
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { .navbar-user-info { width: 60%; }}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) { .navbar-user-info{ width: 60%; } }
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { .navbar-user-info { width: 60%; } }
+
+.navbar-user p {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 1.1em;
 }
-.navbar-user>.navbar-right{
-	width: 55%;
+
+.navbar-user .well {
+	min-height: 62px;
+	margin-bottom: 10px;
+	padding: 10px;
 }
 
 .navbar-user-info>h1{
 	margin-top: 12px;
 }
+
+.navbar-user-info .btn{
+	padding: 5px 12px;
+}
+
+/* [END] USER NAVBAR */
+
+/* [START] TICKETS */
+.ticket-slot{
+	margin-bottom: 0.3em;
+}
+/* [END] TICKETS */

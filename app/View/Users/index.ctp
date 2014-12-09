@@ -10,6 +10,7 @@
 				<th><?php echo $this->Paginator->sort('created'); ?></th>
 				<th><?php echo $this->Paginator->sort('modified'); ?></th>
 				<th><?php echo $this->Paginator->sort('wallet'); ?></th>
+				<th><?php echo $this->Paginator->sort('tokens'); ?></th>
 				<th><?php echo $this->Paginator->sort('eve_id'); ?></th>
 				<th class="actions"><?php echo __('Actions'); ?></th>
 			</tr>
@@ -26,6 +27,7 @@
 					<td><?php echo h($user['User']['created']); ?>&nbsp;</td>
 					<td><?php echo h($user['User']['modified']); ?>&nbsp;</td>
 					<td><?php echo h($user['User']['wallet']); ?>&nbsp;</td>
+					<td><?php echo h($user['User']['tokens']); ?>&nbsp;</td>
 					<td><?php echo h($user['User']['eve_id']); ?>&nbsp;</td>
 					<td class="actions">
 						<?php echo $this->Html->link(__('View'), array('action' => 'view', $user['User']['id'])); ?>

@@ -27,7 +27,17 @@ class LotteriesController extends AppController {
 	 * @return void
 	 */
 	public function index() {
-		$this->Lottery->recursive = 0;
+		$this->Lottery->recursive = 1;
+		$this->set('lotteries', $this->Paginator->paginate());
+	}
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function adminIndex() {
+		$this->Lottery->recursive = 1;
 		$this->set('lotteries', $this->Paginator->paginate());
 	}
 
@@ -39,6 +49,21 @@ class LotteriesController extends AppController {
 	 * @return void
 	 */
 	public function view($id = null) {
+		if (!$this->Lottery->exists($id)) {
+			throw new NotFoundException(__('Invalid lottery'));
+		}
+		$options = array('conditions' => array('Lottery.' . $this->Lottery->primaryKey => $id));
+		$this->set('lottery', $this->Lottery->find('first', $options));
+	}
+
+	/**
+	 * view method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function adminView($id = null) {
 		if (!$this->Lottery->exists($id)) {
 			throw new NotFoundException(__('Invalid lottery'));
 		}

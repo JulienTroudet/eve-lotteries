@@ -62,7 +62,7 @@ class AppController extends Controller {
 	}
 
 	public function beforeRender() {
-    
+		//$this->Session->write('Auth', $this->User->read(null, $this->Auth->User('id')));
 		$userGlobal = $this->Auth->user();
 		$this->set('userGlobal', $userGlobal);
 	}

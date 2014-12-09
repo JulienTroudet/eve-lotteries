@@ -13,19 +13,19 @@
 		</div>
 		<div class="navbar-collapse collapse navbar-user">
 			<div class="nav navbar-nav hidden-xs hidden-sm">
-				<div class="row navbar-user-info">
 					<h1><?php echo $userGlobal['username']; ?></h1>
-				</div>
 			</div>
-			<div class="nav navbar-nav navbar-right">
-				<div class="row navbar-user-info">
-					<div class="well col-md-6">
-						
+			<div class="row nav navbar-nav navbar-right navbar-user-info">
+					<div class="well col-md-6 col-sm-6">
+						<p><?php echo number_format($userGlobal['wallet'],2); ?> <span class="badge">ISK</span></p>
+						<p><?php echo number_format($userGlobal['tokens']); ?> <span class="badge">Points</span></p>
 					</div>
-					<div class="col-md-6">
-						
+					<div class="col-md-6 col-sm-6">
+						<div class="btn-group-vertical btn-block">
+							<button type="button" class="btn btn-block btn-success">Deposit ISK</button>
+							<button type="button" class="btn btn-block btn-success">My Awards</button>
+						</div>
 					</div>
-				</div>
 			</div>
 		</div><!--/.nav-collapse -->
 	</div><!--/.container-fluid -->

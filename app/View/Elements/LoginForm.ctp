@@ -1,9 +1,44 @@
-<form class="navbar-form navbar-right" role="form">
-	<div class="form-group">
-		<input type="text" placeholder="Username" class="form-control">
-	</div>
-	<div class="form-group">
-		<input type="password" placeholder="Password" class="form-control">
-	</div>
-	<button type="submit" class="btn btn-success">Sign in</button>
-</form>
+<?php
+//*
+echo $this->Form->create(
+	'User', 
+	array(
+		'url' => array(
+			'controller' => 'users',
+			'action' => 'login'
+			),
+		'class' => 'navbar-form navbar-right',
+		'role' => 'form'
+		));
+echo $this->Form->input(
+	'User.username',
+	array(
+		'div' => array(
+			'class' => 'form-group'
+			),
+		'placeholder' => 'Username',
+		'class' => 'form-control',
+		'label' => '',
+		)
+	);
+echo "&nbsp;";
+echo $this->Form->input(
+	'User.password',
+	array(
+		'div' => array(
+			'class' => 'form-group'
+			),
+		'placeholder' => 'Password',
+		'class' => 'form-control',
+		'label' => '',
+		)
+	);
+echo "&nbsp;";
+$optionsFormLogin = array(
+    'label' => 'Log in',
+    'div' => false,
+    'class' => 'btn btn-success'
+);
+
+echo $this->Form->end($optionsFormLogin);//*/
+?>

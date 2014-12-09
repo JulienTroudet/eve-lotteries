@@ -32,7 +32,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/">EVE-Lotteries</a>
+				<a class="navbar-brand" href="<?php echo $this->webroot; ?>">EVE-Lotteries</a>
 			</div>
 			<div class="navbar-collapse collapse">
 				<?php 
