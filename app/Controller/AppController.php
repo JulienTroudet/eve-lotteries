@@ -40,7 +40,7 @@ class AppController extends Controller {
 		'Auth' => array(
 			'authorize' => array(
 				'Actions' => array('actionPath' => 'Controllers')
-				)
+				),
 			),
 		'Session',
 		'Cookie'
@@ -83,9 +83,8 @@ class AppController extends Controller {
 		
 
 		$this->Auth->allow('display');
-		die();
 
-		
+
 	}
 
 	public function beforeRender() {
@@ -93,35 +92,29 @@ class AppController extends Controller {
 		$this->loadModel('Config');
 		$this->loadModel('Lottery');
 		$this->loadModel('Statistic');
+		$this->loadModel('User');
+
+		App::uses('CakeSession', 'Model/Datasource');
+		CakeSession::write('Auth',$this->User->findById(AuthComponent::user('id')));
 
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
 
-		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
-			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
-			);
-		$total = $this->Statistic->find('first', $params);
-		if(isset($total[0])){
-			$this->set('totalWon', $total[0]['totalAmount']);
-		}
-		else{
-			$this->set('totalWon', 0);
-		}
+		
 
 		
 		
-		if (!isset($userGlobal)) {
+		// if (!isset($userGlobal)) {
 		
-			$this->_setAntiForgeryToken();
+		// 	// $this->_setAntiForgeryToken();
 
-			$eveSSO_URL = $this->Config->findByName('eve_sso_url');
-			$this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
-			$appEveId = $this->Config->findByName('app_eve_id');
-			$this->set('appEveId', $appEveId['Config']['value']);
-			$appReturnUrl = $this->Config->findByName('app_return_url');
-			$this->set('appReturnUrl', $appReturnUrl['Config']['value']);
-		}
+		// 	// $eveSSO_URL = $this->Config->findByName('eve_sso_url');
+		// 	// $this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
+		// 	// $appEveId = $this->Config->findByName('app_eve_id');
+		// 	// $this->set('appEveId', $appEveId['Config']['value']);
+		// 	// $appReturnUrl = $this->Config->findByName('app_return_url');
+		// 	// $this->set('appReturnUrl', $appReturnUrl['Config']['value']);
+		// }
 		
 		$params = array(
 			'conditions' => array('Lottery.lottery_status_id' => '1'),

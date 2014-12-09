@@ -33,6 +33,20 @@ public function beforeFilter() {
 	 */
 	public function index() {
 
+
+		//vas chercher le total gagné
+		$params = array(
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+			);
+		$total = $this->Statistic->find('first', $params);
+		if(isset($total[0])){
+			$this->set('totalWon', $total[0]['totalAmount']);
+		}
+		else{
+			$this->set('totalWon', 0);
+		}
+
 		$db = $this->Statistic->getDataSource();
 		
 		$usersIsk = $db->fetchAll("SELECT users.id, users.eve_name, stat.totalIskAmount FROM users INNER JOIN ( SELECT user_id, SUM(isk_value) AS totalIskAmount FROM statistics  WHERE type = 'win_super_lottery' OR type = 'win_lottery' GROUP BY user_id) stat ON stat.user_id = id ORDER BY totalIskAmount DESC LIMIT 10");

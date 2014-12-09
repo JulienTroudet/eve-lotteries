@@ -85,7 +85,7 @@
 						<a href="#" onclick="CCPEVE.joinChannel('EVE-Lotteries')">Join In Game Chat</a>
 					</li>
 				</ul>
-				<h3 class="navbar-text" style="margin-bottom: 0px;">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
+				
 				<?php 
 				if ($userGlobal != null) {
 					echo $this->element('LogoutForm', array(
@@ -93,10 +93,7 @@
 						));
 				} 
 				else{
-					echo $this->element('LoginForm', array(
-						"userGlobal" => $userGlobal,
-						"antiForgeryToken" => $antiForgeryToken
-						));
+					echo $this->element('LoginForm', array("userGlobal" => $userGlobal));
 				}
 				?>
 			</div><!--/.navbar-collapse -->

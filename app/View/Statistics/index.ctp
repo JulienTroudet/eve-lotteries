@@ -1,6 +1,5 @@
 <div id="user-navbar">
-	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
-	else{echo '<h2>Want to play ? Log in with your EVE account !</h2>';}?>
+	<?php echo $this->element('UserNavbar', array("userGlobal" => $userGlobal)); ?>
 </div>
 <div class="statistics index">
 	<h2>Total won : <?php echo number_format($totalWon, 2) ; ?> ISK</h2>

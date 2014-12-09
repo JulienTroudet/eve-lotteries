@@ -1,5 +1,5 @@
 <p>
-	<strong>Hello <?php echo $username; ?>
+	<strong>Hello <?php echo $user['eve_name']; ?>
 </p>
 
 <p>

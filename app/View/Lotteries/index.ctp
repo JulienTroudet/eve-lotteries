@@ -1,6 +1,5 @@
 <div id="user-navbar">
-	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
-	else{echo '<h2>Want to play ? Log in with your EVE account !</h2>';}?>
+	<?php echo $this->element('UserNavbar', array("userGlobal" => $userGlobal)); ?>
 </div>
 <div class="lotteries index">
 	<div class="row">
@@ -55,7 +54,14 @@
 		</div>
 		<div id="list-lotteries">
 			<?php if (isset($superLottery)){ echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery, "userGlobal" => $userGlobal));} ?>
-			<h2>Ongoing Lotteries</h2>
+			<div class="row">
+				<div class="col-md-3">
+					<h2 class="pull-left">Ongoing Lotteries</h2>
+				</div>
+				<div class="col-md-9">
+					<h3 class="pull-right">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
+				</div>
+			</div>
 			<div class="row">
 				<?php foreach ($lotteries as $lottery){ echo $this->element('Lotteries/LotteryPanel', array(
 				"lottery" => $lottery ));} ?>
@@ -209,7 +215,7 @@
 			// 	}, 3000);
 			// })();
 
-		});
+});
 
 
 function filterItems(){

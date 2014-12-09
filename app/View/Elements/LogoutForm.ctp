@@ -1,10 +1,10 @@
 <div class="navbar-form navbar-right">
 
-	<?php /* echo $this->Html->link(
+	<?php echo $this->Html->link(
 		'Account', 
-		array('controller' => 'users', 'action' => 'edit', 'admin'=>false, 'plugin' => false),
+		array('controller' => 'users', 'action' => 'account', 'admin'=>false, 'plugin' => false),
 		array('class' => 'btn btn-primary')
-		);*/?>
+		); ?>
 
 	<?php echo $this->Html->link(
 		'Logout', 

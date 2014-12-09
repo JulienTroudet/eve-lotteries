@@ -3,6 +3,7 @@
 
 	<?php
 
+
 	if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='No')
 	{
 		?>
@@ -100,12 +101,11 @@
 				);
 
 			echo $this->Form->input(
-				'eve_id',
+				'id',
 				array(
 					'type' => 'text',
 					'readonly' => 'readonly',
 					'value' => $_SERVER['HTTP_EVE_CHARID'],
-					//'value' => 123456,
 					'div' => array(
 						'class' => 'form-group'
 						),
@@ -120,7 +120,6 @@
 				array(
 					'readonly' => 'readonly',
 					'value' => $_SERVER['HTTP_EVE_CHARNAME'],
-					//'value' => 'Hodor',
 					'div' => array(
 						'class' => 'form-group'
 						),

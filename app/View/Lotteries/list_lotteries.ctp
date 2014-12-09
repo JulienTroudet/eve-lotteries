@@ -1,6 +1,13 @@
 <?php if (isset($superLottery)){ echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery ));} ?>
 <div class="row">
-	<h2>Ongoing Lotteries</h2>
+	<div class="col-md-3">
+		<h2 class="pull-left">Ongoing Lotteries</h2>
+	</div>
+	<div class="col-md-9">
+		<h3 class="pull-right">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
+	</div>
+</div>
+<div class="row">
 	<?php foreach ($lotteries as $lottery){ echo $this->element('Lotteries/LotteryPanel', array(
 	"lottery" => $lottery ));} ?>
 </div>

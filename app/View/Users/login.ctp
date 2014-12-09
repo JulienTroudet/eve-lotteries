@@ -16,7 +16,7 @@
 				'div' => array(
 					'class' => 'form-group'
 					),
-				'placeholder' => 'Username',
+				'placeholder' => 'Login',
 				'class' => 'form-control',
 				'label' => 'Login',
 				)

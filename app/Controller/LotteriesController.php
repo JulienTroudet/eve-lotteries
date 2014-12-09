@@ -34,6 +34,21 @@ class LotteriesController extends AppController {
 		$this->loadModel('EveCategory');
 		$this->loadModel('SuperLottery');
 		$this->loadModel('SuperLotteryTicket');
+		$this->loadModel('Statistic');
+
+		//vas chercher le total gagné
+		$params = array(
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+			);
+		$total = $this->Statistic->find('first', $params);
+		if(isset($total[0])){
+			$this->set('totalWon', $total[0]['totalAmount']);
+		}
+		else{
+			$this->set('totalWon', 0);
+		}
+
 
 		//vas chercher les lotteries actuelles
 		$params = array(
@@ -127,6 +142,20 @@ class LotteriesController extends AppController {
 	public function list_lotteries() {
 		$this->loadModel('SuperLottery');
 		$this->loadModel('SuperLotteryTicket');
+		$this->loadModel('Statistic');
+
+		//vas chercher le total gagné
+		$params = array(
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+			);
+		$total = $this->Statistic->find('first', $params);
+		if(isset($total[0])){
+			$this->set('totalWon', $total[0]['totalAmount']);
+		}
+		else{
+			$this->set('totalWon', 0);
+		}
 
 		$this->layout = false;
 		$params = array(

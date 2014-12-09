@@ -28,22 +28,21 @@ App::uses('AuthComponent', 'Controller/Component');
 
 	}
 
-
 	/**
-	 * Met à jour la session user à chaque update du model
-	 * @param  [type] $created [description]
+	 * Encoding password
 	 * @param  array  $options [description]
 	 * @return [type]          [description]
 	 */
-	public function afterSave($created, $options = array()){
-		parent::afterSave($created,$options);
-
-        //updating authentication session
-		App::uses('CakeSession', 'Model/Datasource');
-		CakeSession::write('Auth',$this->findById(AuthComponent::user('id')));
-
+	public function beforeSave($options = array()) {
+		parent::beforeSave($options);
+		if(!empty($this->data['User']['password'])) {
+			$this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
+		} 
 		return true;
 	}
+
+
+
 
 
 	public function parentNode() {
@@ -66,12 +65,73 @@ App::uses('AuthComponent', 'Controller/Component');
 		return array('model' => 'Group', 'foreign_key' => $user['User']['group_id']);
 	}
 
+	public function sendActivationMail($userId) {
+
+		$user = $this->findById($userId);
+
+		$linkActivation = array('controller'=>'users', 'action' => 'activate', $user['User']['id'].'__'.md5($user['User']['id']));
+
+		App::uses('CakeEmail', 'Network/Email');
+
+
+		$mail = new CakeEmail();
+		$mail->from('noreplay@eve-lotteries.com')
+		->to($user['User']['mail'])
+		->subject('EVE-Lotteries :: Registration')
+		->emailFormat('html')
+		->template('signup')
+		->viewVars(array('user'=>$user['User'], 'linkActivation' => $linkActivation))
+		->send();
+
+	}
+
 	/**
 	 * Validation rules
 	 *
 	 * @var array
 	 */
 	public $validate = array(
+		'username' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
+				'message' => 'You must choose a login.',
+				),
+			'length' => array(
+				'rule'      => array('between', 6, 40),
+				'message'   => 'Your login must be between 6 and 40 characters.',
+				'on'        => 'create',  
+				),
+			'username_unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'That name is already in use.'
+				),
+			),
+
+		'password' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
+				'message' => 'You have to put a password.',
+				'on'        => 'create',  
+				),
+			'length' => array(
+				'rule'      => array('between', 8, 40),
+				'message'   => 'Your password must be between 8 and 40 characters.',
+				),
+			),
+		'mail' => array(
+			'notEmpty' => array(
+				'rule'    => array('notEmpty'),
+				'message' => 'Please provide a valid Email'
+				),
+			'mail_unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'That email is already in use.',
+				),
+			'mail_valide' => array(
+				'rule'    => array('email', true),
+				'message' => 'That email is not valid.',
+				),
+			),
 		'group_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
@@ -247,5 +307,5 @@ App::uses('AuthComponent', 'Controller/Component');
 			)
 		);
 
-	
+
 }

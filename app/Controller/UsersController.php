@@ -19,7 +19,7 @@ class UsersController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->userModel = 'User'; 
-		$this->Auth->allow('logout', 'login', 'forbidden', 'eve_login', 'initDB');
+		$this->Auth->allow('logout', 'login', 'forbidden', 'initDB', 'register', 'password_reinit');
 	}
 
 	/**
@@ -111,11 +111,6 @@ class UsersController extends AppController {
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
-	public function login() {
-		$this->Session->setFlash('Please Log in !', 'FlashMessage', array('type' => 'warning'));
-		return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-	}
-
 	public function forbidden() {
 		$this->Session->setFlash('You don\'t have the right to go there !', 'FlashMessage', array('type' => 'warning'));
 		return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
@@ -132,147 +127,292 @@ class UsersController extends AppController {
 		$this->redirect($this->Auth->logout());
 	}
 
-	/**
-	 * index method
-	 *
-	 * @return void
-	 */
 	public function user_navbar() {
 		$this->layout = false;
 	}
 
-	public function eve_login() {
-		$code = $this->params['url']['code'];
-		$state = $this->params['url']['state'];
-
-		if(isset($code) && isset($state)){
-
-			$sessionState = $this->Session->read('User.antiForgeryToken');
-			if($state == $sessionState){
-
-				$this->loadModel('Config');
-				$this->loadModel('Statistic');
-
-				$eveSSO_URL = $this->Config->findByName('eve_sso_url');
-				$eveSSO_URL = $eveSSO_URL['Config']['value'];
-				$appEveId = $this->Config->findByName('app_eve_id');
-				$appEveId = $appEveId['Config']['value'];
-				$appEveSecret = $this->Config->findByName('app_eve_secret');
-				$appEveSecret = $appEveSecret['Config']['value'];
-
-				App::uses('HttpSocket', 'Network/Http');
-
-				$HttpSocket = new HttpSocket();
-
-				$autorisation = base64_encode($appEveId.':'.$appEveSecret);
-
-				$options = array(
-					'header' => array(
-					//'Content-Type' => 'application/x-www-form-urlencoded',
-					//'Host' => 'login.eveonline.com',
-						'Authorization' => 'Basic '.$autorisation
-						),
-					'version' => '1.1',
-					);
-
-
-				$data = array('grant_type' => 'authorization_code', 'code' => $code);
-
-				$results = $HttpSocket->post($eveSSO_URL.'token', $data, $options);
-
-				$obj = json_decode($results,true);
-
-				$options = array(
-					'header' => array(
-					//'Content-Type' => 'application/x-www-form-urlencoded',
-					//'Host' => 'login.eveonline.com',
-						'Authorization' => 'Bearer '.$obj['access_token'],
-						),
-					'version' => '1.1',
-					);
-
-				$results = $HttpSocket->get($eveSSO_URL.'verify', null, $options);
-
-				$responseArray = json_decode($results,true);
-
-
-				$this->_connectPlayer($responseArray);
-			}
-			else{
-				$this->Session->setFlash('Login error !', 'FlashMessage', array('type' => 'error'));
-				return $this->redirect("/");
-			}
-		}
-	}
-
-	protected function _connectPlayer($responseArray) {
-
+	public function login() {
 		if ($this->Session->read('Auth.User')) {
+
 			$this->Session->setFlash(
 				'Already logged !',
 				'FlashMessage',
 				array('type' => 'info')
 				);
+			$this->redirect('/');
+		}
+		if ($this->request->is('post')) {
+
+			
+
+			if ($this->Auth->login()) {
+				$this->Session->setFlash(
+					'Login succcessfull !',
+					'FlashMessage',
+					array('type' => 'info')
+					);
+				$this->_setCookie($this->Auth->user('id'));
+				return $this->redirect("/");
+			}
+			$this->Session->setFlash(
+				'Your login or password was incorrect.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
+		}
+	}
+
+	public function register($encodedId = null){
+		// on vas chercher le parrain si le lien est un lien de parrainage
+		if(isset($encodedId)){
+			$parrain = $this->User->find('first', array(
+				'conditions' => array('MD5(User.id)' => $encodedId, 'active' => 0)
+				)
+			);
 		}
 
-		if (isset($responseArray)) {
-			if (isset($responseArray['CharacterID'])) {
-				$this->User->id = $responseArray['CharacterID'];
+		if ($this->Session->read('Auth.User')) {
+			$this->Session->setFlash(
+				'You are logged in!',
+				'FlashMessage',
+				array('type' => 'success')
+				);
+			return $this->redirect('/');
+		}
+		if (!empty($this->data)){
+			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
 
-				if (!$this->User->exists()) {
+				if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
+					$dataProxy = $this->data;
+
+					$dataProxy['User']['group_id'] = 4;
+					$this->log($dataProxy);
 					$this->User->create();
-					$newUser = array('User' => array(
-						'id' => $responseArray['CharacterID'],
-						'group_id' => 4,
-						'eve_name' => $responseArray['CharacterName'],
-						'wallet' => 0,
-						'tokens' => 0,
-						'nb_new_won_lotteries' => 0,
-						'nb_new_won_super_lotteries' => 0,
-						'nb_new_awards' => 0,
-						'nb_new_messages' => 0,
-						'nb_unread_news' => 0,
-						'owner_hash' => $responseArray['CharacterOwnerHash'],
-						)
-					);
-					$this->User->save($newUser, true, array('id', 'eve_name', 'group_id', 'wallet', 'tokens', 'owner_hash' ));
-					if ($this->Auth->login($newUser['User'])) {
+					if($this->User->save($dataProxy, true, array('id', 'username', 'password', 'mail', 'eve_name', 'group_id'))) {
 
-						$this->Statistic->saveStat($newUser['User']['id'], 'connection', 'first', null, null);
+						$this->User->sendActivationMail($this->User->id);
 
 						$this->Session->setFlash(
-							'First Login succcessfull !',
+							'Registration complete ! Please check your mails to activate your account.',
 							'FlashMessage',
 							array('type' => 'success')
 							);
-						//$this->_setCookie($this->Auth->user('id'));
-						return $this->redirect("/");
+
+						$this->redirect($this->Auth->logout());
+					}
+					else{
+						$this->Session->setFlash(
+							'Error in account creation.',
+							'FlashMessage',
+							array('type' => 'error')
+							);
 					}
 				}
 				else{
-					$user = $this->User->findById($responseArray['CharacterID']);
-					if ($this->Auth->login($user['User'])) {
-
-						$this->Statistic->saveStat($user['User']['id'], 'connection', null, null, null);
-
-						$this->Session->setFlash(
-							'Login succcessfull !',
-							'FlashMessage',
-							array('type' => 'info')
-							);
-						//$this->_setCookie($this->Auth->user('id'));
-						return $this->redirect("/");
-					}
+					$this->Session->setFlash(
+						'Error in Mail confirmation.',
+						'FlashMessage',
+						array('type' => 'error')
+						);
 				}
-				//
-				return $this->redirect("/");
 			}
-
-			else if (isset($responseArray['error'])) {
+			else{
 				$this->Session->setFlash(
-					'Error with the authentification : '.$responseArray['error_description'],
+					'Error in Password confirmation.',
 					'FlashMessage',
 					array('type' => 'error')
+					);
+			}
+		}
+	}
+
+	public function activate($token){
+
+		$token = explode('__', $token);
+
+		$this->log($token);
+
+		$user = $this->User->find('first', array(
+			'conditions' => array('id'=>$token[0], 'MD5(User.id)' => $token[1], 'active' => 0)
+			)
+		);
+		if(!empty($user)){
+
+			$this->User->id = $user['User']['id'];
+			$this->User->saveField('active', 1);
+
+			$this->Session->setFlash(
+				'Activation complete ! Please log in.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
+		}
+		else{
+			$this->Session->setFlash(
+				'Your activation link is not valid !',
+				'FlashMessage',
+				array('type' => 'warning')
+				);
+		}
+		$this->Auth->login($user['User']);
+		$this->redirect('/');
+	}
+
+	public function account(){
+		$userGlobal = $this->Auth->user();
+		$this->User->id = $userGlobal['id'];
+		$passModif = false;
+		$mailModif = false;
+		$passError = false;
+		$mailError = false;
+		
+	}
+
+	public function edit(){
+		$userGlobal = $this->Auth->user();
+		$this->User->id = $userGlobal['id'];
+		$passModif = false;
+		$mailModif = false;
+		$passError = false;
+		$mailError = false;
+		
+
+
+		if($this->request->is('post')){
+
+			$dataProxy = $this->request->data;
+			$dataProxy['User']['id'] = $userGlobal['id'];
+
+			$this->log($dataProxy);
+
+			if (!empty($dataProxy['User']['password_confirm'])){
+				$passModif = true;
+				if ($dataProxy['User']['password'] == $dataProxy['User']['password_confirm']){
+					$dataProxy['User']['password'] = $dataProxy['User']['password'];
+				}
+				else{
+					unset($dataProxy['User']['password']);
+					$passError = true;
+				}
+			}
+
+			if (!empty($dataProxy['User']['mail_confirm'])){
+				$mailModif = true;
+				if ($dataProxy['User']['mail'] == $dataProxy['User']['mail_confirm']){
+					$dataProxy['User']['mail'] = $dataProxy['User']['mail'];
+				}
+				else{
+					unset($dataProxy['User']['mail']);
+					$mailError = true;
+				}
+			}
+			if($passError){
+				$this->User->validationErrors['password_confirm'] = array('Error in Password confirmation');
+			}
+			if($mailError){
+				$this->User->validationErrors['mail_confirm'] = array('Error in Mail confirmation');
+			}
+			if(!$passError && !$mailError && ($passModif || $mailModif)){
+				if($this->User->save($dataProxy['User'], true, array('id', 'password', 'mail'))) {
+
+					$this->Session->setFlash(
+						'You have successfully edited your account !',
+						'FlashMessage',
+						array('type' => 'success')
+						);
+
+					$this->redirect('/');
+				}
+				else{
+					$this->Session->setFlash(
+						'Error with the account edition.',
+						'FlashMessage',
+						array('type' => 'warning')
+						);
+				}
+			}			
+		}
+		else{
+			$this->request->data = $this->User->read('mail');
+		}
+	}
+
+	public function password_reinit(){
+
+		if(!empty($this->request->params['named']['token'])){
+			$token = explode('__', $this->request->params['named']['token']);
+
+			$user = $this->User->find('first', array(
+				'conditions' => array('id'=>$token[0], 'MD5(User.password)' => $token[1], 'active' => 1)
+				)
+			);
+			if(!empty($user)){
+
+				$this->User->id = $user['User']['id'];
+
+				$newPassword = substr(md5(uniqid(rand(), true)), 0, 8);
+
+				$user['User']['password'] = $newPassword;
+
+				$this->User->save($user, true, array('id', 'password'));
+
+				App::uses('CakeEmail', 'Network/Email');
+				
+				$mail = new CakeEmail();
+				$mail->from('noreplay@eve-lotteries.com')
+				->to($user['User']['mail'])
+				->subject('EVE-Lotteries :: New Password')
+				->emailFormat('html')
+				->template('nmdp')
+				->viewVars(array('user'=>$user['User'], 'newPassword' => $newPassword))
+				->send();
+
+				$this->Session->setFlash(
+					'Your new password has been sent to you by email !',
+					'FlashMessage',
+					array('type' => 'success')
+					);
+			}
+			else{
+				$this->Session->setFlash(
+					'Your recovery link is not valid !',
+					'FlashMessage',
+					array('type' => 'warning')
+					);
+			}
+		}
+
+		if($this->request->is('post')){
+			$dataProxy = $this->request->data;
+			
+			$user = $this->User->findByMailAndActive($dataProxy['User']['mail'], true);
+			
+
+			if(empty($user)){
+				$this->Session->setFlash(
+					'No user with this mail !',
+					'FlashMessage',
+					array('type' => 'warning')
+					);
+			}
+			else{
+				App::uses('CakeEmail', 'Network/Email');
+
+				$linkRecovery = array('controller'=>'users', 'action' => 'password_reinit', 'token' => $user['User']['id'].'__'.md5($user['User']['password']));
+
+				$mail = new CakeEmail();
+				$mail->from('noreplay@eve-lotteries.com')
+				->to($user['User']['mail'])
+				->subject('EVE-Lotteries :: Password recovery')
+				->emailFormat('html')
+				->template('mdp')
+				->viewVars(array('user'=>$user['User'], 'linkRecovery' => $linkRecovery))
+				->send();
+
+				$this->Session->setFlash(
+					'The mail has been sent !',
+					'FlashMessage',
+					array('type' => 'success')
 					);
 			}
 		}
@@ -320,6 +460,8 @@ class UsersController extends AppController {
 		$group->id = 4;
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Users/user_navbar');
+		$this->Acl->allow($group, 'controllers/Users/account');
+		$this->Acl->allow($group, 'controllers/Users/edit');
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
 		$this->Acl->allow($group, 'controllers/Messages/index');
 		$this->Acl->allow($group, 'controllers/Messages/delete');
