@@ -7,6 +7,15 @@
 			?>
 		</div>
 
+		<div class="row">
+	<?php 
+	foreach ($old_lotteries as $lottery){
+		echo $this->element('LotteryPanel', array(
+			"lottery" => $lottery
+			));}
+			?>
+		</div>
+
 
 		<div class="row">
 			<ul class="pager">

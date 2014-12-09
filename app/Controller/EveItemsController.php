@@ -133,7 +133,7 @@ class EveItemsController extends AppController {
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
-	public function update_prices() {
+	public function admin_update_prices() {
 
 		$this->request->onlyAllow('ajax');
 

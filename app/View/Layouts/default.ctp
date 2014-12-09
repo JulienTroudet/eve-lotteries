@@ -9,13 +9,16 @@
 	<title><?php echo $title_for_layout; ?></title>
 
 	<?php echo $this->Html->css('bootstrap.min'); ?>
-	<?php echo $this->Html->css('eve.lotteries'); ?>
+	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
+	<?php echo $this->Html->css('eve.lotteries'); ?>
+	
 
 	<?php echo $this->fetch('css');?>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<?php echo $this->Html->script('bootstrap.min');?>
 	<?php echo $this->Html->script('toastr.min'); ?>
+	<?php echo $this->Html->script('number-format'); ?>
 	<?php echo $this->fetch('script');?>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

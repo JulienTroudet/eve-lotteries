@@ -16,15 +16,6 @@ class LotteriesController extends AppController {
 	 */
 	public $components = array('Paginator', 'Session', 'RequestHandler');
 
-
-
-	public $paginate = array(
-		'limit' => 10,
-		'order' => array(
-			'Lottery.id' => 'asc'
-			)
-		);
-
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('index', 'view');
@@ -39,18 +30,43 @@ class LotteriesController extends AppController {
 
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
-		
-		$this->Paginator->settings = $this->paginate;
-		$this->Lottery->contain(array(
-			'EveItem', 
-			'Ticket' => array(
-				'User' => array('id', 'eve_id', 'eve_name')
-				)
-			)
-		);
-		$lotteries = $this->Paginator->paginate('Lottery');
+
+		//vas chercher les lotteries actuelles
+		$params = array(
+			'contain' => array(
+				'EveItem', 
+				'Ticket' => array(
+					'User' => array('id', 'eve_id', 'eve_name')
+					)
+				),
+			'conditions' => array('Lottery.lottery_status_id' => '1'),
+			'order' => array('Lottery.id ASC'),
+			'limit' => 10
+			);
+		$lotteries = $this->Lottery->find('all', $params);
 		$this->set('lotteries', $lotteries);
 
+
+		//vas chercher les anciennes lotteries
+		$paginateVar = array(
+			'contain' => array(
+				'EveItem', 
+				'Ticket' => array(
+					'User' => array('id', 'eve_id', 'eve_name')
+					)
+				),
+			'conditions' => array('Lottery.lottery_status_id' => '2'),
+			'order' => array(
+				'Lottery.modified' => 'desc'
+				),
+			'limit' => '10'
+			);
+		$this->Paginator->settings = $paginateVar;
+		$oldLotteries = $this->Paginator->paginate('Lottery');
+		$this->set('old_lotteries', $oldLotteries);
+
+
+		//vas chercher la liste des catégories d'item
 		$params = array(
 			'conditions' => array('EveCategory.status' => '1'),
 			'recursive' => -1,
@@ -62,6 +78,7 @@ class LotteriesController extends AppController {
 		$this->set('eveCategories', $eveCategories);
 
 
+		//vas chercher la liste des items
 		$params = array(
 			'contain' => 'EveCategory',
 			'conditions' => array('EveItem.status' => '1'),
@@ -69,13 +86,9 @@ class LotteriesController extends AppController {
 			);
 
 		$eveItems = $this->EveItem->find('all', $params);
-
 		foreach ($eveItems as $key => $value) {
-			
 			$eveItems[$key]['EveItem']['ticket_price'] = $this->EveItem->getTicketPrice($value);
-			
 		}
-
 		$this->set('eveItems', $eveItems);
 	}
 
@@ -88,16 +101,38 @@ class LotteriesController extends AppController {
 	public function list_lotteries() {
 
 		
-		$this->Paginator->settings = $this->paginate;
-		$this->Lottery->contain(array(
-			'EveItem', 
-			'Ticket' => array(
-				'User' => array('id', 'eve_id', 'eve_name')
-				)
-			)
-		);
-		$lotteries = $this->Paginator->paginate('Lottery');
+		$params = array(
+			'contain' => array(
+				'EveItem', 
+				'Ticket' => array(
+					'User' => array('id', 'eve_id', 'eve_name')
+					)
+				),
+			'conditions' => array('Lottery.lottery_status_id' => '1'),
+			'order' => array('Lottery.id ASC'),
+			'limit' => 10
+			);
+		
+		$lotteries = $this->Lottery->find('all', $params);
 		$this->set('lotteries', $lotteries);
+
+
+		$paginateVar = array(
+			'contain' => array(
+				'EveItem', 
+				'Ticket' => array(
+					'User' => array('id', 'eve_id', 'eve_name')
+					)
+				),
+			'conditions' => array('Lottery.lottery_status_id' => '2'),
+			'order' => array(
+				'Lottery.modified' => 'desc'
+				),
+			'limit' => '10'
+			);
+		$this->Paginator->settings = $paginateVar;
+		$oldLotteries = $this->Paginator->paginate('Lottery');
+		$this->set('old_lotteries', $oldLotteries);
 	}
 
 	/**
@@ -145,7 +180,7 @@ class LotteriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function add() {
+	public function buy() {
 
 		$this->request->onlyAllow('ajax');
 
@@ -158,6 +193,12 @@ class LotteriesController extends AppController {
 			$this->disableCache();
 
 			$itemId = $this->request->query('item_id');
+			$listPositions = $this->request->query('list_positions');
+			if(!$listPositions){
+				$listPositions = array(rand(0, $choosenItem['EveItem']['nb_tickets_default']-1));
+			}
+
+			$this->log($listPositions);
 
 			$userId = $this->Auth->user('id');
 
@@ -174,17 +215,18 @@ class LotteriesController extends AppController {
 				$choosenItem = $this->EveItem->findById($itemId);
 
 				$ticketPrice = $this->EveItem->getTicketPrice($choosenItem);
+				$totalPrice = count($listPositions)*$ticketPrice;
 
 				$buyer = $this->User->findById($userId);
 
 				//TODO TESTS DIVERS
 
-				if($buyer['User']['wallet'] < $ticketPrice){
+				if($buyer['User']['wallet'] < $totalPrice){
 					$data = array('error' => 'Not enough ISK.');
 				}
 
 				else{
-					$buyer['User']['wallet'] -= $ticketPrice;
+					$buyer['User']['wallet'] -= $totalPrice;
 					$buyer['User']['password'] ="";
 
 					$this->Lottery->create();
@@ -205,7 +247,7 @@ class LotteriesController extends AppController {
 								'position' => $i,
 								'value' => $ticketPrice,
 								));
-							if ($i==0) {
+							if (in_array($i, $listPositions)) {
 								$newTicket['Ticket']['buyer_user_id'] = $userId;
 							}
 							$this->Ticket->save($newTicket);
