@@ -13,7 +13,7 @@
 					<?php
 					echo $this->Form->input('id');
 					echo $this->Form->input('username');
-					echo $this->Form->password('pwd');
+					echo $this->Form->password('password');
 					echo $this->Form->input('mail');
 					echo $this->Form->input('group_id');
 					echo $this->Form->input('wallet');

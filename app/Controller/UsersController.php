@@ -18,7 +18,7 @@ class UsersController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'logout', 'register', 'edit');
+		$this->Auth->allow('login', 'logout', 'register');
 	}
 
 	/**
@@ -59,10 +59,18 @@ class UsersController extends AppController {
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash(__('The user has been saved.'));
+				$this->Session->setFlash(
+					'The user has been saved.',
+					'FlashMessage',
+					array('type' => 'info')
+					);
 				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The user could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The user could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'danger')
+					);
 			}
 		} else {
 			$options = array('conditions' => array('User.' . $this->User->primaryKey => $id));
@@ -86,39 +94,70 @@ class UsersController extends AppController {
 		}
 		$this->request->allowMethod('post', 'delete');
 		if ($this->User->delete()) {
-			$this->Session->setFlash(__('The user has been deleted.'));
+			$this->Session->setFlash(
+				'The user has been deleted.',
+				'FlashMessage',
+				array('type' => 'info')
+				);
 		} else {
-			$this->Session->setFlash(__('The user could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				'The user could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'danger')
+				);
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
 
 	public function login() {
 		if ($this->Session->read('Auth.User')) {
-			$this->Session->setFlash('You are logged in!');
-			return $this->redirect('/');
+
+			$this->Session->setFlash(
+				'Already logged !',
+				'FlashMessage',
+				array('type' => 'info')
+				);
+			$this->redirect('/');
 		}
 		if ($this->request->is('post')) {
-			debug($this->request);
 			if ($this->Auth->login()) {
+				$this->Session->setFlash(
+					'Login succcessfull !',
+					'FlashMessage',
+					array('type' => 'info')
+					);
 				return $this->redirect(array('controller' =>'lotteries', 'action' => 'index'));
 			}
-			$this->Session->setFlash(__('Your username or password was incorrect.'));
+			$this->Session->setFlash(
+				'Your username or password was incorrect.',
+				'FlashMessage',
+				array('type' => 'danger')
+				);
 		}
 	}
 
 	public function logout() {
-		$this->Session->setFlash('Good-Bye');
+
+		$this->Session->setFlash(
+			'Log out done. Good bye !',
+			'FlashMessage',
+			array('type' => 'info')
+			);
+
 		$this->redirect($this->Auth->logout());
 	}
 
 	function register(){
 		if ($this->Session->read('Auth.User')) {
-			$this->Session->setFlash('You are logged in!');
+			$this->Session->setFlash(
+					'Registration confirmed. You are logged in!',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 			return $this->redirect('/');
 		}
 		if (!empty($this->data)){
-			if ($this->data['User']['pwd'] == $this->data['User']['pwd_confirm']){
+			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
 
 				$dataProxy = $this->data;
 
@@ -131,7 +170,11 @@ class UsersController extends AppController {
 				}
 			}
 			else{
-				$this->Session->setFlash(__('Error in Password confirmation.'));
+				$this->Session->setFlash(
+					'Error in Password confirmation.',
+					'FlashMessage',
+					array('type' => 'danger')
+					);
 			}
 		}
 	}

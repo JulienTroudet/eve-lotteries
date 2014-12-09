@@ -23,7 +23,7 @@ echo $this->Form->input(
 	);
 echo "&nbsp;";
 echo $this->Form->password(
-	'User.pwd',
+	'User.password',
 	array(
 		'div' => array(
 			'class' => 'form-group'

@@ -15,6 +15,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<?php echo $this->Html->script('bootstrap.min');?>
 	<?php echo $this->Html->script('bootbox.min');?>
+	<?php echo $this->Html->script('toastr');?>
 	<?php echo $this->fetch('script');?>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -53,8 +54,6 @@
 			</div><!--/.navbar-collapse -->
 		</div>
 	</div>
-
-
 
 	<div class="container" style="margin-top:6em;">
 

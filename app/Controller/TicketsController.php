@@ -109,6 +109,7 @@ class TicketsController extends AppController {
 
 				else{
 					$buyer['User']['wallet'] -= $choosenTicket['Ticket']['value'];
+					$buyer['User']['password'] ="";
 
 					$choosenTicket['Ticket']['buyer_user_id'] = $buyer['User']['id'];
 
