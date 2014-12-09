@@ -61,7 +61,7 @@ class EveItemsController extends AppController {
 				$this->Session->setFlash(
 					'The eve item could not be saved. Please, try again.',
 					'FlashMessage',
-					array('type' => 'danger')
+					array('type' => 'error')
 					);
 			}
 		}
@@ -92,7 +92,7 @@ class EveItemsController extends AppController {
 				$this->Session->setFlash(
 					'The eve item could not be saved. Please, try again.',
 					'FlashMessage',
-					array('type' => 'danger')
+					array('type' => 'error')
 					);
 			}
 		} else {
@@ -127,7 +127,7 @@ class EveItemsController extends AppController {
 			$this->Session->setFlash(
 					'The eve item could not be deleted. Please, try again.',
 					'FlashMessage',
-					array('type' => 'danger')
+					array('type' => 'error')
 					);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));

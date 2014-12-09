@@ -8,7 +8,13 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<span class="navbar-brand">Want to play ? Click on register !</span>
+			<?php 
+				echo $this->Html->link(
+					'Want to play ? Click on register !', 
+					array('controller' => 'users', 'action' => 'register'),
+					array('class' => 'navbar-brand')
+					);
+					?>
 		</div>
 		<div class="navbar-collapse collapse navbar-user">
 			<div class="nav navbar-nav navbar-right">
@@ -18,7 +24,7 @@
 				echo $this->Html->link(
 					'Register', 
 					array('controller' => 'users', 'action' => 'register'),
-					array('class' => 'btn btn-block btn-primary navbar-btn')
+					array('class' => 'btn btn-primary navbar-btn')
 					);
 					?>
 				</div>

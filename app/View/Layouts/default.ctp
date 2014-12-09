@@ -8,7 +8,7 @@
 
 	<title><?php echo $title_for_layout; ?></title>
 
-	<?php echo $this->Html->css('bootstrap.min'); ?>
+	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
 	<?php echo $this->Html->css('eve.lotteries'); ?>
@@ -46,7 +46,7 @@
 
 <body>
 
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-site">
@@ -75,7 +75,7 @@
 		</div>
 	</div>
 
-	<div class="container" style="margin-top:4em;">
+	<div class="container" style="margin-top:4em;margin-bottom: 12em;;">
 
 		
 

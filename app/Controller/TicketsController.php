@@ -87,7 +87,6 @@ class TicketsController extends AppController {
 		}
 	}
 
-
 	/**
 	 * add method
 	 *
@@ -110,17 +109,42 @@ class TicketsController extends AppController {
 			
 			$userId = $this->Auth->user('id');
 
+			$proceed = true;
+
 			if (!$this->EveItem->exists($itemId)) {
 				$data = array('error' => 'Invalid Eve Item.' );
+				$proceed = false;
 			}
 			else if (!$this->User->exists($userId)) {
 				$data = array('error' => 'You must log in to buy a ticket !');
+				$proceed = false;
 			}
-			else{
+
+			//vérification du nombre total de lotteries
+			$params = array(
+				'conditions' => array('Lottery.lottery_status_id' => '1'),
+				);
+			$nbFreeLotteries = 10 - $this->Lottery->find('count', $params);
+			if ($proceed && $nbFreeLotteries <= 0) {
+				$data = array('error' => 'There is already 10 ingoing lotteries ! Please complete a lottery befor starting a new one.');
+				$proceed = false;
+			}
+
+			//vérification du nombre de grosses lotteries
+			$params = array(
+				'conditions' => array('Lottery.lottery_status_id' => '1', 'Lottery.nb_tickets' => '16'),
+				);
+			$nbFreeBigLotteries = 3 - $this->Lottery->find('count', $params);
+			if ($proceed && $nbFreeBigLotteries <= 0) {
+				$data = array('error' => 'There is already 3 big lotteries ! Please complete a big lottery befor starting a new one.');
+				$proceed = false;
+			}
+
+			if ($proceed){
 				$this->EveItem->contain(array('EveCategory'));
 				$choosenItem = $this->EveItem->findById($itemId);
 
-				if(!$listPositions){
+				if(empty($listPositions)){
 					$listPositions = array(rand(0, $choosenItem['EveItem']['nb_tickets_default']-1));
 				}
 
@@ -129,12 +153,21 @@ class TicketsController extends AppController {
 
 				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.eve_id', 'User.wallet'));
 
-				//TODO TESTS DIVERS
+				//vas voir si l'item est déjà en lotterie
+				$params = array(
+					'conditions' => array('AND' => array('Lottery.lottery_status_id' => '1', 'Lottery.eve_item_id' => $itemId)),
+					);
+				$nbSameItems = $this->Lottery->find('count', $params);
+
+				$this->log($nbSameItems);
 
 				if($buyer['User']['wallet'] < $totalPrice){
 					$data = array('error' => 'Not enough ISK.');
 				}
-
+				//vérifie si un item est déjà dans les lotteries en cours
+				else if($nbSameItems >= 1){
+					$data = array('error' => 'There is already a lottery for '.preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$choosenItem['EveItem']['name']).'. Please complete this lottery before starting a new one with this item.');
+				}
 				else{
 					$buyer['User']['wallet'] -= $totalPrice;
 

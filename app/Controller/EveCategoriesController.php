@@ -50,10 +50,18 @@ class EveCategoriesController extends AppController {
 		if ($this->request->is('post')) {
 			$this->EveCategory->create();
 			if ($this->EveCategory->save($this->request->data)) {
-				$this->Session->setFlash(__('The eve category has been saved.'));
+				$this->Session->setFlash(
+					'The eve category has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The eve category could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The eve category could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
 			}
 		}
 	}
@@ -71,10 +79,18 @@ class EveCategoriesController extends AppController {
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->EveCategory->save($this->request->data)) {
-				$this->Session->setFlash(__('The eve category has been saved.'));
+				$this->Session->setFlash(
+					'The eve category has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The eve category could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The eve category could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
 			}
 		} else {
 			$options = array('conditions' => array('EveCategory.' . $this->EveCategory->primaryKey => $id));
@@ -96,9 +112,17 @@ class EveCategoriesController extends AppController {
 		}
 		$this->request->allowMethod('post', 'delete');
 		if ($this->EveCategory->delete()) {
-			$this->Session->setFlash(__('The eve category has been deleted.'));
+			$this->Session->setFlash(
+				'The eve category has been deleted.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
 		} else {
-			$this->Session->setFlash(__('The eve category could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				'The eve category could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}

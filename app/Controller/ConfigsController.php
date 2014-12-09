@@ -89,7 +89,7 @@ class ConfigsController extends AppController {
 						}
 
 
-						$check_user_withdrawal = $this->User->findByEveId($entry->ownerID2, array('User.id', 'User.eve_name','User.given_isk'));
+						$check_user_withdrawal = $this->User->findByEveId($entry->ownerID2, array('User.id', 'User.eve_name'));
 						if(!empty($check_user_withdrawal)){
 							
 							$transactions++;
@@ -129,7 +129,7 @@ class ConfigsController extends AppController {
 				);
 		}
 
-		debug($response);
+		//debug($response);
 		die();
 		
 	}

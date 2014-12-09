@@ -49,48 +49,62 @@
 								</ul>
 							</div>
 							<?php
-							if($this->here == $this->base.'/'){
-								echo $this->Html->link(
-									'Create lottery', 
-									'#collapse-item',
-									array(
-										'class' => 'btn btn-block btn-success',
-										'data-toggle' => 'collapse'
-										)
-									);
+							$label = 'Create lottery';
+							if($nbFreeLotteries>0){
+								$label= $label.' <span class="badge">'.$nbFreeLotteries.' Free';
 							}
-							else{
-								echo $this->Html->link(
-									'Create lottery', 
-									array('controller' => 'lotteries', 'action' => 'index'),
-									array('class' => 'btn btn-block btn-success')
-									);
-
-							}
-							?>
-						</div>
-					</div>
-					<div class="col-md-4 col-sm-4">
-						<div class="btn-group-vertical btn-block">
 							
-							<?php
-							$label = 'My Lotteries';
-							if($userGlobal['new_awards']>0){
-								$label= $label.' <span class="badge">'.$userGlobal['new_awards'].' New';
-							}
 							echo $this->Html->link(
 								$label, 
-								array('controller' => 'withdrawals', 'action' => 'index'),
+								'#collapse-item',
 								array(
-									'class' => 'btn btn-block btn-primary',
-									'escape' => false)
+									'class' => 'btn btn-block btn-success new-lot-collapse',
+									'data-toggle' => 'collapse',
+									'escape' => false,
+									)
+								);
+							
+							echo $this->Html->link(
+								$label, 
+								array('controller' => 'lotteries', 'action' => 'index'),
+								array(
+									'class' => 'btn btn-block btn-success new-lot-redirect',
+									'escape' => false,)
 								);
 								?>
-								<button type="button" class="btn btn-block btn-primary">My Awards</button>
 							</div>
 						</div>
-					</div>
-				</div><!--/.nav-collapse -->
-			</div><!--/.container-fluid -->
-		</div>
+						<div class="col-md-4 col-sm-4">
+							<div class="btn-group-vertical btn-block">
 
+								<?php
+								$label = 'My Lotteries';
+								if($userGlobal['new_awards']>0){
+									$label= $label.' <span class="badge">'.$userGlobal['new_awards'].' New';
+								}
+								echo $this->Html->link(
+									$label, 
+									array('controller' => 'withdrawals', 'action' => 'index'),
+									array(
+										'class' => 'btn btn-block btn-primary',
+										'escape' => false)
+									);
+									?>
+									<button type="button" class="btn btn-block btn-primary">My Awards</button>
+								</div>
+							</div>
+						</div>
+					</div><!--/.nav-collapse -->
+				</div><!--/.container-fluid -->
+			</div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var pathname = window.location.pathname;
+		if(pathname.slice(-1) == '/'){
+			$('.new-lot-redirect').remove();
+		}
+		else{
+			$('.new-lot-collapse').remove();
+		}
+	});
+</script>

@@ -1,4 +1,6 @@
-<div class="alert alert-<?php echo h($type); ?> alert-dismissible" role="alert">
-<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-<?php echo h($message); ?>
-</div>
+<script>
+	$(document).ready(function() {
+
+		toastr.<?php echo h($type); ?>('<?php echo h($message); ?>');
+	});
+</script>

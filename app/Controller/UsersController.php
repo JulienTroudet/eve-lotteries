@@ -69,7 +69,7 @@ class UsersController extends AppController {
 				$this->Session->setFlash(
 					'The user could not be saved. Please, try again.',
 					'FlashMessage',
-					array('type' => 'danger')
+					array('type' => 'error')
 					);
 			}
 		} else {
@@ -103,7 +103,7 @@ class UsersController extends AppController {
 			$this->Session->setFlash(
 				'The user could not be deleted. Please, try again.',
 				'FlashMessage',
-				array('type' => 'danger')
+				array('type' => 'error')
 				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
@@ -132,7 +132,7 @@ class UsersController extends AppController {
 			$this->Session->setFlash(
 				'Your username or password was incorrect.',
 				'FlashMessage',
-				array('type' => 'danger')
+				array('type' => 'error')
 				);
 		}
 	}
@@ -194,7 +194,7 @@ class UsersController extends AppController {
 						$this->Session->setFlash(
 							'Error in account creation.',
 							'FlashMessage',
-							array('type' => 'danger')
+							array('type' => 'error')
 							);
 					}
 				}
@@ -202,7 +202,7 @@ class UsersController extends AppController {
 					$this->Session->setFlash(
 						'Error in Mail confirmation.',
 						'FlashMessage',
-						array('type' => 'danger')
+						array('type' => 'error')
 						);
 				}
 			}
@@ -210,7 +210,7 @@ class UsersController extends AppController {
 				$this->Session->setFlash(
 					'Error in Password confirmation.',
 					'FlashMessage',
-					array('type' => 'danger')
+					array('type' => 'error')
 					);
 			}
 		}

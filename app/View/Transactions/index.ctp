@@ -24,7 +24,7 @@
 
 			<h3>My Wallet</h3>
 			<div class="well well-sm">
-				<h3>
+				<h3 style="margin-top: 10px;">
 					<small>Actual credits : </small><?php echo number_format($userGlobal['wallet'],2); ?> <i class="fa fa-money"></i>
 				</h3>
 			</div>
@@ -35,28 +35,28 @@
 				<p>You can only deposit ISK in game. You can freely deposit any amount to the account of the EVE-Lotteries Corporation. No justification is needed. Your account will be updated on the next API check at : <?php echo $apiCheckTime; ?></p>
 			</div>
 
-			<div class="well well-sm">
+			<!-- <div class="well well-sm">
 				<small>Waiting withdrawal : </small>00000000000000000000<span class="badge">ISK</span>
 			</div>
 			<div class="alert alert-info" role="alert">
 				<p>The ISK you withdraw will be added to your in game account by our team. Thank you for your patience.</p>
-			</div>
+			</div> -->
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<h3 class="panel-title">Account informations</h3>
 				</div>
 				<div class="panel-body">
 					<div class="alert alert-success" role="alert">
-						Total deposits : <?php echo number_format($totalDeposit,2); ?><span class="badge">ISK</span>
+						Total deposits : <?php echo number_format($totalDeposit,2); ?> <span class="badge">ISK</span>
 					</div>
 					<div class="alert alert-danger" role="alert">
-						Total withdrawals : 00000000000000000000<span class="badge">ISK</span>
+						Total withdrawals : <?php echo number_format($totalClaimedIsk,2); ?> <span class="badge">ISK</span>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-6 col-sm-12">
-			<h3>Transactions</h3>
+			<h3>In Game Transactions</h3>
 			<table class="table table-striped table-condensed">
 				<thead>
 					<tr>

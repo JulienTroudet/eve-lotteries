@@ -65,9 +65,12 @@
 				<?php foreach ($old_lotteries as $lottery){echo $this->element('OldLotteryPanel', array(
 				"lottery" => $lottery ));}?>
 			</div>
-			<div class="pull-right">
-				<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
+			<div class="row">
+				<div class="col-md-3 pull-right">
+					<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
+				</div>
 			</div>
+
 		</div>
 	</div>
 

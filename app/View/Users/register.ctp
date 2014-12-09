@@ -152,7 +152,7 @@
 		?>
 		<div class="col-md-6 col-sm-12 col-md-offset-3">
 			<div class="alert alert-danger" role="alert">
-				<h3>Please connect with the EVE-Online in game browser for registration !</h3>
+				<h3>Please use the EVE-Online in game browser for registration !</h3>
 				<p></p>
 				<p style="text-align:center;">
 				 In game, open the Accessories Menu and click on this icon : 

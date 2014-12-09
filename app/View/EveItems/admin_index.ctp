@@ -30,10 +30,19 @@
 								<td><?php echo h($eveItem['EveItem']['status']); ?>&nbsp;</td>
 								<td><?php echo h($eveItem['EveItem']['nb_tickets_default']); ?>&nbsp;</td>
 								<td class="actions">
-								<button class="btn btn-xs btn-default update-price" data-item-id="<?php echo h($eveItem['EveItem']['id']); ?>" data-item-name="<?php echo h($eveItem['EveItem']['name']); ?>">Update Price</button>
-									<?php echo $this->Html->link(__('View'), array('action' => 'view', 'admin' => true, $eveItem['EveItem']['id'])); ?>
-									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', 'admin' => true, $eveItem['EveItem']['id'])); ?>
-									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $eveItem['EveItem']['id']), array(), __('Are you sure you want to delete # %s?', $eveItem['EveItem']['id'])); ?>
+									<button class="btn btn-xs btn-block btn-default update-price" data-item-id="<?php echo h($eveItem['EveItem']['id']); ?>" data-item-name="<?php echo h($eveItem['EveItem']['name']); ?>">Update Price</button>
+									<?php echo $this->Html->link(__('View'), array(
+										'action' => 'view', 'admin' => true, $eveItem['EveItem']['id']),
+									array('class' => 'btn btn-xs btn-primary')
+									); ?>
+									<?php echo $this->Html->link(__('Edit'), array(
+										'action' => 'edit', 'admin' => true, $eveItem['EveItem']['id']),
+									array('class' => 'btn btn-xs btn-warning')
+									); ?>
+									<?php echo $this->Form->postLink(__('Delete'), array(
+										'action' => 'delete', 'admin' => true, $eveItem['EveItem']['id']),
+									array('class' => 'btn btn-xs btn-danger'), 
+									__('Are you sure you want to delete # %s?', $eveItem['EveItem']['id'])); ?>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -99,6 +108,6 @@
 						console.log(e);
 					}
 				});
-});
-});
-</script>
+			});
+		});
+	</script>

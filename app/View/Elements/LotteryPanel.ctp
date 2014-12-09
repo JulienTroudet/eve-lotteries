@@ -23,7 +23,7 @@ if ($ticketsCount == 8) {
 				<p><?php echo number_format($lottery['Ticket'][0]['value']); ?> <i class="fa fa-money"></i> / <i class="fa fa-ticket"></i></p>					
 			</div>
 		</div>
-		<div class="panel-body">
+		<div class="panel-body panel-lot">
 			<div class="row">
 				<?php foreach ($lottery['Ticket'] as $ticket){
 					echo $this->element('TicketPanel', array(

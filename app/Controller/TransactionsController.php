@@ -61,17 +61,15 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 		}
 		$this->set('totalWithdrawals', $totalW);
 
-		// $totalClaimedIsk = 0;
-		// $params = array(
-		// 	'conditions' => array('Withdrawal.user_id' => $userGlobal['id'], 'status' =>'claimed','type' =>'witdrawal'),
-		// 	);
-		// $iskClaim = $this->Withdrawal->find('first', $params);
-		// if(isset($iskClaim['Withdrawal'])){
-		// 	$totalClaimedIsk = $iskClaim['Withdrawal']['value'];
-		// }
+		$totalClaimedIsk = 0;
+		$params = array(
+			'conditions' => array('Transaction.user_id' => $userGlobal['id'], 'Transaction.amount <=' => 0),
+			'fields' => array('SUM(Transaction.amount) as totalAmount'),
+			'group' => array('Transaction.user_id'),
+			);
 
-		// $this->set('totalClaimedIsk', $totalClaimedIsk);
-
+		$iskClaim = $this->Transaction->find('all', $params)[0][0][totalAmount];
+		$this->set('totalClaimedIsk', $iskClaim);
 
 	}
 }

@@ -34,7 +34,11 @@ App::import('Vendor', 'Pheal', array('file' => 'Pheal' . DS . 'Pheal.php'));
 class AppController extends Controller {
 	public $components = array(
 		'Acl',
-		'Auth',
+		'Auth' => array(
+            'authorize' => array(
+                'Actions' => array('actionPath' => 'controllers')
+            )
+        ),
 		'Session',
 		'Cookie'
 		);
@@ -56,17 +60,17 @@ class AppController extends Controller {
 		$this->Auth->loginAction = array(
 			'controller' => 'users',
 			'action' => 'login',
-			'admin' => 'false',
+			'admin' => false,
 			);
 		$this->Auth->logoutRedirect = array(
 			'controller' => 'users',
 			'action' => 'login',
-			'admin' => 'false',
+			'admin' => false,
 			);
 		$this->Auth->loginRedirect = array(
 			'controller' => 'users',
 			'action' => 'index',
-			'admin' => 'false',
+			'admin' => false,
 			);
 
 		$this->Auth->allow('display');
@@ -85,7 +89,13 @@ class AppController extends Controller {
 		if ($userGlobal != null) {
 			$userGlobal['new_awards'] = $this->Withdrawal->find('count', $params);
 		}
-		
+
+		$this->loadModel('Lottery');
+		$params = array(
+			'conditions' => array('Lottery.lottery_status_id' => '1'),
+			);
+		$nbFreeLotteries = 10 - $this->Lottery->find('count', $params);
+		$this->set('nbFreeLotteries', $nbFreeLotteries);
 
 		$this->set('userGlobal', $userGlobal);
 

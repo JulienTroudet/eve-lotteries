@@ -63,10 +63,18 @@ class ArticlesController extends AppController {
 			$dataProxy['Article']['creator_user_id'] = $userId;
 
 			if ($this->Article->save($dataProxy)) {
-				$this->Session->setFlash(__('The article has been saved.'));
+				$this->Session->setFlash(
+					'The article has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The article could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The article could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
 			}
 		}
 	}
@@ -84,10 +92,18 @@ class ArticlesController extends AppController {
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Article->save($this->request->data)) {
-				$this->Session->setFlash(__('The article has been saved.'));
+				$this->Session->setFlash(
+					'The article has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The article could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The article could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
 			}
 		} else {
 			$options = array('conditions' => array('Article.' . $this->Article->primaryKey => $id));
@@ -111,9 +127,17 @@ class ArticlesController extends AppController {
 		}
 		$this->request->allowMethod('post', 'delete');
 		if ($this->Article->delete()) {
-			$this->Session->setFlash(__('The article has been deleted.'));
+			$this->Session->setFlash(
+					'The article has been deleted.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 		} else {
-			$this->Session->setFlash(__('The article could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+					'The article could not be deleted. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}

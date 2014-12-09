@@ -208,10 +208,18 @@ class LotteriesController extends AppController {
 		}
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Lottery->save($this->request->data)) {
-				$this->Session->setFlash(__('The lottery has been saved.'));
+				$this->Session->setFlash(
+					'The lottery has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
 				return $this->redirect(array('action' => 'index', 'admin' => true));
 			} else {
-				$this->Session->setFlash(__('The lottery could not be saved. Please, try again.'));
+				$this->Session->setFlash(
+					'The lottery could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
 			}
 		} else {
 			$options = array('conditions' => array('Lottery.' . $this->Lottery->primaryKey => $id));
@@ -237,9 +245,17 @@ class LotteriesController extends AppController {
 		}
 		$this->request->allowMethod('post', 'delete');
 		if ($this->Lottery->delete($id, true)) {
-			$this->Session->setFlash(__('The lottery has been deleted.'));
+			$this->Session->setFlash(
+				'The lottery has been deleted.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
 		} else {
-			$this->Session->setFlash(__('The lottery could not be deleted. Please, try again.'));
+			$this->Session->setFlash(
+				'The lottery could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
