@@ -4,6 +4,7 @@
 	<?php
 
 
+
 	if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='No')
 	{
 		?>
@@ -23,11 +24,15 @@
 	{
 		?>
 		<div class="col-md-6 col-sm-12 col-md-offset-3">
+			
+
 			<h2>Account Registration :</h2>
+			<img class="img-responsive center-block" src="https://image.eveonline.com/Character/<?php echo $_SERVER['HTTP_EVE_CHARID']; ?>_128.jpg">
 			<?php echo $this->Form->create('User', array(
 				'url' => array(
 					'controller' => 'users',
-					'action' => 'register'
+					'action' => 'register',
+					$sponsorCode
 					),
 				'role' => 'form'
 				)); ?>
@@ -129,42 +134,58 @@
 					)
 				);
 
+				?>
+				<?php if(isset($sponsor['User'])):?>
 
-			
+					<?php
+					
+						?>
+						<div class="well">
+							<div class="media">
+								<p class="pull-left">
+									<img src="https://image.eveonline.com/Character/<?php echo $sponsor['User']['id']; ?>_64.jpg">
+								</p>
+								<div class="media-body">
+									<h3 class="media-heading">Sponsor : <?php echo $sponsor['User']['eve_name']; ?></h3>
+								</div>
+							</div>
+							<p>You will get <strong>10 000 000 EVE-Credits as a bonus</strong> for having a sponsor !</p>
+						</div>
+					<?php endif; ?>
 
+					<?php
+					$optionsFormLogin = array(
+						'label' => 'Register',
+						'div' => false,
+						'class' => 'btn btn-block btn-primary'
+						);
 
-			$optionsFormLogin = array(
-				'label' => 'Register',
-				'div' => false,
-				'class' => 'btn btn-block btn-primary'
-				);
+					echo $this->Form->end($optionsFormLogin);
+					?>
+				</div>
+				<?php
 
-			echo $this->Form->end($optionsFormLogin);
+			}
+
+			if(!isset($_SERVER['HTTP_EVE_TRUSTED']))
+			{
+				?>
+				<div class="col-md-6 col-sm-12 col-md-offset-3">
+					<div class="alert alert-danger" role="alert">
+						<h3>Please use the EVE-Online in game browser for registration !</h3>
+						<p></p>
+						<p style="text-align:center;">
+							In game, open the Accessories Menu and click on this icon : 
+							<?php echo $this->Html->image('Accessories_menu.png', array('alt' => 'Accessories menu'));?>
+						</p>
+					</div>
+				</div>
+				<?php
+			}
+
 			?>
+
+
+
+
 		</div>
-		<?php
-
-	}
-
-	if(!isset($_SERVER['HTTP_EVE_TRUSTED']))
-	{
-		?>
-		<div class="col-md-6 col-sm-12 col-md-offset-3">
-			<div class="alert alert-danger" role="alert">
-				<h3>Please use the EVE-Online in game browser for registration !</h3>
-				<p></p>
-				<p style="text-align:center;">
-				 In game, open the Accessories Menu and click on this icon : 
-				<?php echo $this->Html->image('Accessories_menu.png', array('alt' => 'Accessories menu'));?>
-				</p>
-			</div>
-		</div>
-		<?php
-	}
-
-	?>
-
-
-
-	
-</div>

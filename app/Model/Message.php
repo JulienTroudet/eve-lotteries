@@ -69,6 +69,22 @@ class Message extends AppModel {
 		return $this->save($statData, true, array('user_id', 'status', 'title', 'body', 'controller_name', 'action_name', 'anchor_name'));
 	}
 
+	public function sendSponsorMessage($user_id, $budy) {
+		$this->create();
+		$statData = array(
+			'user_id' => $user_id,
+			'status' => 'unread',
+			'title' => $budy['User']['eve_name'].' sponsored !',
+			'body' => $budy['User']['eve_name'].' used your sponsor link to register. You will earn credits every time he/she makes a deposit.',
+			'controller_name' => 'users',
+			'action_name' => 'account',
+			);
+
+		$this->incrementMessageCount($user_id);
+
+		return $this->save($statData, true, array('user_id', 'status', 'title', 'body', 'controller_name', 'action_name'));
+	}
+
 	public function incrementMessageCount($id) {
 		$this->User->id = $id;
 		$data = $this->User->read();

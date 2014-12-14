@@ -69,7 +69,7 @@ App::uses('AuthComponent', 'Controller/Component');
 
 		$user = $this->findById($userId);
 
-		$linkActivation = array('controller'=>'users', 'action' => 'activate', $user['User']['id'].'__'.md5($user['User']['id']));
+		$linkActivation = array('controller'=>'users', 'action' => 'activate', $user['User']['id'].'__'.md5($user['User']['id']).'__'.md5($user['User']['mail']));
 
 		App::uses('CakeEmail', 'Network/Email');
 
@@ -82,6 +82,14 @@ App::uses('AuthComponent', 'Controller/Component');
 		->template('signup')
 		->viewVars(array('user'=>$user['User'], 'linkActivation' => $linkActivation))
 		->send();
+
+	}
+
+	public function updateWallet($userId, $amount) {
+
+		$user = $this->findById($userId);
+
+		$this->saveField('wallet', $user['User']['wallet']+amount);
 
 	}
 
@@ -135,18 +143,18 @@ App::uses('AuthComponent', 'Controller/Component');
 		'group_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
-				'message' => 'Your custom message here',
+				'message' => 'Not a correct value',
 				),
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
-				'message' => 'Your custom message here',
+				'message' => 'Not a correct value',
 				),
 			),
 		'wallet' => array(
 			'decimal' => array(
 				'required' => false,
 				'rule' => array('decimal'),
-				'message' => 'Your custom message here',
+				'message' => 'Not a correct value',
 				),
 			),
 		'id' => array(
@@ -154,6 +162,12 @@ App::uses('AuthComponent', 'Controller/Component');
 				'rule' => array('isUnique'),
 				'required' => true,
 				'message' => 'That EVE id is already in use.',
+				),
+			),
+		'sponsor_user_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				'message' => 'Not a correct value',
 				),
 			),
 		'eve_name' => array(
@@ -176,6 +190,13 @@ App::uses('AuthComponent', 'Controller/Component');
 		'Group' => array(
 			'className' => 'Group',
 			'foreignKey' => 'group_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+			),
+		'Sponsor' => array(
+			'className' => 'User',
+			'foreignKey' => 'sponsor_user_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -296,6 +317,19 @@ App::uses('AuthComponent', 'Controller/Component');
 			'className' => 'UserAward',
 			'foreignKey' => 'user_id',
 			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		'Buddy' => array(
+			'className' => 'User',
+			'foreignKey' => 'sponsor_user_id',
+			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
 			'order' => '',

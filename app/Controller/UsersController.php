@@ -165,10 +165,12 @@ class UsersController extends AppController {
 	public function register($encodedId = null){
 		// on vas chercher le parrain si le lien est un lien de parrainage
 		if(isset($encodedId)){
-			$parrain = $this->User->find('first', array(
-				'conditions' => array('MD5(User.id)' => $encodedId, 'active' => 0)
+			$sponsor = $this->User->find('first', array(
+				'conditions' => array('MD5(User.id)' => $encodedId, 'active' => true)
 				)
 			);
+			$this->set('sponsor', $sponsor);
+			$this->set('sponsorCode', $encodedId);
 		}
 
 		if ($this->Session->read('Auth.User')) {
@@ -183,14 +185,26 @@ class UsersController extends AppController {
 			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
 
 				if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
+
+					$this->loadModel('Message');
+
 					$dataProxy = $this->data;
 
+					//assigne le groupe par défaut à l'utilisateur
 					$dataProxy['User']['group_id'] = 4;
+
+					if(isset($sponsor['User'])){
+						$dataProxy['User']['sponsor_user_id'] = $sponsor['User']['id'];
+						$dataProxy['User']['wallet'] = 10000000;
+					}
+
 					$this->log($dataProxy);
 					$this->User->create();
-					if($this->User->save($dataProxy, true, array('id', 'username', 'password', 'mail', 'eve_name', 'group_id'))) {
+					if($this->User->save($dataProxy, true, array('id', 'username', 'password', 'mail', 'eve_name', 'group_id', 'sponsor_user_id', 'wallet'))) {
 
 						$this->User->sendActivationMail($this->User->id);
+
+						$this->Message->sendSponsorMessage($sponsor['User']['id'], $dataProxy);
 
 						$this->Session->setFlash(
 							'Registration complete ! Please check your mails to activate your account.',
@@ -226,6 +240,23 @@ class UsersController extends AppController {
 		}
 	}
 
+	/**
+	 * Fonction qui renvoie à nouveau un mail d'activation à l'utilisateur
+	 * @return [type] [description]
+	 */
+	public function resend_activation_mail(){
+		// on vas chercher le parrain si le lien est un lien de parrainage
+		$userId = $this->Auth->user('id');
+
+		$this->User->sendActivationMail($userId);
+		$this->Session->setFlash(
+				'A new activation mail has been sent to you.',
+				'FlashMessage',
+				array('type' => 'info')
+				);
+		return $this->redirect(array('controller' => 'users', 'action' => 'account', 'admin' => false));
+	}
+
 	public function activate($token){
 
 		$token = explode('__', $token);
@@ -233,7 +264,7 @@ class UsersController extends AppController {
 		$this->log($token);
 
 		$user = $this->User->find('first', array(
-			'conditions' => array('id'=>$token[0], 'MD5(User.id)' => $token[1], 'active' => 0)
+			'conditions' => array('id'=>$token[0], 'MD5(User.id)' => $token[1], 'MD5(User.mail)' => $token[2],'active' => 0)
 			)
 		);
 		if(!empty($user)){
@@ -242,7 +273,7 @@ class UsersController extends AppController {
 			$this->User->saveField('active', 1);
 
 			$this->Session->setFlash(
-				'Activation complete ! Please log in.',
+				'Mail Activation complete !',
 				'FlashMessage',
 				array('type' => 'success')
 				);
@@ -315,11 +346,23 @@ class UsersController extends AppController {
 			if(!$passError && !$mailError && ($passModif || $mailModif)){
 				if($this->User->save($dataProxy['User'], true, array('id', 'password', 'mail'))) {
 
-					$this->Session->setFlash(
+					if($mailModif){
+						$this->User->sendActivationMail($userGlobal['id']);
+						$this->User->id = $userGlobal['id'];
+						$this->User->saveField('active', 0);
+						$this->Session->setFlash(
+						'You have successfully edited your account ! A verification mail has been sent to your new adress.',
+						'FlashMessage',
+						array('type' => 'success')
+						);
+					}
+					else{
+						$this->Session->setFlash(
 						'You have successfully edited your account !',
 						'FlashMessage',
 						array('type' => 'success')
 						);
+					}
 
 					$this->redirect('/');
 				}
@@ -461,6 +504,7 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Users/user_navbar');
 		$this->Acl->allow($group, 'controllers/Users/account');
+		$this->Acl->allow($group, 'controllers/Users/resend_activation_mail');
 		$this->Acl->allow($group, 'controllers/Users/edit');
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
 		$this->Acl->allow($group, 'controllers/Messages/index');

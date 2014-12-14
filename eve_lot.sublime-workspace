@@ -1,0 +1,742 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"user",
+				"userGlobal"
+			],
+			[
+				"password",
+				"password_reinit"
+			],
+			[
+				"arr",
+				"array"
+			],
+			[
+				"ar",
+				"array"
+			],
+			[
+				"a",
+				"array	$… = array (…)"
+			],
+			[
+				"nu",
+				"number_format"
+			],
+			[
+				"is",
+				"isset"
+			],
+			[
+				"unse",
+				"unset"
+			],
+			[
+				"uns",
+				"unset"
+			],
+			[
+				"ma",
+				"margin-bottom"
+			],
+			[
+				"t",
+				"th	Tag"
+			],
+			[
+				"th",
+				"thead	Tag"
+			],
+			[
+				"end",
+				"endif"
+			],
+			[
+				"lot",
+				"lottery_status_id"
+			],
+			[
+				"op",
+				"option	Tag"
+			],
+			[
+				"for",
+				"foreach	foreach …"
+			],
+			[
+				"lottery",
+				"lottery_id"
+			],
+			[
+				"tex",
+				"text-decoration"
+			],
+			[
+				"margin",
+				"margin-top"
+			],
+			[
+				"cla",
+				"claimed"
+			],
+			[
+				"co",
+				"continue"
+			],
+			[
+				"mar",
+				"margin-top"
+			],
+			[
+				"h",
+				"h1	Tag"
+			],
+			[
+				"pa",
+				"padding"
+			],
+			[
+				"min",
+				"min-height"
+			],
+			[
+				"pad",
+				"padding-bottom"
+			],
+			[
+				"lis",
+				"listPositions"
+			],
+			[
+				"fo",
+				"foreach"
+			],
+			[
+				"w",
+				"winner"
+			],
+			[
+				"tickets",
+				"tickets"
+			],
+			[
+				"e",
+				"eveItem"
+			],
+			[
+				"Eve",
+				"EveItem"
+			],
+			[
+				"s",
+				"style	Attr"
+			],
+			[
+				"l",
+				"lotteries"
+			],
+			[
+				"lott",
+				"lottery"
+			],
+			[
+				"lo",
+				"lottery"
+			],
+			[
+				"p",
+				"php"
+			],
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"print",
+				"print_r"
+			],
+			[
+				"lotter",
+				"Lottery"
+			],
+			[
+				"array",
+				"array"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "app/Controller/UsersController.php",
+			"settings":
+			{
+				"buffer_size": 14192,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/Model/User.php",
+			"settings":
+			{
+				"buffer_size": 7031,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "app/View/Users/account.ctp",
+			"settings":
+			{
+				"buffer_size": 4893,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"gs",
+				"Git: Status"
+			],
+			[
+				"",
+				"Git: Init"
+			],
+			[
+				"Pack",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 400.0
+	},
+	"console":
+	{
+		"height": 146.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/F/www/eve-lotteries",
+		"/F/www/eve-lotteries/app",
+		"/F/www/eve-lotteries/app/Controller",
+		"/F/www/eve-lotteries/app/Model",
+		"/F/www/eve-lotteries/app/View",
+		"/F/www/eve-lotteries/app/View/Elements",
+		"/F/www/eve-lotteries/app/View/Users"
+	],
+	"file_history":
+	[
+		"/F/www/eve-lotteries/app/Model/Ticket.php",
+		"/F/www/little/app/Model/User.php",
+		"/F/www/little/app/View/Users/account.ctp",
+		"/F/www/little/app/Controller/UsersController.php",
+		"/C/Users/Trehan/AppData/Roaming/Sublime Text 3/Packages/User/SublimeGit.sublime-settings",
+		"/F/www/little/app/View/Elements/LogoutForm.ctp",
+		"/F/www/little/app/Controller/StatisticsController.php",
+		"/F/www/little/app/Controller/LotteriesController.php",
+		"/F/www/little/app/Controller/AppController.php",
+		"/F/www/little/app/View/Lotteries/index.ctp",
+		"/F/www/little/app/View/Lotteries/list_lotteries.ctp",
+		"/F/www/little/app/View/Transactions/index.ctp",
+		"/F/www/little/app/View/Users/register.ctp",
+		"/F/www/little/app/View/Users/login.ctp",
+		"/F/www/little/app/View/Elements/LoginForm.ctp",
+		"/F/www/little/app/View/Emails/html/signup.ctp",
+		"/F/www/little/app/View/Emails/html/nmdp.ctp",
+		"/F/www/little/app/View/Emails/html/mdp.ctp",
+		"/F/www/little/app/View/Layouts/default.ctp",
+		"/F/www/little/app/Config/email.php",
+		"/F/www/little/app/Config/acl.php",
+		"/F/www/little/app/View/Users/edit.ctp",
+		"/F/www/little/app/View/Elements/UserNavbar.ctp",
+		"/F/www/little/app/View/Messages/index.ctp",
+		"/F/www/little/app/View/Statistics/index.ctp",
+		"/F/www/little/app/View/Pages/faq.ctp",
+		"/F/www/little/app/Controller/SuperLotteriesController.php",
+		"/F/www/little/app/Config/database.php",
+		"/F/www/little/app/index.html",
+		"/F/www/little/app/Controller/TicketsController.php",
+		"/F/www/little/app/Controller/SuperLotteryTicketsController.php",
+		"/F/www/little/app/Controller/ArticlesController.php",
+		"/F/www/little/app/View/Articles/index.ctp",
+		"/F/www/little/app/View/Elements/UnreadNews.ctp",
+		"/F/www/little/app/webroot/css/eve.lotteries.css",
+		"/F/www/little/app/webroot/css/magic-bootstrap.css",
+		"/F/www/little/app/Console/Command/EveApiShell.php",
+		"/F/www/little/app/Console/Command/AwardsShell.php",
+		"/F/www/little/app/Vendor/Shell/cron.sh",
+		"/F/www/little/app/Vendor/cron.sh",
+		"/F/www/comet/index.html",
+		"/F/www/comet/backend.php",
+		"/F/www/comet/prototype.js",
+		"/F/www/little/app/Controller/WithdrawalsController.php",
+		"/F/www/little/app/View/Elements/Withdrawals/AwardPanel.ctp",
+		"/F/www/little/app/Model/Message.php",
+		"/F/www/little/app/View/Withdrawals/index.ctp",
+		"/F/www/little/app/View/Withdrawals/view.ctp",
+		"/F/www/little/app/View/SuperLotteries/admin_index.ctp",
+		"/F/www/little/app/Controller/MessagesController.php",
+		"/F/www/little/app/View/Awards/index.ctp",
+		"/F/www/little/app/View/Elements/Awards/AwardPanel.ctp",
+		"/F/www/little/app/Controller/UserAwardsController.php",
+		"/F/www/little/app/Controller/AwardsController.php",
+		"/F/www/little/app/Controller/Component/MessageComponent.php",
+		"/F/www/little/app/Model/Lottery.php",
+		"/F/www/little/app/Model/EveItem.php",
+		"/F/www/little/app/Controller/TransactionsController.php",
+		"/F/www/little/app/View/Elements/Statistics/ItemStatPanel.ctp",
+		"/F/www/little/app/View/Elements/AdminMenu.ctp",
+		"/F/www/little/app/View/Elements/ManagerMenu.ctp",
+		"/F/www/little/app/View/Withdrawals/list_super_awards.ctp",
+		"/F/www/little/app/View/Elements/SuperLotteries/SuperLotteryWithdrawal.ctp",
+		"/F/www/little/app/View/Withdrawals/list_awards.ctp",
+		"/F/www/little/app/View/Elements/SuperLotteries/SuperLotteryPanel.ctp",
+		"/F/www/little/app/View/Elements/SuperLotteries/SuperLotteryWithdrawalPanel.ctp",
+		"/F/www/little/app/Model/SuperLottery.php",
+		"/F/www/little/app/Model/LotteryStatus.php",
+		"/C/Users/Trehan/Desktop/awards.sql",
+		"/F/www/little/app/View/Awards/admin_edit.ctp",
+		"/F/www/little/app/View/Awards/admin_add.ctp",
+		"/F/www/little/app/View/EveItems/admin_index.ctp",
+		"/F/www/little/app/View/Users/admin_index.ctp",
+		"/F/www/little/app/Console/cake",
+		"/C/Users/Trehan/Desktop/eve_lot.sql",
+		"/F/www/little/app/Controller/ConfigsController.php",
+		"/F/www/little/app/View/Withdrawals/old_list.ctp",
+		"/F/www/little/app/View/SuperLotteries/index.ctp",
+		"/F/www/little/app/View/SuperLotteries/admin_add.ctp",
+		"/F/www/little/app/View/Elements/Statistics/UserStatPanel.ctp",
+		"/F/www/little/app/View/Elements/Lotteries/TicketPanel.ctp",
+		"/F/www/little/app/Model/Statistic.php",
+		"/F/www/little/app/View/Elements/Lotteries/OldLotteryPanel.ctp",
+		"/F/www/little/app/View/Articles/admin_index.ctp",
+		"/F/www/little/app/View/Articles/admin_add.ctp",
+		"/F/www/little/app/View/Articles/admin_edit.ctp",
+		"/F/www/little/app/webroot/js/bootstrap3-wysihtml5.js",
+		"/F/www/little/app/webroot/js/bootstrap-wysihtml5-0.0.2.js",
+		"/F/www/little/app/webroot/js/bootstrap-wysihtml5-0.0.2.min.js",
+		"/F/www/little/app/View/Articles/admin_view.ctp",
+		"/F/www/little/app/View/Withdrawals/admin_index.ctp",
+		"/F/www/little/app/Config/routes.php",
+		"/F/www/little/lib/Cake/Controller/Controller.php",
+		"/F/www/little/app/Controller/EveItemsController.php",
+		"/F/www/little/app/Controller/EveCategoriesController.php",
+		"/F/www/little/app/Controller/PagesController.php",
+		"/F/www/little/app/Controller/GroupsController.php",
+		"/F/www/little/app/Controller/LotteryStatusesController.php",
+		"/C/Users/Trehan/Desktop/configs.sql",
+		"/F/www/little/app/View/SuperLotteries/admin_view.ctp",
+		"/F/www/little/app/Model/SuperLotteryTicket.php",
+		"/F/www/little/app/View/Elements/ItemPanel.ctp",
+		"/F/www/little/app/View/SuperLotteries/admin_edit.ctp",
+		"/F/www/little/app/View/EveItems/admin_edit.ctp",
+		"/F/www/little/app/View/EveCategories/admin_add.ctp",
+		"/F/www/little/app/View/Users/admin_edit.ctp",
+		"/F/www/little/app/View/Elements/ModeratorMenu.ctp",
+		"/F/www/little/app/View/Lotteries/admin_index.ctp",
+		"/F/www/little/app/Model/UserAward.php",
+		"/F/www/little/app/View/Awards/admin_index.ctp",
+		"/F/www/little/app/View/Awards/admin_view.ctp",
+		"/F/www/little/app/Model/Award.php",
+		"/F/www/little/app/Model/UserAwards.php",
+		"/F/www/little/app/View/Elements/Lotteries/OldTicketPanel.ctp",
+		"/F/www/little/app/View/Lotteries/old_list.ctp",
+		"/F/www/little/app/View/Elements/Lotteries/LotteryPanel.ctp",
+		"/F/www/little/app/View/Elements/OldLotteryPanel.ctp",
+		"/C/Users/Trehan/Desktop/awards",
+		"/C/Users/Trehan/Desktop/cronEveLot.php",
+		"/F/www/little/app/View/Elements/TicketPanel.ctp",
+		"/F/www/little/app/View/Elements/LotteryPanel.ctp",
+		"/F/www/little/app/Config/core.php",
+		"/F/www/little/app/View/Elements/Withdrawals/list_awards_admin.ctp",
+		"/F/www/little/app/View/Elements/VisitorNavbar.ctp",
+		"/F/www/little/app/View/Users/admin_view.ctp",
+		"/F/www/little/app/View/Lotteries/admin_view.ctp",
+		"/F/www/little/app/Model/Group.php",
+		"/F/www/little/app/Model/AppModel.php"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"F:\\www\\little\\app",
+			"F:\\www\\little\\app\\Controller",
+			"F:\\www\\little\\app",
+			"F:\\www\\little\\app\\Controller",
+			"F:\\www\\little\\app",
+			"F:\\www\\little\\app\\Controller",
+			"F:\\www\\little\\app",
+			"F:\\www\\eveapi2",
+			"F:\\www\\little,F:\\www\\eveapi2",
+			"F:\\www\\little",
+			"",
+			"F:\\www\\eveapi",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"User",
+			"   ",
+			"account",
+			"login",
+			"eve_id",
+			"requestHeaders",
+			"_SERVER",
+			"username",
+			"login",
+			"username",
+			"login",
+			"username",
+			"logout",
+			"//",
+			"Message",
+			"?>\n",
+			"status_",
+			"['Award']",
+			"Controllers",
+			"controllers",
+			"CHARSET=latin1",
+			"log",
+			"load",
+			"glyph",
+			"icon-",
+			"glyph",
+			"Auth",
+			"auth",
+			"isauth",
+			"']));?>&",
+			"?>\n",
+			"btn-group-vertical >",
+			"\n/* [START] USER NAVBAR */\n.navbar-user-info{\n	margin: 0.7em;\n	height: 64px;\n}\n.brand{\n	margin-top:0.7em;\n}\n\n/* Small devices (tablets, 768px and up) */\n@media (min-width: 768px) { .navbar-user-info { width: 60%; }}\n\n/* Medium devices (desktops, 992px and up) */\n@media (min-width: 992px) { .navbar-user-info{ width: 60%; } }\n\n/* Large devices (large desktops, 1200px and up) */\n@media (min-width: 1200px) { .navbar-user-info { width: 60%; } }\n\n.navbar-user p {\n	margin-top: 0px;\n	margin-bottom: 0px;\n	font-size: 1.1em;\n}\n\n.navbar-user .well {\n	min-height: 62px;\n	margin-bottom: 10px;\n	padding: 10px;\n}\n\n.navbar-user-info>h1{\n	margin-top: 12px;\n}\n\n.navbar-user-info .btn{\n	padding: 5px 12px;\n}\n\n/* [END] USER NAVBAR */\n\n/* [START] TICKETS */\n.ticket-slot{\n	margin-bottom: 0.3em;\n	padding-right: 5px;\n	padding-left: 5px;\n	min-height: 3em;\n}\n.ticket-slot .media>.pull-left {\n	margin-right: 5px;\n}\n.ticket-slot .well-sm {\n	padding: 2px;\n	border-radius: 3px;\n	margin: 0px;\n	height: 4.9em;\n}\n.ticket-slot span {\n	vertical-align: -webkit-baseline-middle;\n}\n.ticket-slot .btn {\n	height: 4.9em;\n}\n\n.ticket-slot .winner-ticket {\n	background-color: rgba(92, 184, 92, 0.4);\n}\n\n.ticket-old-col{\n	padding-left: 5px;\n	padding-right: 5px;\n}\n.ticket-old{\n	border-bottom: 1px solid #2c2c2c;\n	margin: 0 0 0.5em 0;\n	padding: 0 0.5em 0 0.5em;\n	height:2em;\n	border-radius: 3px;\n}\n.ticket-old>span{\n	vertical-align:middle;\n	display:inline-block;\n	line-height:normal;\n	text-align:left;\n}\n.row-old-lot{\n	padding: 0.5em 15px 0em 0.5em;\n}\n\n.panel-lot{\n	padding: 7px 15px 1px 15px;\n}\n\n\n/* [END] TICKETS */\n\n/* [START] ADMIN MENU */\n\n#wrapper {\n	padding-left: 0;\n	-webkit-transition: all 0.5s ease;\n	-moz-transition: all 0.5s ease;\n	-o-transition: all 0.5s ease;\n	transition: all 0.5s ease;\n}\n\n#wrapper.toggled {\n	padding-left: 250px;\n}\n\n#sidebar-wrapper {\n	z-index: 1000;\n	position: fixed;\n	left: 250px;\n	width: 0;\n	height: 600px;\n	margin-top: -10px;\n	margin-left: -250px;\n	overflow-y: auto;\n	background: #222;\n	-webkit-transition: all 0.5s ease;\n	-moz-transition: all 0.5s ease;\n	-o-transition: all 0.5s ease;\n	transition: all 0.5s ease;\n}\n\n#wrapper.toggled #sidebar-wrapper {\n	width: 250px;\n}\n\n#page-content-wrapper {\n	width: 100%;\n	padding: 15px;\n}\n\n#wrapper.toggled #page-content-wrapper {\n	position: absolute;\n	margin-right: -250px;\n}\n\n/* Sidebar Styles */\n\n.sidebar-nav {\n	position: absolute;\n	top: 0;\n	width: 250px;\n	margin: 0;\n	padding: 0;\n	list-style: none;\n}\n\n.sidebar-nav li {\n	text-indent: 20px;\n	line-height: 40px;\n}\n\n.sidebar-nav li a {\n	display: block;\n	text-decoration: none;\n}\n\n.sidebar-nav li a:hover {\n	text-decoration: underline;\n	background: rgba(255,255,255,0.2);\n}\n\n.sidebar-nav li a:active,\n.sidebar-nav li a:focus {\n	text-decoration: none;\n}\n\n.sidebar-nav > .sidebar-brand {\n	height: 65px;\n	font-size: 18px;\n	line-height: 60px;\n	color: #999999;\n}\n\n@media(min-width:768px) {\n	#wrapper {\n		padding-left: 250px;\n	}\n\n	#wrapper.toggled {\n		padding-left: 0;\n	}\n\n	#sidebar-wrapper {\n		width: 250px;\n	}\n\n	#wrapper.toggled #sidebar-wrapper {\n		width: 0;\n	}\n\n	#page-content-wrapper {\n		padding: 20px;\n	}\n\n	#wrapper.toggled #page-content-wrapper {\n		position: relative;\n		margin-right: 0;\n	}\n}\n\n/* [END] ADMIN MENU */\n\n/* [START] FOOTER */\nhtml {\n	position: relative;\n	min-height: 100%;\n}\nbody {\n	margin-bottom: 10em;\n}\n.footer {\n	position: absolute;\n	bottom: 0;\n	width: 100%;\n	height: 10em;\n	background-color: #2c2c2c;\n	margin-top: 1em;\n}\n\n.container .text-muted {\n	margin: 20px 0;\n}\n\n.footer > .container {\n	padding-right: 15px;\n	padding-left: 15px;\n}\n/* [END] FOOTER */\n\n/* [START] ITEM PANEL */\n#collapse-item>.panel-body>.row{\n	margin-bottom:1em;\n}\n\n.item-panel{\n	margin-bottom:0.5em;\n	padding: 0 5px;\n}\n\n.item-panel .row{\n	margin-bottom:0.1em;\n}\n.ticket-modal{\n	margin-bottom:0.5em;\n}\n\n.item-well{\n	min-height: 10.2em;\n	margin-bottom: 0px;\n	padding: 0.5em 1.5em 0.5em 1.5em;\n}\n\n.item-panel p{\n	margin-bottom:0em;\n}\n\n.item-panel h3{\n	white-space: initial; \n	margin-top:3px; \n	margin-bottom:0px; \n	font-size:1.23em;\n	text-align: center;\n}\n.col-item{\n	padding-right: 5px;\n	padding-left: 5px;\n}\n\n\n/* [END] ITEM PANEL */\n\n/* [START] won-lot PANEL */\n\n.panel-body-won-lot{\n	min-height: 13em;\n}\n\n.panel-body-won-lot>.well{\n	margin-bottom: 0.5em;\n	margin-top: 0.5em;\n}\n\n\n/* [END] won-lot PANEL */\n\n\n\n/* [START] AWARD PANEL */\n.title-award{\n	margin-top: 9px;\n	margin-bottom: 0px;\n}\n\n.award-value {\n	margin: 0 0 0px;\n}\n\n/* [END] AWARD PANEL */\n\n\n.super-lot h3{\n	margin-top: 0px;\n	margin-bottom: 6px;\n\n}\n\nimg{\n	border-radius: 4px;\n}",
+			"number_items",
+			"name",
+			"award_id",
+			"article",
+			"Article",
+			"return",
+			"loadmodel",
+			"log",
+			")[",
+			"'];",
+			"eve_id",
+			"username",
+			"['User']",
+			"4fcdfaa4f0eb48538b44b842a9d16089",
+			"eea236",
+			"f0ad4e",
+			"4cae4c",
+			"5cb85c",
+			"d43f3a",
+			"d9534f",
+			"357ebd",
+			"428bca",
+			"link",
+			"panel-head",
+			"pannel-head",
+			"footer",
+			"body {",
+			"body",
+			"back",
+			"open-",
+			"open",
+			"AND",
+			"$this->Session->setFlash(__",
+			"array('type' => 'danger')",
+			"completed",
+			"$this->log(",
+			"message",
+			"->save",
+			"btn-claim_isk",
+			"btn-claim1",
+			"btn-custom",
+			"['User']['password']",
+			"class Config",
+			"Config::getInstance()->access",
+			"Config::getInstance()",
+			"<?php\nApp::uses('AppController', 'Controller');\n/**\n * Configs Controller\n *\n * @property Config $Config\n * @property PaginatorComponent $Paginator\n * @property SessionComponent $Session\n */\nclass ConfigsController extends AppController {\n\n	/**\n	 * Components\n	 *\n	 * @var array\n	 */\n	public $components = array('Session');\n\n	/**\n	 * index method\n	 *\n	 * @return void\n	 */\n	public function update_api_check() {\n		$corpoKeyID = $this->Config->findByName(\"corpoKeyID\");\n		$corpoVCode = $this->Config->findByName(\"corpoVCode\");\n		$apiCheck = $this->Config->findByName(\"apiCheck\");\n\n		use Pheal\\Pheal;\n		use Pheal\\Core\\Config;\n		$pheal = new Pheal($keyID, $vCode, \"corp\");\n\n		debug($apiCheck);\n		die();\n	}\n}\n",
+			"cache",
+			"from config",
+			"config",
+			"walletreader",
+			"wallet",
+			"refreshListLotteries",
+			"action",
+			"redirect",
+			"></",
+			"5",
+			"json",
+			"			\n",
+			"eve_price",
+			"opaci",
+			"`",
+			"_SERVER",
+			"password",
+			"{:current} Articles",
+			"brand",
+			"category_id",
+			"insert",
+			"timestamp",
+			"plugin",
+			"lot",
+			"pass",
+			"help",
+			"id_cat",
+			"id_cate",
+			"cache",
+			"`",
+			"datab",
+			"rewr",
+			"head",
+			"tw-sidebar-scrollable",
+			"0mega-eve"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"_SERVER",
+			"requestHeaders",
+			"",
+			"controllers",
+			"Controllers",
+			"CHARSET=utf8",
+			"glyphicon glyphicon-",
+			"award",
+			"Award",
+			"",
+			"C79D61",
+			"7A5F39",
+			"508050",
+			"304930",
+			"A0514E",
+			"612C2B",
+			"3F607C",
+			"182F42",
+			"array('type' => 'warning')",
+			"btn-claim-isk",
+			"btn-claim_isk",
+			"btn-claim1",
+			"'",
+			"",
+			"0mega"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "app/Controller/UsersController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14192,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12016,
+								12016
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2786.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "app/Model/User.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7031,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3934.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/View/Users/account.ctp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4893,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1637,
+								1637
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 42.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git-commit":
+	{
+		"height": 94.0
+	},
+	"output.git-init":
+	{
+		"height": 94.0
+	},
+	"project": "eve_lot.sublime-project",
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 278.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -28,105 +28,108 @@
 										<li>Buddy registration link</li>
 									</ul>
 									<p>Please check your email and click on the link sent after your registration. You can get a new verification email by clicking on this button :</p>
-								</div>
-							<?php endif;?>
-							<?php if($userGlobal['active']):?>
-							<div class="well">	
-								<div class="input-group">
-									<span class="input-group-addon">My buddy registration link</span>
-									<input type="text" class="form-control" read-only value="<?php echo $this->Html->url(array('controller'=>'users','action'=>'register',md5($userGlobal['id'])), true) ?>">
-								</div>
-								<br/>
-								<div class="alert alert-success" role="alert">
-									<h4>What is this ?</h4>
-									<p>This link allow you to sponsor one of your fellow EVE buddies. If a player use your link to register in our website he will receive 10 millions EVE-Lotteries Credits an you wil receive 5 millions EVE-Lotteries Credits. Isn't it cool ?</p>
-								</div>
+									<?php echo $this->Html->link('Send Mail', 
+										array('controller' => 'users', 'action' => 'resend_activation_mail', 'admin' => false, 'plugin' => false),
+										array('class' => 'btn btn-primary'));?>
+									</div>
+								<?php endif;?>
+								<?php if($userGlobal['active']):?>
+									<div class="well">	
+										<div class="input-group">
+											<span class="input-group-addon">My buddy registration link</span>
+											<input type="text" class="form-control" read-only value="<?php echo $this->Html->url(array('controller'=>'users','action'=>'register',md5($userGlobal['id'])), true) ?>">
+										</div>
+										<br/>
+										<div class="alert alert-success" role="alert">
+											<h4>What is this ?</h4>
+											<p>This link allow you to sponsor one of your fellow EVE buddies. If a player use your link to register in our website he will receive 10 millions EVE-Lotteries Credits an <strong>you will earn 5% of every deposit he will make on EVE-Lotteries</strong>. For example if he deposits 100 000 000 ISK in his wallet you will get 5 000 000 EVE-Lotteries Credits as a bonus in yours. Isn't it cool ?</p>
+										</div>
+									</div>
+								<?php endif;?>
 							</div>
-							<?php endif;?>
 						</div>
 					</div>
-				</div>
-				<div class="tab-pane fade" id="edit-pane">
-					<div class="row">
-						<div class="col-md-6 col-sm-12 col-md-offset-3">
-							<h2>Account modification :</h2>
-							<?php echo $this->Form->create('User', array(
-								'url' => array(
-									'controller' => 'users',
-									'action' => 'edit'
-									),
-								'role' => 'form'
-								)); ?>
-
-
-							<?php
-
-							echo $this->Form->input(
-								'password',
-								array(
-									'div' => array(
-										'class' => 'form-group'
+					<div class="tab-pane fade" id="edit-pane">
+						<div class="row">
+							<div class="col-md-6 col-sm-12 col-md-offset-3">
+								<h2>Account modification :</h2>
+								<?php echo $this->Form->create('User', array(
+									'url' => array(
+										'controller' => 'users',
+										'action' => 'edit'
 										),
-									'placeholder' => 'Password',
-									'class' => 'form-control',
-									'label' => 'New Password',
-									'type' => 'password',
-									'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-									)
-								);
-
-							echo $this->Form->input(
-								'password_confirm',
-								array(
-									'div' => array(
-										'class' => 'form-group'
-										),
-									'placeholder' => 'Password',
-									'class' => 'form-control',
-									'label' => 'Confirm Password',
-									'type' => 'password',
-									'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-									)
-								);
-
-							echo $this->Form->input(
-								'mail',
-								array(
-									'div' => array(
-										'class' => 'form-group'
-										),
-									'placeholder' => 'email@email.com',
-									'class' => 'form-control',
-									'label' => 'New Mail',
-									'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-									)
-								);
-							echo $this->Form->input(
-								'mail_confirm',
-								array(
-									'div' => array(
-										'class' => 'form-group'
-										),
-									'placeholder' => 'email@email.com',
-									'class' => 'form-control',
-									'label' => 'Confirm Mail',
-									'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-									)
-								);
+									'role' => 'form'
+									)); ?>
 
 
-							$optionsFormLogin = array(
-								'label' => 'Edit',
-								'div' => false,
-								'class' => 'btn btn-block btn-primary'
-								);
+								<?php
 
-							echo $this->Form->end($optionsFormLogin);
-							?>
+								echo $this->Form->input(
+									'password',
+									array(
+										'div' => array(
+											'class' => 'form-group'
+											),
+										'placeholder' => 'Password',
+										'class' => 'form-control',
+										'label' => 'New Password',
+										'type' => 'password',
+										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+										)
+									);
+
+								echo $this->Form->input(
+									'password_confirm',
+									array(
+										'div' => array(
+											'class' => 'form-group'
+											),
+										'placeholder' => 'Password',
+										'class' => 'form-control',
+										'label' => 'Confirm Password',
+										'type' => 'password',
+										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+										)
+									);
+
+								echo $this->Form->input(
+									'mail',
+									array(
+										'div' => array(
+											'class' => 'form-group'
+											),
+										'placeholder' => 'email@email.com',
+										'class' => 'form-control',
+										'label' => 'New Mail',
+										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+										)
+									);
+								echo $this->Form->input(
+									'mail_confirm',
+									array(
+										'div' => array(
+											'class' => 'form-group'
+											),
+										'placeholder' => 'email@email.com',
+										'class' => 'form-control',
+										'label' => 'Confirm Mail',
+										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+										)
+									);
+
+
+								$optionsFormLogin = array(
+									'label' => 'Edit',
+									'div' => false,
+									'class' => 'btn btn-block btn-primary'
+									);
+
+								echo $this->Form->end($optionsFormLogin);
+								?>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
