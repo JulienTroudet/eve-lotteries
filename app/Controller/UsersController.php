@@ -19,7 +19,7 @@ class UsersController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->userModel = 'User'; 
-		$this->Auth->allow('logout', 'login', 'forbidden', 'initDB', 'register', 'password_reinit');
+		$this->Auth->allow('logout', 'login', 'forbidden', 'initDB', 'register', 'password_reinit', 'activate');
 	}
 
 	/**
@@ -531,6 +531,7 @@ class UsersController extends AppController {
 		$this->Acl->deny($group, 'controllers');
 		$this->Acl->allow($group, 'controllers/Users/user_navbar');
 		$this->Acl->allow($group, 'controllers/Users/account');
+		$this->Acl->allow($group, 'controllers/Users/activate');
 		$this->Acl->allow($group, 'controllers/Users/resend_activation_mail');
 		$this->Acl->allow($group, 'controllers/Users/edit');
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');

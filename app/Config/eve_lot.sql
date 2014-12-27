@@ -19,8 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données: `eve_lot`
 --
-CREATE DATABASE IF NOT EXISTS `eve_lot` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `eve_lot`;
+-- CREATE DATABASE IF NOT EXISTS `eve_lot` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+-- USE `eve_lot`;
 
 -- --------------------------------------------------------
 

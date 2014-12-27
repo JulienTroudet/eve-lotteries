@@ -66,7 +66,7 @@
 				<?php foreach ($lotteries as $lottery){ echo $this->element('Lotteries/LotteryPanel', array(
 				"lottery" => $lottery ));} ?>
 			</div>
-			<h2>Last won lotteries</h2>
+			<h2>Last won Lotteries</h2>
 			<div class="row">
 				<?php foreach ($old_lotteries as $lottery){echo $this->element('Lotteries/OldLotteryPanel', array(
 				"lottery" => $lottery ));}?>
