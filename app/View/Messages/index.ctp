@@ -9,7 +9,7 @@
 				<th><?php echo $this->Paginator->sort('status'); ?></th>
 				<th><?php echo $this->Paginator->sort('title'); ?></th>
 				<th><?php echo $this->Paginator->sort('body', 'Message'); ?></th>
-				<th>Actions</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>

@@ -54,7 +54,9 @@ class AwardsController extends AppController {
 
 		// à partir de là on vérifie si des awards ont été gagnés
 		$db = $this->UserAward->getDataSource();
+		//pour chaque award
 		foreach ($awards as $key => $award) {
+
 			if(!array_key_exists($award['Award']['id'] , $userAwards )){
 				$result = $db->fetchAll($award['Award']['request'], array($userGlobal['id']));
 				if(isset($result[0])){
@@ -67,25 +69,19 @@ class AwardsController extends AppController {
 					$this->UserAward->create();
 					$newUserAward = array('UserAward'=>array('award_id'=>$award['Award']['id'], 'user_id'=>$userGlobal['id'], 'status'=>'unclaimed'));
 
-					$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));
-					
-					$userGlobal['nb_new_awards']++;
-					
+					$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));					
 
 					$this->log('Award Update : user_id['.$userGlobal['id'].'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
-
-					$this->Message->sendMessage(
-									$userGlobal['id'], 
-									'Award Completed', 
-									('You have completed the award "'.$award['Award']['name'].'". Please claim your prize in the award Menu'),
-									'awards', 
-									'index'
-									);
 				}
 				
 			}
 		}
 
+		$newAwardsCount = $this->UserAward->find('count', array(
+			'conditions' => array('UserAward.user_id =' => $userGlobal['id'], 'UserAward.status =' => 'unclaimed')
+			));
+		$userGlobal['nb_new_awards'] = $newAwardsCount;
+		
 		$this->User->save($userGlobal, true, array('id', 'nb_new_awards'));
 
 		$awards = Hash::remove($awards, '{n}.Award.request');

@@ -1,13 +1,12 @@
 
 <div class="row">
 
-	<?php
+	
 
 
 
-	if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='No')
-	{
-		?>
+	<?php if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='No'): ?>
+
 		<div class="col-md-6 col-sm-12 col-md-offset-3">
 			<div class="alert alert-danger" role="alert">
 				<h3>Please add this address as a <a class="alert-link" href="javascript:CCPEVE.requestTrust('http://<?php echo$_SERVER['HTTP_HOST'];?>')">trusted site</a></h3>
@@ -16,13 +15,8 @@
 		</div>
 
 		<div class="warn"></div>
-		<?php
-	}
-
-	if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes')
-	//if(true)
-	{
-		?>
+	<?php endif;?>
+	<?php if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'): ?>
 		<div class="col-md-6 col-sm-12 col-md-offset-3">
 			
 
@@ -136,56 +130,40 @@
 
 				?>
 				<?php if(isset($sponsor['User'])):?>
-
-					<?php
-					
-						?>
-						<div class="well">
-							<div class="media">
-								<p class="pull-left">
-									<img src="https://image.eveonline.com/Character/<?php echo $sponsor['User']['id']; ?>_64.jpg">
-								</p>
-								<div class="media-body">
-									<h3 class="media-heading">Sponsor : <?php echo $sponsor['User']['eve_name']; ?></h3>
-								</div>
+					<div class="well">
+						<div class="media">
+							<p class="pull-left">
+								<img src="https://image.eveonline.com/Character/<?php echo $sponsor['User']['id']; ?>_64.jpg">
+							</p>
+							<div class="media-body">
+								<h3 class="media-heading">Sponsor : <?php echo $sponsor['User']['eve_name']; ?></h3>
 							</div>
-							<p>You will get <strong>10 000 000 EVE-Credits as a bonus</strong> for having a sponsor !</p>
 						</div>
-					<?php endif; ?>
-
-					<?php
-					$optionsFormLogin = array(
-						'label' => 'Register',
-						'div' => false,
-						'class' => 'btn btn-block btn-primary'
-						);
-
-					echo $this->Form->end($optionsFormLogin);
-					?>
-				</div>
-				<?php
-
-			}
-
-			if(!isset($_SERVER['HTTP_EVE_TRUSTED']))
-			{
-				?>
-				<div class="col-md-6 col-sm-12 col-md-offset-3">
-					<div class="alert alert-danger" role="alert">
-						<h3>Please use the EVE-Online in game browser for registration !</h3>
-						<p></p>
-						<p style="text-align:center;">
-							In game, open the Accessories Menu and click on this icon : 
-							<?php echo $this->Html->image('Accessories_menu.png', array('alt' => 'Accessories menu'));?>
-						</p>
+						<p>You will get <strong>10 000 000 EVE-Credits as a bonus</strong> for having a sponsor !</p>
 					</div>
-				</div>
+				<?php endif; ?>
+
 				<?php
-			}
+				$optionsFormLogin = array(
+					'label' => 'Register',
+					'div' => false,
+					'class' => 'btn btn-block btn-primary'
+					);
 
-			?>
-
-
-
-
-		</div>
+				echo $this->Form->end($optionsFormLogin);
+				?>
+			</div>
+		<?php endif;?>
+		<?php if(!isset($_SERVER['HTTP_EVE_TRUSTED']) || $_SERVER['HTTP_EVE_TRUSTED'] == ''): ?>
+			<div class="col-md-6 col-sm-12 col-md-offset-3">
+				<div class="alert alert-danger" role="alert">
+					<h3>Please use the EVE-Online in game browser for registration !</h3>
+					<p></p>
+					<p style="text-align:center;">
+						In game, open the Accessories Menu and click on this button : 
+						<?php echo $this->Html->image('Accessories_menu.png', array('alt' => 'Accessories menu'));?>
+					</p>
+				</div>
+			</div>
+		<?php endif;?>
+	</div>

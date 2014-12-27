@@ -69,8 +69,9 @@ class UserAwardsController extends AppController {
 
 					$claimedValue = $claimedAward['Award']['award_credits'];
 					$claimerUser['User']['wallet'] += $claimedValue;
-					$claimerUser['User']['nb_new_awards']--;
+					$claimerUser['User']['nb_new_awards'] += -1;
 
+					
 					$claimedAward['UserAward']['status'] = 'completed';
 
 					if ($this->User->save($claimerUser, true, array('id', 'wallet', 'nb_new_awards')) && $this->UserAward->save($claimedAward, true, array('id', 'status'))) {

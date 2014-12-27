@@ -172,6 +172,9 @@ class UsersController extends AppController {
 			$this->set('sponsor', $sponsor);
 			$this->set('sponsorCode', $encodedId);
 		}
+		else{
+			$this->set('sponsorCode', '');
+		}
 
 		if ($this->Session->read('Auth.User')) {
 			$this->Session->setFlash(
@@ -182,6 +185,20 @@ class UsersController extends AppController {
 			return $this->redirect('/');
 		}
 		if (!empty($this->data)){
+
+			$testUser = $this->User->findById($this->data['User']['id']);
+
+			
+
+			if (isset($testUser['User']['eve_name'])) {
+				$this->Session->setFlash(
+					'This character is already registered !',
+					'FlashMessage',
+					array('type' => 'error')
+					);
+				return $this->redirect('/');
+			}
+
 			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
 
 				if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
@@ -198,13 +215,19 @@ class UsersController extends AppController {
 						$dataProxy['User']['wallet'] = 10000000;
 					}
 
-					$this->log($dataProxy);
+
 					$this->User->create();
 					if($this->User->save($dataProxy, true, array('id', 'username', 'password', 'mail', 'eve_name', 'group_id', 'sponsor_user_id', 'wallet'))) {
 
 						$this->User->sendActivationMail($this->User->id);
 
-						$this->Message->sendSponsorMessage($sponsor['User']['id'], $dataProxy);
+						$newUser = $this->User->findById($this->User->id);
+						$newUser = $newUser['User'];
+						$this->Auth->login($newUser);
+						
+						if(isset($sponsor['User'])){
+							$this->Message->sendSponsorMessage($sponsor['User']['id'], $dataProxy);
+						}
 
 						$this->Session->setFlash(
 							'Registration complete ! Please check your mails to activate your account.',
@@ -212,7 +235,7 @@ class UsersController extends AppController {
 							array('type' => 'success')
 							);
 
-						$this->redirect($this->Auth->logout());
+						$this->redirect('/');
 					}
 					else{
 						$this->Session->setFlash(
@@ -250,10 +273,10 @@ class UsersController extends AppController {
 
 		$this->User->sendActivationMail($userId);
 		$this->Session->setFlash(
-				'A new activation mail has been sent to you.',
-				'FlashMessage',
-				array('type' => 'info')
-				);
+			'A new activation mail has been sent to you.',
+			'FlashMessage',
+			array('type' => 'info')
+			);
 		return $this->redirect(array('controller' => 'users', 'action' => 'account', 'admin' => false));
 	}
 
@@ -291,12 +314,16 @@ class UsersController extends AppController {
 
 	public function account(){
 		$userGlobal = $this->Auth->user();
-		$this->User->id = $userGlobal['id'];
-		$passModif = false;
-		$mailModif = false;
-		$passError = false;
-		$mailError = false;
+		$user = $this->User->find('first', array(
+			'conditions' => array('User.id =' => $userGlobal['id']),
+			'contain' => array(
+				'Buddy' => array(
+					'order' => 'Buddy.created DESC'
+					)
+				),
+			));
 		
+		$this->set('buddies', $user['Buddy']);
 	}
 
 	public function edit(){
@@ -351,17 +378,17 @@ class UsersController extends AppController {
 						$this->User->id = $userGlobal['id'];
 						$this->User->saveField('active', 0);
 						$this->Session->setFlash(
-						'You have successfully edited your account ! A verification mail has been sent to your new adress.',
-						'FlashMessage',
-						array('type' => 'success')
-						);
+							'You have successfully edited your account ! A verification mail has been sent to your new adress.',
+							'FlashMessage',
+							array('type' => 'success')
+							);
 					}
 					else{
 						$this->Session->setFlash(
-						'You have successfully edited your account !',
-						'FlashMessage',
-						array('type' => 'success')
-						);
+							'You have successfully edited your account !',
+							'FlashMessage',
+							array('type' => 'success')
+							);
 					}
 
 					$this->redirect('/');

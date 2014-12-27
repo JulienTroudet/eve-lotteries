@@ -70,6 +70,7 @@ class Message extends AppModel {
 	}
 
 	public function sendSponsorMessage($user_id, $budy) {
+
 		$this->create();
 		$statData = array(
 			'user_id' => $user_id,

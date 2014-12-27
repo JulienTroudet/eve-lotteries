@@ -25,7 +25,7 @@
 									<p>Your email adress has not benn verified. Without this verifications somes features cannot be used :</p>
 									<ul>
 										<li>Password recovery</li>
-										<li>Buddy registration link</li>
+										<li>Sponsorship link</li>
 									</ul>
 									<p>Please check your email and click on the link sent after your registration. You can get a new verification email by clicking on this button :</p>
 									<?php echo $this->Html->link('Send Mail', 
@@ -34,15 +34,26 @@
 									</div>
 								<?php endif;?>
 								<?php if($userGlobal['active']):?>
-									<div class="well">	
+									<div class="well account-well">	
 										<div class="input-group">
-											<span class="input-group-addon">My buddy registration link</span>
+											<span class="input-group-addon">My sponsorship link</span>
 											<input type="text" class="form-control" read-only value="<?php echo $this->Html->url(array('controller'=>'users','action'=>'register',md5($userGlobal['id'])), true) ?>">
 										</div>
 										<br/>
 										<div class="alert alert-success" role="alert">
 											<h4>What is this ?</h4>
-											<p>This link allow you to sponsor one of your fellow EVE buddies. If a player use your link to register in our website he will receive 10 millions EVE-Lotteries Credits an <strong>you will earn 5% of every deposit he will make on EVE-Lotteries</strong>. For example if he deposits 100 000 000 ISK in his wallet you will get 5 000 000 EVE-Lotteries Credits as a bonus in yours. Isn't it cool ?</p>
+											<p>This link allow you to sponsor one of your fellow EVE buddies. If a player use your link to register in our website, he will receive 10 millions EVE-Lotteries Credits and <strong>you will earn 5% of every deposit he will make on EVE-Lotteries</strong>. For example if he deposits 100 000 000 ISK in his wallet you will get 5 000 000 EVE-Lotteries Credits as a bonus in yours. Isn't it cool ?</p>
+										</div>
+									</div>
+									<div class="well account-well">
+										<h2>Sponsorship</h2>
+										<div class="row">
+											<?php foreach ($buddies as $key => $buddy): 
+											echo $this->element('Account/SponsoredUser', array(
+												"buddy" => $buddy,
+												));
+											endforeach;
+											?>
 										</div>
 									</div>
 								<?php endif;?>

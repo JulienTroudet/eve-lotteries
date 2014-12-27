@@ -85,11 +85,20 @@ App::uses('AuthComponent', 'Controller/Component');
 
 	}
 
+	// ajoute un certain montant au wallet de l'utilisateur
 	public function updateWallet($userId, $amount) {
-
+		$this->id = $userId;
 		$user = $this->findById($userId);
 
 		$this->saveField('wallet', $user['User']['wallet']+amount);
+
+	}
+
+	public function updateNbNewAwards($userId, $nb) {
+		$this->id = $userId;
+		$user = $this->findById($userId);
+
+		$this->saveField('nb_new_awards', $nb);
 
 	}
 
