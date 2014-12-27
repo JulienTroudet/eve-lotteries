@@ -90,7 +90,7 @@ App::uses('AuthComponent', 'Controller/Component');
 		$this->id = $userId;
 		$user = $this->findById($userId);
 
-		$this->saveField('wallet', $user['User']['wallet']+amount);
+		$this->saveField('wallet', $user['User']['wallet']+$amount);
 
 	}
 
