@@ -12,15 +12,16 @@
 		<div class="container-fluid">
 			<div class="eveItems index">
 				<h2><?php echo __('Eve Items'); ?></h2>
+				<div><button id="update-all" class="btn btn-large btn-block btn-default"><?php echo __('Update All Visible Items Price'); ?></button></div>
 				<table id='items' class="table table-striped table-condensed">
 					<thead>
 						<tr>
 							<th>Eve ID</th>
 							<th>Name</th>
-							<th class="filter" data-col-i="2">Category</th>
-							<th>Value</th>
-							<th class="filter" data-col-i="4">Status</th>
-							<th class="filter" data-col-i="5">Tickets</th>
+							<th class="filter" data-col-i="2"><?php echo __('Category'); ?></th>
+							<th><?php echo __('Value'); ?></th>
+							<th class="filter" data-col-i="4"><?php echo __('Status'); ?></th>
+							<th class="filter" data-col-i="5"><?php echo __('Tickets'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
 						</tr>
 					</thead>
@@ -29,9 +30,9 @@
 							<tr>
 								<td><img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']?>_64.png"></td>
 								<td><?php echo $this->Html->link(h($eveItem['EveItem']['name']), array(
-										'action' => 'view', 'admin' => true, $eveItem['EveItem']['id']),
-									array()
-									); ?>&nbsp;</td>
+									'action' => 'view', 'admin' => true, $eveItem['EveItem']['id']),
+								array()
+								); ?>&nbsp;</td>
 								<td><?php echo h($eveItem['EveCategory']['name']); ?>&nbsp;</td>
 								<td><span id="price-<?php echo h($eveItem['EveItem']['id']); ?>"><?php echo number_format($eveItem['EveItem']['eve_value'], 0); ?>&nbsp;</span> <span class="badge">ISK</span></td>
 								<td><?php echo h($eveItem['EveItem']['status']); ?>&nbsp;</td>
@@ -59,7 +60,14 @@
 
 	<script>
 		$( document ).ready(function() {
+
+
+			$('#update-all').click(function(){
+				$('.update-price').trigger( "click" );
+			});
+
 			var table = $('#items').DataTable({
+				"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 				"drawCallback": function( settings ) {
 					$( ".update-price").unbind( "click" );
 					$('.update-price').click(function(){
@@ -81,12 +89,14 @@
 									console.log(response.error);
 								}
 								if (response.success) {
-									console.log('success');
 
 									$('#price-'+idItem).html(response.itemValue);
 
 									toastr.success('You have updated the value for the '+itemName+' !');
 
+								}
+								else{
+									toastr.warning('Cannot update the '+itemName+' !');
 								}
 							},
 							error: function(e) {

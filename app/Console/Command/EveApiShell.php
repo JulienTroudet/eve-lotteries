@@ -33,10 +33,15 @@ class EveApiShell extends AppShell {
 		try {
 			$response = $this->pheal->walletjournal(array(''));
 			$transactions = 0;
-			if($response->cached_until != $apiCheckTimeValue)
+
+			$startDateTime = new DateTime('NOW');
+			$nextDateTime = new DateTime($apiCheckTimeValue);
+
+			//si la date de prochain check enregistrée est inférieure à la date actuelle on continue
+			if ($nextDateTime->diff($startDateTime)->format('%R') == '+')
+			//if($response->cached_until != $apiCheckTimeValue)
 			{
 				
-
 				foreach($response->entries as $entry)
 				{
 					$check_api = $this->Transaction->findByRefid($entry->refID);
@@ -112,9 +117,25 @@ class EveApiShell extends AppShell {
 
 
 				}
-				$apiCheckTime['Config']['value'] = $response->cached_until;
-				if ($this->Config->save($apiCheckTime, true, array('id', 'value'))) {
+
+				
+				//ici on prend la plus haute valeur entre la prochaine date de cron et la prochaine heure ou l'api est dispo pour la sauvegarder
+				$nextApiDateTime = new DateTime($response->cached_until);
+
+				$nextCronDateTime = new DateTime('NOW');
+				$nextCronDateTime->add(new DateInterval('PT' . 30 . 'M'));
+
+				//2015-01-20 22:32:02
+
+				if ($nextCronDateTime->diff($nextApiDateTime)->format('%R') == '+'){
+
+					$apiCheckTime['Config']['value'] = $nextApiDateTime->format('Y-m-d H:i:s');
 				}
+				else{
+					$apiCheckTime['Config']['value'] = $nextCronDateTime->format('Y-m-d H:i:s');
+				}
+
+				$this->Config->save($apiCheckTime, true, array('id', 'value'));
 			}
 			$this->log($transactions.' transactions imported', 'eve-lotteries');
 

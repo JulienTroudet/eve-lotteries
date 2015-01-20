@@ -163,17 +163,33 @@ class EveItemsController extends AppController {
 
 			$eveId = $currentItem['EveItem']['eve_id'];
 
-			$xml = Xml::build('http://api.eve-central.com/api/marketstat?usesystem=30000142&typeid='.$eveId, array('return' => 'simplexml'));
+			if($currentItem['EveItem']['eve_category_id'] == '69' || $currentItem['EveItem']['eve_category_id'] == '67' || $currentItem['EveItem']['eve_category_id'] == '56'){
+				$xml = Xml::build('http://api.eve-central.com/api/marketstat?typeid='.$eveId, array('return' => 'simplexml'));
+			}
+			else{
+				$xml = Xml::build('http://api.eve-central.com/api/marketstat?usesystem=30000142&typeid='.$eveId, array('return' => 'simplexml'));
+			}
+			
 
 			$currentItem['EveItem']['eve_value'] = (string) $xml->marketstat->type->sell->avg;
 
-			if ($this->EveItem->save($currentItem)) {
+			if($currentItem['EveItem']['eve_value'] != 0){
+				if ($this->EveItem->save($currentItem)) {
 				$data = array (
 						'success' => true,
-						'message' => 'Ticket bought.',
+						'message' => 'Item Updated.',
+						'itemValue' => number_format($currentItem['EveItem']['eve_value'], 0),
+						);
+				}
+			}
+			else{
+				$data = array (
+						'success' => false,
+						'message' => 'Item not Updated.',
 						'itemValue' => number_format($currentItem['EveItem']['eve_value'], 0),
 						);
 			}
+			
 
 			$this->set(compact('data')); // Pass $data to the view
 			$this->set('_serialize', 'data');

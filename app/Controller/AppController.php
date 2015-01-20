@@ -126,7 +126,7 @@ class AppController extends Controller {
 
 
 		$apiCheckTime = $this->Config->findByName("apiCheck");
-		$this->set('apiCheckTime', CakeTime::niceShort($apiCheckTime['Config']['value']));
+		$this->set('apiCheckTime', $apiCheckTime['Config']['value']);
 		
 
 	}

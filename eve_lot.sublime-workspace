@@ -184,14 +184,6 @@
 				"name": "Package Control Messages",
 				"scratch": true
 			}
-		},
-		{
-			"file": "app/View/Lotteries/index.ctp",
-			"settings":
-			{
-				"buffer_size": 10180,
-				"line_ending": "Windows"
-			}
 		}
 	],
 	"build_system": "",
@@ -234,7 +226,6 @@
 	},
 	"expanded_folders":
 	[
-		"/F/www/eve-lotteries",
 		"/F/www/eve-lotteries/app",
 		"/F/www/eve-lotteries/app/Config",
 		"/F/www/eve-lotteries/app/View",
@@ -242,13 +233,13 @@
 	],
 	"file_history":
 	[
+		"/F/www/eve-lotteries/app/View/Lotteries/index.ctp",
 		"/F/www/eve-lotteries/app/Controller/UsersController.php",
 		"/F/www/eve-lotteries/cron.bat",
 		"/F/www/eve-lotteries/app/View/Lotteries/list_lotteries.ctp",
 		"/F/www/eve-lotteries/app/Controller/LotteriesController.php",
 		"/F/www/eve-lotteries/app/Config/eve_lot.sql",
 		"/F/www/eve-lotteries/app/Config/database.php",
-		"/F/www/eve-lotteries/app/View/Lotteries/index.ctp",
 		"/C/Users/Trehan/Desktop/awards.sql",
 		"/F/www/eve-lotteries/app/Model/User.php",
 		"/F/www/eve-lotteries/app/Controller/AwardsController.php",
@@ -563,7 +554,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -589,35 +580,6 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "app/View/Lotteries/index.ctp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 10180,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2329,
-								2329
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 588.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
