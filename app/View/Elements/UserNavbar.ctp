@@ -15,7 +15,7 @@
 			<div class="navbar-collapse collapse navbar-user">
 				<div class="nav navbar-nav hidden-xs hidden-sm">
 					<h2><?php echo $userGlobal['eve_name']; ?></h2>
-					<p>Next API Check in <span id='countdown'><?php echo $apiCheckTime; ?></span></p>
+					<p>Next API Check in <span id='countdown'></span></p>
 				</div>
 				<div class="nav navbar-nav navbar-right navbar-user-info">
 					<div class="row">
@@ -183,7 +183,7 @@
 										function showRemaining() {
 											var now = new Date();
 											var distance = end - now;
-											if (distance < -60000) {
+											if (distance < 0) {
 
 												clearInterval(timer);
 												document.getElementById(id).innerHTML = 'EXPIRED!';

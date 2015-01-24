@@ -447,8 +447,8 @@ class WithdrawalsController extends AppController {
 				$claimerUser = null;
 				$continue = true;
 				foreach ($claimedAwards as $key => $claimedAward) {
-					if($claimedAward['Withdrawal']['status'] != 'claimed'){
-						$data = array('error' => 'Withdrawal not claimed.');
+					if($claimedAward['Withdrawal']['status'] != 'reserved'){
+						$data = array('error' => 'Withdrawal not reserved.');
 						$continue = false;
 						break;
 					}
