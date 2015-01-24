@@ -10,7 +10,7 @@
 			</button>
 			<?php 
 				echo $this->Html->link(
-					'Want to play ? Click on register !', 
+					'Want to play? Click on register!', 
 					array('controller' => 'users', 'action' => 'register'),
 					array('class' => 'navbar-brand')
 					);

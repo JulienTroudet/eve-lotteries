@@ -183,7 +183,7 @@
 										function showRemaining() {
 											var now = new Date();
 											var distance = end - now;
-											if (distance < 0) {
+											if (distance < -60000) {
 
 												clearInterval(timer);
 												document.getElementById(id).innerHTML = 'EXPIRED!';
@@ -195,9 +195,9 @@
 											var minutes = Math.floor((distance % _hour) / _minute);
 											var seconds = Math.floor((distance % _minute) / _second);
 
-											document.getElementById(id).innerHTML = days + ' days ';
-											document.getElementById(id).innerHTML += hours + ' hours ';
-											document.getElementById(id).innerHTML += minutes + ' minutes ';
+											//document.getElementById(id).innerHTML = days + ' days ';
+											//document.getElementById(id).innerHTML += hours + ' hours ';
+											document.getElementById(id).innerHTML = minutes+2 + ' minutes ';
 											document.getElementById(id).innerHTML += seconds + ' seconds';
 										}
 

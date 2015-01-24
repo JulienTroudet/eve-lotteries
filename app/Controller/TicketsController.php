@@ -49,52 +49,8 @@ class TicketsController extends AppController {
 				$data = array('error' => 'You must log in to buy a ticket !');
 			}
 			else{
-				$this->loadModel('Lottery');
-				$this->loadModel('Statistic');
-				
-				$choosenTicket = $this->Ticket->findById($ticketId);
-				$choosenLottery = $this->Lottery->findById($choosenTicket['Ticket']['lottery_id']);
-				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet', 'User.tokens'));
-
-				if($choosenTicket['Ticket']['buyer_user_id'] != null){
-					$data = array('error' => 'Ticket already bought.');
-				}
-
-				else if($buyer['User']['wallet'] < $choosenTicket['Ticket']['value']){
-					$data = array('error' => 'Not enough Credits.');
-				}
-
-				else{
-					$buyer['User']['wallet'] -= $choosenTicket['Ticket']['value'];
-					$buyer['User']['tokens'] += $choosenTicket['Ticket']['value']/10000000;
-
-					$choosenTicket['Ticket']['buyer_user_id'] = $buyer['User']['id'];
-					
-					$dataSource = $this->Ticket->getDataSource();
-					$dataSource->begin();
-					if ($this->User->save($buyer, true, array('id', 'wallet', 'tokens')) && $this->Ticket->save($choosenTicket)) {
-
-						$this->Statistic->saveStat($buyer['User']['id'], 'buy_ticket', $ticketId, $choosenTicket['Ticket']['value'], $choosenLottery['Lottery']['eve_item_id']);
-
-						$data = array (
-							'success' => true,
-							'message' => 'Ticket bought.',
-							'buyerEveId' => $buyer['User']['id'],
-							'buyerName' => $buyer['User']['eve_name'],
-							'buyerWallet' => number_format($buyer['User']['wallet'], 2)
-							);
-
-						$this->log('Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.']', 'eve-lotteries');
-						$this->log('User state : name['.$buyer['User']['eve_name'].'], wallet['.number_format($buyer['User']['wallet'], 2).'], tokens['.number_format($buyer['User']['tokens'], 2).']', 'eve-lotteries');
-						$this->_checkWinner($choosenTicket['Ticket']['lottery_id'], $buyer['User']['id']);
-
-						$dataSource->commit();
-
-					}
-					else {
-						$dataSource->rollback();
-					}
-				}
+				$listTicketsIds = new array($ticketId);
+				$data = $this->Ticket->userBuyTickets($userId, $listTicketsIds);
 			}
 			$this->set(compact('data')); // Pass $data to the view
 			$this->set('_serialize', 'data');
@@ -141,7 +97,7 @@ class TicketsController extends AppController {
 				);
 			$nbFreeLotteries = 10 - $this->Lottery->find('count', $params);
 			if ($proceed && $nbFreeLotteries <= 0) {
-				$data = array('error' => 'There is already 10 ingoing lotteries ! Please complete a lottery befor starting a new one.');
+				$data = array('error' => 'There is already 10 ongoing lotteries ! Please complete a lottery befor starting a new one.');
 				$proceed = false;
 			}
 

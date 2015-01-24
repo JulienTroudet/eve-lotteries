@@ -204,7 +204,7 @@ class UsersController extends AppController {
 				if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
 
 					$this->loadModel('Message');
-
+					$this->loadModel('Statistic');
 					$dataProxy = $this->data;
 
 					//assigne le groupe par défaut à l'utilisateur
