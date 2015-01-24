@@ -102,6 +102,14 @@ App::uses('AuthComponent', 'Controller/Component');
 
 	}
 
+	public function updateNbNewWonLotteries($userId, $nb) {
+		$this->id = $userId;
+		$user = $this->findById($userId);
+		$user['User']['nb_new_won_lotteries'] += $nb;
+
+		$this->save($user, true, array('id', 'nb_new_won_lotteries'));
+	}
+
 	/**
 	 * Validation rules
 	 *

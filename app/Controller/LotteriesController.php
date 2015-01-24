@@ -63,6 +63,14 @@ class LotteriesController extends AppController {
 			'limit' => 10
 			);
 		$lotteries = $this->Lottery->find('all', $params);
+
+		foreach ($lotteries as $key => $lottery) {
+			$allBought = $this->Lottery->areAllTicketBought($lottery);
+			if($allBought){
+				$this->Lottery->checkForWinner($lottery['Lottery']['id']);
+			}
+		}
+
 		$this->set('lotteries', $lotteries);
 
 

@@ -22,7 +22,7 @@ class Ticket extends AppModel {
 
 
 
-	public function userBuyTickets($userId, $ticketId) {
+	public function userBuyOneTicket($userId, $ticketId) {
 
 		//l'array qui contient le message à renvoyer
 		$data = Array();
@@ -78,7 +78,7 @@ class Ticket extends AppModel {
 			$this->log('Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.']', 'eve-lotteries');
 			$this->log('User state : name['.$buyer['User']['eve_name'].'], wallet['.number_format($buyer['User']['wallet'], 2).'], tokens['.number_format($buyer['User']['tokens'], 2).']', 'eve-lotteries');
 			
-			//$this->_checkWinner($choosenTicket['Ticket']['lottery_id'], $buyer['User']['id']);
+			$lotteryModel->checkForWinner($choosenTicket['Ticket']['lottery_id'], $choosenTicket['Ticket']['id']);
 
 			$dataSource->commit();
 
@@ -105,43 +105,45 @@ class Ticket extends AppModel {
 		return $data;
 	}
 
-/**
- * Validation rules
- *
- * @var array
- */
-public $validate = array(
-	'lottery_id' => array(
-		'numeric' => array(
-			'rule' => array('numeric'),
+
+
+	/**
+	 * Validation rules
+	 *
+	 * @var array
+	 */
+	public $validate = array(
+		'lottery_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
-	'position' => array(
-		'numeric' => array(
-			'rule' => array('numeric'),
+		'position' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
-	'value' => array(
-		'decimal' => array(
-			'rule' => array('decimal'),
+		'value' => array(
+			'decimal' => array(
+				'rule' => array('decimal'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				),
 			),
-		),
-	);
+		);
 
 
 	/**
