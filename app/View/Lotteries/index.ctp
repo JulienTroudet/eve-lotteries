@@ -92,10 +92,11 @@
 					<div class="row" id="choose-ticket-modal-body">
 
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary" id="button-buy-list">Buy</button>
-					</div>
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="button-buy-list">Buy</button>
 				</div>
 			</div>
 		</div>
@@ -208,14 +209,14 @@
 							poll();
 						},
 						error: function(e) {
-							alert("An error occurred: " + e.responseText);
+							alert("An error occurred ! " + e.responseText);
 							console.log(e);
 						}
 					});
 				}, 10000);
 			})();
 
-});
+		});
 
 
 function filterItems(){

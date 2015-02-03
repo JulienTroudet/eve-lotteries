@@ -15,7 +15,7 @@ Updates are cleared every 15 minutes automatically  through EVE's API but you ma
 <p>You can get free credits by two means.
 		<ul>
 		<li>Complete the awards listed in the <?php echo $this->Html->link('"My Awards"', array('controller' => 'awards', 'action' => 'index', 'admin'=>false, 'plugin' => false));?> section. You need to fill some conditions to complete an award, but each will get you some shiny Credits.</li>
-		<li>Get some of your friends to play in our site by using the buddy registration link. Under the section <?php echo $this->Html->link('"My Account"', array('controller' => 'users', 'action' => 'account', 'admin'=>false, 'plugin' => false));?> you will find a link witch allow your friends to subscribe with a 10 millions Credits bonus. On your side, every time they make an ISK deposit on our site, you will be credited a bonus of 5% the ammount of the transaction.</li>
+		<li>Get some of your friends to play in our site by using the buddy registration link. Under the section <?php echo $this->Html->link('"My Account"', array('controller' => 'users', 'action' => 'account', 'admin'=>false, 'plugin' => false));?> you will find a link witch allow your friends to subscribe with a 10 millions Credits bonus. On your side, every time they make an ISK deposit on EVE-Lotteries, you will be credited a bonus of 5% the ammount of the transaction.</li>
 		</ul>
 </p>
 

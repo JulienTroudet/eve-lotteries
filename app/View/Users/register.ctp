@@ -98,7 +98,14 @@
 					'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 					)
 				);
-
+				?>
+				<div class="alert alert-info" role="alert">
+				<p><strong>Why do we need your mail?</strong></p>
+				<p>We wont give your informations to any third party web site. The only use for your mail is to get back a new password if you forgot the old one. We wont send you any newsletter or advertising. If you want, you can provide us a false e-mail adress. 
+				</p>
+				<p>After your ragistration a confirmation e-mail will be sent to you. You only have to confirm your adress if you want to get your referal link.</p>
+				</div>
+				<?php
 			echo $this->Form->input(
 				'id',
 				array(

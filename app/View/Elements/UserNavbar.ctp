@@ -15,22 +15,18 @@
 			<div class="navbar-collapse collapse navbar-user">
 				<div class="nav navbar-nav hidden-xs hidden-sm">
 					<h2><?php echo $userGlobal['eve_name']; ?></h2>
-					<p>Next API Check in <span id='countdown'></span></p>
+					<p>Next API Check in <span class='countdown'></span></p>
 				</div>
 				<div class="nav navbar-nav navbar-right navbar-user-info">
 					<div class="row">
-						<?php
-						$buttonDeposit = '';
-						if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'){
-							$buttonDeposit = '<a href="#" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="The deposits made to EVE-Lotteries will be available at the next API check."><i class="fa fa-plus-square"></i></a>';
-						}
-						else {
-							$buttonDeposit = '<a onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK"><i class="fa fa-plus-square"></i></a>';
-						}
-						?>
+						
 						<div class="col-md-4 col-sm-4 col-user-navbar">
 							<div class="well">
-								<p><span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i> <?php echo $buttonDeposit; ?></p>
+								<p>
+									<span id="wallet"><?php echo number_format($userGlobal['wallet'],2); ?></span> 
+									<i class="fa fa-money"></i> 
+									<a id="button-deposit" href="#" onclick="CCPEVE.showInfo(2, 98342107);"><i class="fa fa-plus-square"></i></a>
+								</p>
 								<p><span id="points"><?php echo number_format($userGlobal['tokens']); ?></span> <span class="badge">Points</span></p>
 							</div>
 						</div>
@@ -167,10 +163,41 @@
 								</div>
 							<?php endif; ?>
 
+							<div class="modal fade" id="deposit-modal" tabindex="-1" role="dialog" aria-labelledby="deposit-modal-label" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+											<h4 class="modal-title" id="deposit-modal-label">Deposit ISK</h4>
+										</div>
+										<div class="modal-body">
+											<div class="row" id="deposit-modal-body">
+												<p>To get EVE-Lotteries credits you must log in the game with the character you used to register and give ISK to the <a id="button-deposit" href="#" onclick="CCPEVE.showInfo(2, 98342107);">EVE-Lotteries Corporation</a>. Once you have deposited any amount of ISK you have to wait until the EVE API refresh our datas to be credited with the same amount of EVE-Lotteries credits. </p>
+
+												<div class="row">
+													<div class="col-xs-12 col-md-12">
+															<div class="center-block"><?php echo $this->Html->image('give_money.png', array('alt' => 'Give Money', 'class' => 'center-block'));?></div>
+													</div>
+													<div class="col-xs-12 col-md-12">
+															<div class="center-block"><?php echo $this->Html->image('amount.png', array('alt' => 'Set Amount', 'class' => 'center-block'));?></div>
+													</div>
+												</div>
+												<p>There is no need to provide a reason for the transfert.</p>
+												<p>The new API check will take place in <span class='countdown'></span></p>
+											</div>
+											
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+
 							<script> 
 
 								$(document).ready(function() {
-									function CountDownTimer(dt, id)
+									function CountDownTimer(dt, div_class)
 									{
 										var end = new Date(dt);
 
@@ -186,7 +213,7 @@
 											if (distance < 0) {
 
 												clearInterval(timer);
-												document.getElementById(id).innerHTML = 'EXPIRED!';
+												$('.'+div_class).html('EXPIRED!');
 
 												return;
 											}
@@ -197,14 +224,22 @@
 
 											//document.getElementById(id).innerHTML = days + ' days ';
 											//document.getElementById(id).innerHTML += hours + ' hours ';
-											document.getElementById(id).innerHTML = minutes+2 + ' minutes ';
-											document.getElementById(id).innerHTML += seconds + ' seconds';
+											$('.'+div_class).html( minutes+2 + ' minutes '+ seconds + ' seconds');
 										}
 
 										timer = setInterval(showRemaining, 1000);
 									}
 
 									CountDownTimer('<?php echo $apiCheckTime; ?>', 'countdown');
+
+									$('#button-deposit').click(function(){
+
+										window.scrollTo(0,0);
+
+
+										$('#deposit-modal').modal('show');
+
+									});
 								});
 
 
