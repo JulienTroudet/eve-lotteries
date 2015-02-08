@@ -209,7 +209,7 @@
 							poll();
 						},
 						error: function(e) {
-							alert("An error occurred ! " + e.responseText);
+							console.log("An error occurred ! " + e.responseText);
 							console.log(e);
 						}
 					});

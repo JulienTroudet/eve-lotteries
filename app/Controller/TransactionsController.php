@@ -9,12 +9,13 @@ App::uses('AppController', 'Controller');
  */
 class TransactionsController extends AppController {
 
-/**
- * Components
- *
- * @var array
- */
-public $components = array('Paginator', 'Session', 'RequestHandler');
+	/**
+	 * Components
+	 *
+	 * @var array
+	 */
+	public $components = array('Paginator', 'Session', 'RequestHandler');
+	public $helpers = array('Js');
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -37,20 +38,31 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 
 		$userGlobal = $this->Auth->user();
 
+		//vas chercher la liste des transactions
 		$paginateVar = array(
 			'conditions' => array('Transaction.user_id' => $userGlobal['id']),
 			'order' => array(
 				'Transaction.created' => 'desc'
 				),
-			'limit' => 10
+			'limit' => 15
 			);
 		$this->Paginator->settings = $paginateVar;
-
 		$this->set('transactions', $this->Paginator->paginate());
+
+		$paginateVar = array(
+			'model' => 'Statistic',
+			'conditions' => array('AND' =>array('Statistic.user_id' => $userGlobal['id'], 'Statistic.type' => array('buy_ticket', 'withdrawal_credits', 'sponsor_isk'))),
+			'order' => array(
+				'Statistic.created' => 'desc'
+				),
+			'limit' => 15
+			);
+		$this->Paginator->settings = $paginateVar;
+		$this->set('player_stats', $this->Paginator->paginate('Statistic'));
 
 		$db = $this->Transaction->getDataSource();
 		
-		
+		//fait la somme des transactions négatives pour obtenir le total de dépots
 		$totalDeposit = $db->fetchAll(
 			'SELECT SUM(amount) from transactions where user_id = ? AND amount >= 0 GROUP BY user_id',
 			array($userGlobal['id'])
@@ -61,7 +73,7 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 		}
 		$this->set('totalDeposit', $total);
 
-		
+		//faits la somme des transactions positives pour obtenir le total des gains
 		$totalWithdrawals = $db->fetchAll(
 			'SELECT SUM(amount) from transactions where user_id = ? AND amount < 0 GROUP BY user_id',
 			array($userGlobal['id'])
@@ -83,7 +95,6 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 		if(isset($waitingWithdrawals[0][0]['totalAmount'])){
 			$totalWaitingWithdrawals = $waitingWithdrawals[0][0]['totalAmount'];
 		}
-		$this->log($totalWaitingWithdrawals);
 		$this->set('waitingWithdrawals', $totalWaitingWithdrawals);
 
 
@@ -153,10 +164,34 @@ public $components = array('Paginator', 'Session', 'RequestHandler');
 			$total = $totalSuperLotteriesWon[0][0]['nb_lot_win'];
 		}
 		$this->set('totalSuperLotteriesWon', $total);
-			
+		
 		//nombre de lotteries jouées 
 		//nombre de super lotteries jouées
 		//nombre de super lotteries gagnées (+pourcentage)
 		//nombre de lotteries gagnées (+pourcentage)
+	}
+
+	public function list_transactions() {
+		$this->request->onlyAllow('ajax');
+
+		$userGlobal = $this->Auth->user();
+
+		//vas chercher la liste des transactions
+		$paginateVar = array(
+			'update' => '#in-game-pane',
+			'evalScripts' => true, 
+			'conditions' => array('Transaction.user_id' => $userGlobal['id']),
+			'order' => array(
+				'Transaction.created' => 'desc'
+				),
+			'limit' => 15
+			);
+		$this->Paginator->settings = $paginateVar;
+		$this->set('transactions', $this->Paginator->paginate());
+
+		if ($this->request->is('ajax')) {
+			
+			$this->render('table', 'ajax'); // View, Layout
+		}
 	}
 }

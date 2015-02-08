@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client: 127.0.0.1
--- Généré le: Sam 27 Décembre 2014 à 22:47
+-- Généré le: Dim 08 Février 2015 à 15:32
 -- Version du serveur: 5.5.32
 -- Version de PHP: 5.4.19
 
@@ -19,8 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données: `eve_lot`
 --
--- CREATE DATABASE IF NOT EXISTS `eve_lot` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
--- USE `eve_lot`;
+CREATE DATABASE IF NOT EXISTS `eve_lot` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `eve_lot`;
 
 -- --------------------------------------------------------
 
@@ -39,14 +39,14 @@ CREATE TABLE IF NOT EXISTS `acos` (
   PRIMARY KEY (`id`),
   KEY `idx_acos_lft_rght` (`lft`,`rght`),
   KEY `idx_acos_alias` (`alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=231 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=233 ;
 
 --
 -- Contenu de la table `acos`
 --
 
 INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES
-(61, NULL, NULL, NULL, 'controllers', 1, 196),
+(61, NULL, NULL, NULL, 'controllers', 1, 200),
 (62, 61, NULL, NULL, 'Articles', 2, 15),
 (68, 61, NULL, NULL, 'Configs', 16, 17),
 (74, 61, NULL, NULL, 'EveCategories', 18, 29),
@@ -88,62 +88,64 @@ INSERT INTO `acos` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `
 (157, 80, NULL, NULL, 'admin_update_prices', 41, 42),
 (161, 92, NULL, NULL, 'old_list', 57, 58),
 (162, 112, NULL, NULL, 'user_navbar', 83, 84),
-(164, 61, NULL, NULL, 'Transactions', 106, 109),
+(164, 61, NULL, NULL, 'Transactions', 106, 111),
 (168, 106, NULL, NULL, 'buy_firsts', 69, 70),
-(169, 61, NULL, NULL, 'Withdrawals', 110, 131),
-(170, 169, NULL, NULL, 'index', 111, 112),
-(171, 169, NULL, NULL, 'list_awards', 113, 114),
-(172, 169, NULL, NULL, 'old_list', 115, 116),
-(173, 169, NULL, NULL, 'claim', 117, 118),
-(174, 169, NULL, NULL, 'admin_index', 119, 120),
-(175, 169, NULL, NULL, 'admin_list_awards_to_complete', 121, 122),
-(176, 169, NULL, NULL, 'admin_complete_award', 123, 124),
+(169, 61, NULL, NULL, 'Withdrawals', 112, 133),
+(170, 169, NULL, NULL, 'index', 113, 114),
+(171, 169, NULL, NULL, 'list_awards', 115, 116),
+(172, 169, NULL, NULL, 'old_list', 117, 118),
+(173, 169, NULL, NULL, 'claim', 119, 120),
+(174, 169, NULL, NULL, 'admin_index', 121, 122),
+(175, 169, NULL, NULL, 'admin_list_awards_to_complete', 123, 124),
+(176, 169, NULL, NULL, 'admin_complete_award', 125, 126),
 (177, 164, NULL, NULL, 'index', 107, 108),
-(180, 169, NULL, NULL, 'admin_reserve_award', 125, 126),
-(181, 61, NULL, NULL, 'DatabaseLogger', 132, 143),
-(182, 181, NULL, NULL, 'Logs', 133, 142),
-(183, 182, NULL, NULL, 'admin_index', 134, 135),
-(184, 182, NULL, NULL, 'admin_export', 136, 137),
-(185, 182, NULL, NULL, 'admin_view', 138, 139),
-(186, 182, NULL, NULL, 'admin_delete', 140, 141),
-(187, 61, NULL, NULL, 'Icing', 144, 145),
-(190, 61, NULL, NULL, 'Awards', 146, 159),
-(191, 190, NULL, NULL, 'admin_index', 147, 148),
-(192, 190, NULL, NULL, 'admin_view', 149, 150),
-(193, 190, NULL, NULL, 'admin_add', 151, 152),
-(194, 190, NULL, NULL, 'admin_edit', 153, 154),
-(195, 190, NULL, NULL, 'admin_delete', 155, 156),
-(196, 61, NULL, NULL, 'Statistics', 160, 163),
+(180, 169, NULL, NULL, 'admin_reserve_award', 127, 128),
+(181, 61, NULL, NULL, 'DatabaseLogger', 134, 145),
+(182, 181, NULL, NULL, 'Logs', 135, 144),
+(183, 182, NULL, NULL, 'admin_index', 136, 137),
+(184, 182, NULL, NULL, 'admin_export', 138, 139),
+(185, 182, NULL, NULL, 'admin_view', 140, 141),
+(186, 182, NULL, NULL, 'admin_delete', 142, 143),
+(187, 61, NULL, NULL, 'Icing', 146, 147),
+(190, 61, NULL, NULL, 'Awards', 148, 161),
+(191, 190, NULL, NULL, 'admin_index', 149, 150),
+(192, 190, NULL, NULL, 'admin_view', 151, 152),
+(193, 190, NULL, NULL, 'admin_add', 153, 154),
+(194, 190, NULL, NULL, 'admin_edit', 155, 156),
+(195, 190, NULL, NULL, 'admin_delete', 157, 158),
+(196, 61, NULL, NULL, 'Statistics', 162, 167),
 (199, 112, NULL, NULL, 'initDB', 85, 86),
-(200, 190, NULL, NULL, 'index', 157, 158),
-(201, 61, NULL, NULL, 'UserAwards', 164, 167),
-(203, 201, NULL, NULL, 'claim', 165, 166),
-(204, 61, NULL, NULL, 'SuperLotteries', 168, 185),
-(205, 204, NULL, NULL, 'index', 169, 170),
-(207, 204, NULL, NULL, 'admin_index', 171, 172),
-(208, 204, NULL, NULL, 'admin_view', 173, 174),
-(209, 204, NULL, NULL, 'admin_add', 175, 176),
-(210, 204, NULL, NULL, 'admin_edit', 177, 178),
-(211, 204, NULL, NULL, 'admin_delete', 179, 180),
-(212, 61, NULL, NULL, 'SuperLotteryTickets', 186, 189),
-(213, 212, NULL, NULL, 'buy', 187, 188),
-(214, 204, NULL, NULL, 'admin_complete', 181, 182),
+(200, 190, NULL, NULL, 'index', 159, 160),
+(201, 61, NULL, NULL, 'UserAwards', 168, 171),
+(203, 201, NULL, NULL, 'claim', 169, 170),
+(204, 61, NULL, NULL, 'SuperLotteries', 172, 189),
+(205, 204, NULL, NULL, 'index', 173, 174),
+(207, 204, NULL, NULL, 'admin_index', 175, 176),
+(208, 204, NULL, NULL, 'admin_view', 177, 178),
+(209, 204, NULL, NULL, 'admin_add', 179, 180),
+(210, 204, NULL, NULL, 'admin_edit', 181, 182),
+(211, 204, NULL, NULL, 'admin_delete', 183, 184),
+(212, 61, NULL, NULL, 'SuperLotteryTickets', 190, 193),
+(213, 212, NULL, NULL, 'buy', 191, 192),
+(214, 204, NULL, NULL, 'admin_complete', 185, 186),
 (215, 112, NULL, NULL, 'login', 87, 88),
 (216, 112, NULL, NULL, 'forbidden', 89, 90),
 (217, 62, NULL, NULL, 'index', 13, 14),
-(218, 196, NULL, NULL, 'index', 161, 162),
-(219, 204, NULL, NULL, 'claim', 183, 184),
-(220, 169, NULL, NULL, 'list_super_awards', 127, 128),
-(221, 61, NULL, NULL, 'Messages', 190, 195),
-(222, 221, NULL, NULL, 'index', 191, 192),
-(223, 221, NULL, NULL, 'delete', 193, 194),
-(224, 169, NULL, NULL, 'view', 129, 130),
+(218, 196, NULL, NULL, 'index', 163, 164),
+(219, 204, NULL, NULL, 'claim', 187, 188),
+(220, 169, NULL, NULL, 'list_super_awards', 129, 130),
+(221, 61, NULL, NULL, 'Messages', 194, 199),
+(222, 221, NULL, NULL, 'index', 195, 196),
+(223, 221, NULL, NULL, 'delete', 197, 198),
+(224, 169, NULL, NULL, 'view', 131, 132),
 (225, 112, NULL, NULL, 'register', 91, 92),
 (226, 112, NULL, NULL, 'activate', 93, 94),
 (227, 112, NULL, NULL, 'edit', 95, 96),
 (228, 112, NULL, NULL, 'password_reinit', 97, 98),
 (229, 112, NULL, NULL, 'account', 99, 100),
-(230, 112, NULL, NULL, 'resend_activation_mail', 101, 102);
+(230, 112, NULL, NULL, 'resend_activation_mail', 101, 102),
+(231, 196, NULL, NULL, 'list_stats', 165, 166),
+(232, 164, NULL, NULL, 'list_transactions', 109, 110);
 
 -- --------------------------------------------------------
 
@@ -189,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `aros_acos` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ARO_ACO_KEY` (`aro_id`,`aco_id`),
   KEY `idx_aco_id` (`aco_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=27 ;
 
 --
 -- Contenu de la table `aros_acos`
@@ -218,7 +220,10 @@ INSERT INTO `aros_acos` (`id`, `aro_id`, `aco_id`, `_create`, `_read`, `_update`
 (20, 4, 224, '1', '1', '1', '1'),
 (21, 4, 227, '1', '1', '1', '1'),
 (22, 4, 229, '1', '1', '1', '1'),
-(23, 4, 230, '1', '1', '1', '1');
+(23, 4, 230, '1', '1', '1', '1'),
+(24, 4, 226, '1', '1', '1', '1'),
+(25, 4, 232, '1', '1', '1', '1'),
+(26, 4, 231, '1', '1', '1', '1');
 
 -- --------------------------------------------------------
 
@@ -318,6 +323,13 @@ CREATE TABLE IF NOT EXISTS `cake_sessions` (
   `expires` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Contenu de la table `cake_sessions`
+--
+
+INSERT INTO `cake_sessions` (`id`, `data`, `expires`) VALUES
+('8vi3amu3s7ldku0k29lid5i0i3', 'Config|a:3:{s:9:"userAgent";s:32:"878b6de8c7ada6b8eecbe47fbbb2ec0b";s:4:"time";i:1423420318;s:9:"countdown";i:10;}Message|a:1:{s:4:"auth";a:3:{s:7:"message";s:47:"You are not authorized to access that location.";s:7:"element";s:7:"default";s:6:"params";a:0:{}}}Auth|a:1:{s:4:"User";a:18:{s:2:"id";s:8:"93070366";s:8:"group_id";s:1:"3";s:8:"eve_name";s:17:"Trehan Crendraven";s:8:"username";s:6:"trehan";s:8:"password";s:40:"0075873cde82db46318825877879822b6b5a3417";s:4:"mail";s:16:"vesimok@yahoo.fr";s:6:"wallet";s:15:"489846454593.80";s:6:"tokens";s:9:"501085.60";s:20:"nb_new_won_lotteries";s:1:"0";s:26:"nb_new_won_super_lotteries";s:1:"0";s:13:"nb_new_awards";s:1:"0";s:15:"nb_new_messages";s:1:"0";s:14:"nb_unread_news";s:1:"0";s:15:"sponsor_user_id";N;s:12:"cookie_value";s:40:"9ce0f2b4388271993c4c7118bc5e728ba45abb2d";s:7:"created";s:19:"2015-01-23 20:02:30";s:8:"modified";s:19:"2015-02-08 15:20:25";s:6:"active";s:1:"1";}}', 1423420318);
 
 -- --------------------------------------------------------
 
@@ -687,7 +699,7 @@ CREATE TABLE IF NOT EXISTS `lotteries` (
   KEY `lotteries_eve_items` (`eve_item_id`),
   KEY `lotteries_lottery_status` (`lottery_status_id`),
   KEY `lotteries_users` (`creator_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=50 ;
 
 -- --------------------------------------------------------
 
@@ -837,7 +849,7 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   PRIMARY KEY (`id`),
   KEY `tickets_lotteries` (`lottery_id`),
   KEY `tickets_users` (`buyer_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=129 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=409 ;
 
 -- --------------------------------------------------------
 
@@ -888,6 +900,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `users_groups` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Contenu de la table `users`
+--
+
+INSERT INTO `users` (`id`, `group_id`, `eve_name`, `username`, `password`, `mail`, `wallet`, `tokens`, `nb_new_won_lotteries`, `nb_new_won_super_lotteries`, `nb_new_awards`, `nb_new_messages`, `nb_unread_news`, `sponsor_user_id`, `cookie_value`, `created`, `modified`, `active`) VALUES
+(93070366, 3, 'Trehan Crendraven', 'trehan', '0075873cde82db46318825877879822b6b5a3417', 'vesimok@yahoo.fr', '489846454593.80', '501085.60', 0, 0, 0, 0, 0, NULL, '9ce0f2b4388271993c4c7118bc5e728ba45abb2d', '2015-01-23 20:02:30', '2015-02-08 15:20:25', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -904,7 +923,7 @@ CREATE TABLE IF NOT EXISTS `user_awards` (
   PRIMARY KEY (`id`),
   KEY `award_id` (`award_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 -- --------------------------------------------------------
 

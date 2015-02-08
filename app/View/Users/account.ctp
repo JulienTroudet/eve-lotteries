@@ -83,7 +83,7 @@
 											),
 										'placeholder' => 'Password',
 										'class' => 'form-control',
-										'label' => 'New Password',
+										'label' => 'Password',
 										'type' => 'password',
 										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 										)
@@ -97,7 +97,7 @@
 											),
 										'placeholder' => 'Password',
 										'class' => 'form-control',
-										'label' => 'Confirm Password',
+										'label' => 'Confirm Password (Only if you want to change your password)',
 										'type' => 'password',
 										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 										)

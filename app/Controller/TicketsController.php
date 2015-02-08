@@ -158,7 +158,6 @@ class TicketsController extends AppController {
 							'recursive' => -1
 							));
 
-						$this->log($allBoughtTicketsIds);
 
 						//Achète tous les tickets choisis 
 						foreach ($allBoughtTicketsIds as $i => $idt) {

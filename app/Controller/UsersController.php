@@ -286,7 +286,6 @@ class UsersController extends AppController {
 
 		$token = explode('__', $token);
 
-		$this->log($token);
 
 		$user = $this->User->find('first', array(
 			'conditions' => array('id'=>$token[0], 'MD5(User.id)' => $token[1], 'MD5(User.mail)' => $token[2],'active' => 0)
@@ -343,7 +342,6 @@ class UsersController extends AppController {
 			$dataProxy = $this->request->data;
 			$dataProxy['User']['id'] = $userGlobal['id'];
 
-			$this->log($dataProxy);
 
 			if (!empty($dataProxy['User']['password_confirm'])){
 				$passModif = true;
@@ -521,7 +519,6 @@ class UsersController extends AppController {
 
 		$group = $this->User->Group;
 
-		$this->log($group);
 
     // Allow admins to everything
 		$group->id = 3;
@@ -544,6 +541,8 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
 		$this->Acl->allow($group, 'controllers/SuperLotteries/claim');
 		$this->Acl->allow($group, 'controllers/Transactions/index');
+		$this->Acl->allow($group, 'controllers/Transactions/list_transactions');
+		$this->Acl->allow($group, 'controllers/Statistics/list_stats');
 		$this->Acl->allow($group, 'controllers/Withdrawals/index');
 		$this->Acl->allow($group, 'controllers/Withdrawals/view');
 		$this->Acl->allow($group, 'controllers/Withdrawals/list_awards');

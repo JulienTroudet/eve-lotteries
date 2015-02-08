@@ -125,7 +125,6 @@ class Lottery extends AppModel {
 			$dataSource->begin();
 
 			if(isset($lastBoughtTicketId)){
-				$this->log($lastBoughtTicketId);
 				$lastTicket = $ticketModel->findById($lastBoughtTicketId);
 				$statisticModel->saveStat($lastTicket['Ticket']['buyer_user_id'], 'end_lottery', $lastTicket['Ticket']['lottery_id'], $testedLottery['Lottery']['value'], $testedLottery['Lottery']['eve_item_id']);
 			}

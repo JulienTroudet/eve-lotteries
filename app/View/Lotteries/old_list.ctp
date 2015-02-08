@@ -16,14 +16,14 @@
 	<div class="row">
 		<ul class="pager">
 			<li class="previous">
-				<?php echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled')); ?>
+				<?php echo $this->Paginator->prev(__('Previous'), array(), null, array('class' => 'prev disabled')); ?>
 			</li>
 			<li>
-				<?php echo $this->Paginator->counter(array( 'format' => __('Page {:page} of {:pages}, showing {:current} lotteries out of {:count}, starting on lottery {:start}, ending on {:end}') )); ?>	
+				<?php echo $this->Paginator->counter(array( 'format' => __('Page {:page} of {:pages}') )); ?>	
 			</li>
 			<li class="next">
 				<?php
-				echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
+				echo $this->Paginator->next(__('Next'), array(), null, array('class' => 'next disabled'));
 				?>
 			</li>
 		</ul>

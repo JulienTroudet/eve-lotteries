@@ -39,7 +39,7 @@
 					</div>
 
 					<div class="well well-sm">
-						<small>Waiting withdrawal : </small><?php echo number_format($waitingWithdrawals,2); ?> <span class="badge">ISK</span>
+						<small>Waiting withdrawal : </small><?php echo number_format($waitingWithdrawals,2); ?> <span class="badge">ISK</span> (Items not included)
 					</div>
 
 					<div class="alert alert-info" role="alert">
@@ -109,40 +109,108 @@
 			</div>
 		</div>
 		<div class="col-md-6 col-sm-12">
-			<h3>In Game Transactions</h3>
-			<table class="table table-striped table-condensed">
-				<thead>
-					<tr>
-						<th><?php echo $this->Paginator->sort('amount'); ?></th>
-						<th><?php echo $this->Paginator->sort('eve_date'); ?></th>
-						<th><?php echo $this->Paginator->sort('created'); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ($transactions as $transaction): ?>
-						<tr>
-							<td><?php echo h($transaction['Transaction']['amount']); ?>&nbsp;</td>
-							<td><?php echo h($transaction['Transaction']['eve_date']); ?>&nbsp;</td>
-							<td><?php echo h($transaction['Transaction']['created']); ?>&nbsp;</td>
-						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-			<div class="row">
-				<div class="col-md-12">
-					<ul class="pager">
-						<li class="previous">
-							<?php echo $this->Paginator->prev('Previous', array(), null, array('class' => 'prev disabled')); ?>
-						</li>
-						<li>
-							<?php echo $this->Paginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
-						</li>
-						<li class="next">
-							<?php echo $this->Paginator->next('Next', array(), null, array('class' => 'next disabled')); ?>
-						</li>
-					</ul>
+			<ul id="transactions-tabs" class="nav nav-tabs" role="tablist">
+				<li class="active"><a href="#in-game-pane" role="tab" data-toggle="tab">In Game Transactions</a></li>
+				<li><a href="#el-tansaction-pane" role="tab" data-toggle="tab">EVE-Lotteries Transactions</a></li>
+			</ul>
+			<div class="tab-content">
+				<?php
+				$this->Js->JqueryEngine->jQueryObject = 'jQuery';
+				$transactionPaginator = clone $this->Paginator; //workaround to implement the second paginator
+				$statisticsPaginator = $this->Paginator; 
+				$transactionPaginator->options(array('update' => '#in-game-pane', 'evalScripts' => true));
+				$statisticsPaginator->options(array('update' => '#el-tansaction-pane', 'evalScripts' => true));
+				?>
+				<div class="tab-pane fade in active" id="in-game-pane">
+
+					<table class="table table-striped table-condensed">
+						<thead>
+							<tr>
+								<th><?php echo $transactionPaginator->sort('amount', 'Amount', array('url'=>array('action'=>'list_transactions'))); ?></th>
+								<th><?php echo $transactionPaginator->sort('eve_date', 'EVE Date', array('url'=>array('action'=>'list_transactions'))); ?></th>
+								<th><?php echo $transactionPaginator->sort('created', 'Date', array('url'=>array('action'=>'list_transactions'))); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ($transactions as $transaction): ?>
+								<tr>
+									<td><?php echo h($transaction['Transaction']['amount']); ?>&nbsp;</td>
+									<td><?php echo h($transaction['Transaction']['eve_date']); ?>&nbsp;</td>
+									<td><?php echo h($transaction['Transaction']['created']); ?>&nbsp;</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+					<div class="row">
+						<div class="col-md-12">
+							<ul class="pager">
+								<li class="previous">
+									<?php echo $transactionPaginator->prev('Previous', array('url'=>array('action'=>'list_transactions')), null, array('class' => 'prev disabled')); ?>
+								</li>
+								<li>
+									<?php echo $transactionPaginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
+								</li>
+								<li class="next">
+									<?php echo $transactionPaginator->next('Next', array('url'=>array('action'=>'list_transactions')), null, array('class' => 'next disabled')); ?>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="el-tansaction-pane">
+					<table class="table table-striped table-condensed">
+						<thead>
+							<tr>
+								<th><?php echo $statisticsPaginator->sort('isk_value', __('Value'), array('url'=>array('controller'=>'statistics', 'action'=>'list_stats'))); ?></th>
+								<th><?php echo $statisticsPaginator->sort('type', __('Type'), array('url'=>array('controller'=>'statistics', 'action'=>'list_stats'))); ?></th>
+								<th><?php echo $statisticsPaginator->sort('created', __('Date'), array('url'=>array('controller'=>'statistics', 'action'=>'list_stats'))); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ($player_stats as $player_stat): ?>
+								<tr>
+									<?php
+									switch ($player_stat['Statistic']['type']) {
+										case 'withdrawal_credits':
+										$player_stat['Statistic']['type'] = 'Lottery Credits Prize';
+										break;
+										case 'buy_ticket':
+										$player_stat['Statistic']['type'] = 'Ticket Bought';
+										$player_stat['Statistic']['isk_value'] = $player_stat['Statistic']['isk_value']*-1;
+										break;
+										case 'sponsor_isk':
+										$player_stat['Statistic']['type'] = 'Sponsoring Bonus';
+										break;
+									}
+
+
+									?>
+									<td><?php echo h($player_stat['Statistic']['isk_value']); ?>&nbsp;</td>
+									<td><?php echo h($player_stat['Statistic']['type']); ?>&nbsp;</td>
+									<td><?php echo h($player_stat['Statistic']['created']); ?>&nbsp;</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+					<div class="row">
+						<div class="col-md-12">
+							<ul class="pager">
+								<li class="previous">
+									<?php echo $statisticsPaginator->prev('Previous', array('url'=>array('controller'=>'statistics', 'action'=>'list_stats')), null, array('class' => 'prev disabled')); ?>
+								</li>
+								<li>
+									<?php echo $statisticsPaginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
+								</li>
+								<li class="next">
+									<?php echo $statisticsPaginator->next('Next', array('url'=>array('controller'=>'statistics', 'action'=>'list_stats')), null, array('class' => 'next disabled')); ?>
+								</li>
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<?php echo $this->Js->writeBuffer(); ?>
