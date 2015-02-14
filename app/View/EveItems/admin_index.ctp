@@ -34,7 +34,7 @@
 								array()
 								); ?>&nbsp;</td>
 								<td><?php echo h($eveItem['EveCategory']['name']); ?>&nbsp;</td>
-								<td><span id="price-<?php echo h($eveItem['EveItem']['id']); ?>"><?php echo number_format($eveItem['EveItem']['eve_value'], 0); ?>&nbsp;</span> <span class="badge">ISK</span></td>
+								<td><span id="price-<?php echo h($eveItem['EveItem']['id']); ?>"><?php echo number_format($eveItem['EveItem']['eve_value'], 0); ?></span></td>
 								<td><?php echo h($eveItem['EveItem']['status']); ?>&nbsp;</td>
 								<td><?php echo h($eveItem['EveItem']['nb_tickets_default']); ?>&nbsp;</td>
 								<td class="actions">
