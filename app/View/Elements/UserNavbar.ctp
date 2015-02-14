@@ -198,9 +198,10 @@
 
 								$(document).ready(function() {
 									function CountDownTimer(dt, div_class)
-									{
+									{	
+										console.log(dt);
 										var end = new Date(dt);
-
+										console.log(end);
 										var _second = 1000;
 										var _minute = _second * 60;
 										var _hour = _minute * 60;
@@ -209,7 +210,7 @@
 
 										function showRemaining() {
 											var now = new Date();
-											var distance = end - now;
+											var distance = new Date(end - now);
 											if (distance < 0) {
 
 												clearInterval(timer);
@@ -222,8 +223,6 @@
 											var minutes = Math.floor((distance % _hour) / _minute);
 											var seconds = Math.floor((distance % _minute) / _second);
 
-											//document.getElementById(id).innerHTML = days + ' days ';
-											//document.getElementById(id).innerHTML += hours + ' hours ';
 											$('.'+div_class).html( minutes+2 + ' minutes '+ seconds + ' seconds');
 										}
 

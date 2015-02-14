@@ -4,17 +4,16 @@
 	<div class="well item-well">
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-item">
-				<img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $eveItem['EveItem']['name']; ?>">
+				<img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $eveItem['EveItem']['name']; ?>" data-toggle="tooltip" data-placement="top" title="In game value: <?php echo number_format($eveItem['EveItem']['eve_value'],0); ?> ISK">
 			</div>
 			<div class="col-md-6 col-sm-6 col-item">
-				<button class="btn btn-xs btn-block btn-primary item-random-button" data-item-id="<?php echo $eveItem['EveItem']['id']; ?>">Random</button>
+				<button class="btn btn-xs btn-block btn-primary item-random-button" 
+				data-item-id="<?php echo $eveItem['EveItem']['id']; ?>">Random</button>
 				<button class="btn btn-xs btn-block btn-primary item-choice-button" 
 				data-item-id="<?php echo $eveItem['EveItem']['id']; ?>"
 				data-item-name="<?php echo $eveItem['EveItem']['name']; ?>"
 				data-item-nbt="<?php echo $eveItem['EveItem']['nb_tickets_default']; ?>"
-				data-item-price="<?php echo $eveItem['EveItem']['ticket_price']; ?>"
-				>
-				Choose</button>			
+				data-item-price="<?php echo $eveItem['EveItem']['ticket_price']; ?>">Choose</button>			
 			</div>
 		</div>
 		<div class="row">

@@ -182,6 +182,7 @@
 		$('.btn-claim').click(function(){
 			var idWithdrawal = $(this).data('award-id');
 			var claimType = $(this).data('claim-type');
+			$('.btn-claim').tooltip('destroy');
 			$.ajax({
 				type:"get",
 				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'claim','ext' => 'json')); ?>",

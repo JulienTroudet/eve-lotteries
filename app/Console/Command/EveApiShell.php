@@ -129,10 +129,10 @@ class EveApiShell extends AppShell {
 
 				if ($nextCronDateTime->diff($nextApiDateTime)->format('%R') == '+'){
 
-					$apiCheckTime['Config']['value'] = $nextApiDateTime->format('Y-m-d H:i:s');
+					$apiCheckTime['Config']['value'] = $nextApiDateTime->format('c');
 				}
 				else{
-					$apiCheckTime['Config']['value'] = $nextCronDateTime->format('Y-m-d H:i:s');
+					$apiCheckTime['Config']['value'] = $nextCronDateTime->format('c');
 				}
 
 				$this->Config->save($apiCheckTime, true, array('id', 'value'));
