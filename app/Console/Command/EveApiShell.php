@@ -37,106 +37,92 @@ class EveApiShell extends AppShell {
 			$startDateTime = new DateTime('NOW');
 			$nextDateTime = new DateTime($apiCheckTimeValue);
 
-			//si la date de prochain check enregistrée est inférieure à la date actuelle on continue
-			if ($nextDateTime->diff($startDateTime)->format('%R') == '+')
-			//if($response->cached_until != $apiCheckTimeValue)
+			foreach($response->entries as $entry)
 			{
-				
-				foreach($response->entries as $entry)
-				{
-					$check_api = $this->Transaction->findByRefid($entry->refID);
+				$check_api = $this->Transaction->findByRefid($entry->refID);
 
-					if(empty($check_api)){
+				if(empty($check_api)){
 
-						$check_user_deposit = $this->User->findById($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet', 'User.sponsor_user_id'));
-						if(!empty($check_user_deposit)){
-							
-							$transactions++;
-							$this->Transaction->create();
-							$newTransaction = array('Transaction'=>array(
-								'refid' =>  $entry->refID,
-								'amount' => $entry->amount,
-								'user_id' => $check_user_deposit['User']['id'],
-								'eve_date' => $entry->date,
-								));
+					$check_user_deposit = $this->User->findById($entry->ownerID1, array('User.id', 'User.eve_name','User.wallet', 'User.sponsor_user_id'));
+					if(!empty($check_user_deposit)){
 
-							$dataSource = $this->User->getDataSource();
-							$dataSource->begin();
+						$transactions++;
+						$this->Transaction->create();
+						$newTransaction = array('Transaction'=>array(
+							'refid' =>  $entry->refID,
+							'amount' => $entry->amount,
+							'user_id' => $check_user_deposit['User']['id'],
+							'eve_date' => $entry->date,
+							));
 
-							$check_user_deposit['User']['wallet'] += $entry->amount;
+						$dataSource = $this->User->getDataSource();
+						$dataSource->begin();
 
-							if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+						$check_user_deposit['User']['wallet'] += $entry->amount;
 
-								$this->Statistic->saveStat($check_user_deposit['User']['id'], 'deposit_isk', $this->Transaction->id, $entry->amount, null);
+						if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
 
-								$this->Message->sendMessage(
-									$check_user_deposit['User']['id'], 
-									'ISK Credited', 
-									('You have deposited '.number_format($entry->amount, 00).' ISK to your EVE-Lotteries account.'),
-									'transactions', 
-									'index'
-									);
+							$this->Statistic->saveStat($check_user_deposit['User']['id'], 'deposit_isk', $this->Transaction->id, $entry->amount, null);
 
-								$this->log('Wallet Update : name['.$check_user_deposit['User']['eve_name'].'], id['.$check_user_deposit['User']['id'].'], amount['.$entry->amount.'], total['.$check_user_deposit['User']['wallet'].']', 'eve-lotteries');
+							$this->Message->sendMessage(
+								$check_user_deposit['User']['id'], 
+								'ISK Credited', 
+								('You have deposited '.number_format($entry->amount, 00).' ISK to your EVE-Lotteries account.'),
+								'transactions', 
+								'index'
+								);
+
+							$this->log('Wallet Update : name['.$check_user_deposit['User']['eve_name'].'], id['.$check_user_deposit['User']['id'].'], amount['.$entry->amount.'], total['.$check_user_deposit['User']['wallet'].']', 'eve-lotteries');
 
 								//cette section s'occupe de verser des sous au parrain
-								if(isset($check_user_deposit['User']['sponsor_user_id'])){
+							if(isset($check_user_deposit['User']['sponsor_user_id'])){
 
-									$this->User->updateWallet($check_user_deposit['User']['sponsor_user_id'], ($entry->amount*0.05));
+								$this->User->updateWallet($check_user_deposit['User']['sponsor_user_id'], ($entry->amount*0.05));
 
-									$this->Statistic->saveStat($check_user_deposit['User']['sponsor_user_id'], 'sponsor_isk', $check_user_deposit['User']['id'], ($entry->amount*0.05), null);
-								}
-
-
-								$dataSource->commit();
-
+								$this->Statistic->saveStat($check_user_deposit['User']['sponsor_user_id'], 'sponsor_isk', $check_user_deposit['User']['id'], ($entry->amount*0.05), null);
 							}
-							else {
-								$dataSource->rollback();
-							}
+
+
+							$dataSource->commit();
+
 						}
-
-
-						$check_user_withdrawal = $this->User->findById($entry->ownerID2, array('User.id', 'User.eve_name'));
-						if(!empty($check_user_withdrawal)){
-
-							$transactions++;
-							$this->Transaction->create();
-							$newTransaction = array('Transaction'=>array(
-								'refid' =>  $entry->refID,
-								'amount' => $entry->amount,
-								'user_id' => $check_user_withdrawal['User']['id'],
-								'eve_date' => $entry->date,
-								));
-
-							if ($this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
-								$this->log('Given_isk Update : name['.$check_user_withdrawal['User']['eve_name'].'], id['.$check_user_withdrawal['User']['id'].'], amount['.$entry->amount.']', 'eve-lotteries');
-							}
+						else {
+							$dataSource->rollback();
 						}
 					}
 
 
+					$check_user_withdrawal = $this->User->findById($entry->ownerID2, array('User.id', 'User.eve_name'));
+					if(!empty($check_user_withdrawal)){
+
+						$transactions++;
+						$this->Transaction->create();
+						$newTransaction = array('Transaction'=>array(
+							'refid' =>  $entry->refID,
+							'amount' => $entry->amount,
+							'user_id' => $check_user_withdrawal['User']['id'],
+							'eve_date' => $entry->date,
+							));
+
+						if ($this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+							$this->log('Given_isk Update : name['.$check_user_withdrawal['User']['eve_name'].'], id['.$check_user_withdrawal['User']['id'].'], amount['.$entry->amount.']', 'eve-lotteries');
+						}
+					}
 				}
 
-				
-				//ici on prend la plus haute valeur entre la prochaine date de cron et la prochaine heure ou l'api est dispo pour la sauvegarder
-				$nextApiDateTime = new DateTime($response->cached_until);
 
-				$nextCronDateTime = new DateTime('NOW');
-				$nextCronDateTime->add(new DateInterval('PT' . 30 . 'M'));
-
-				//2015-01-20 22:32:02
-
-				if ($nextCronDateTime->diff($nextApiDateTime)->format('%R') == '+'){
-
-					$apiCheckTime['Config']['value'] = $nextApiDateTime->format('c');
-				}
-				else{
-					$apiCheckTime['Config']['value'] = $nextCronDateTime->format('c');
-				}
-
-				$this->Config->save($apiCheckTime, true, array('id', 'value'));
 			}
+
+
+				//ici on prend la plus haute valeur entre la prochaine date de cron et la prochaine heure ou l'api est dispo pour la sauvegarder
+			$nextApiDateTime = new DateTime($response->cached_until);
+			$nextCronDateTime = new DateTime('NOW');
+			$nextCronDateTime->add(new DateInterval('PT' . 30 . 'M'));
+
+			$apiCheckTime['Config']['value'] = $nextCronDateTime->format('c');
+			
+
+			$this->Config->save($apiCheckTime, true, array('id', 'value'));
 			$this->log($transactions.' transactions imported', 'eve-lotteries');
 
 		} catch (\Pheal\Exceptions\PhealException $e) {
@@ -147,6 +133,7 @@ class EveApiShell extends AppShell {
 				));
 		}
 
+		
 		//debug($response);
 		$this->out($response->cached_until);
 		//die($response->cached_until);

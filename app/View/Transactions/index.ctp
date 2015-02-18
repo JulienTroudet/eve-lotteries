@@ -17,22 +17,13 @@
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane fade in active" id="wallet-pane">
-					<?php
-					$buttonDeposit = '';
-					if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'){
-						$buttonDeposit = '<a class="btn btn-lg btn-block btn-success" href="#" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="The deposits made to EVE-Lotteries will be available at the next API check.">Deposit <span class="badge">ISK</span></a>';
-					}
-					else {
-						$buttonDeposit = '<a class="btn btn-lg btn-block btn-success" onclick="CCPEVE.showInfo(2, 98342107);" data-toggle="tooltip" data-placement="top" title="You must use the Ingame Browser to deposit ISK">Deposit <span class="badge">ISK</span></a>';
-					}
-					?>
 					<div class="well well-sm">
 						<h3 style="margin-top: 10px;">
 							<small>Actual credits : </small><?php echo number_format($userGlobal['wallet'],2); ?> <i class="fa fa-money"></i>
 						</h3>
 					</div>
 					<p>
-						<?php echo $buttonDeposit; ?>
+						<a  class="btn btn-lg btn-block btn-success" id="wallet-deposit" onclick="CCPEVE.showInfo(2, 98342107);">Deposit <span class="badge">ISK</span></a>
 					</p>
 					<div class="alert alert-info" role="alert">
 						<p>You can only deposit ISK in game. You can freely deposit any amount to the account of the EVE-Lotteries Corporation. No justification is needed. Your account will be updated on the next API check at : <?php echo $apiCheckTime; ?></p>
@@ -212,5 +203,51 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="deposit-modal" tabindex="-1" role="dialog" aria-labelledby="deposit-modal-label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title" id="deposit-modal-label">Deposit ISK</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row" id="deposit-modal-body">
+					<p>To get EVE-Lotteries credits you must log in the game with the character you used to register and give ISK to the <a id="button-deposit" href="#" onclick="CCPEVE.showInfo(2, 98342107);">EVE-Lotteries Corporation</a>. Once you have deposited any amount of ISK you have to wait until the EVE API refresh our datas to be credited with the same amount of EVE-Lotteries credits. </p>
 
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="center-block"><?php echo $this->Html->image('give_money.png', array('alt' => 'Give Money', 'class' => 'center-block'));?></div>
+						</div>
+						<div class="col-xs-12 col-md-12">
+							<div class="center-block"><?php echo $this->Html->image('amount.png', array('alt' => 'Set Amount', 'class' => 'center-block'));?></div>
+						</div>
+					</div>
+					<p>There is no need to provide a reason for the transfert.</p>
+					<p>The new API check will take place in <span class='countdown'></span></p>
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 <?php echo $this->Js->writeBuffer(); ?>
+
+<script> 
+
+	$(document).ready(function() {
+
+		$('#wallet-deposit').click(function(){
+
+			window.scrollTo(0,0);
+
+
+			$('#deposit-modal').modal('show');
+
+		});
+	});
+
+
+</script>

@@ -224,7 +224,7 @@ class UsersController extends AppController {
 						$newUser = $this->User->findById($this->User->id);
 						$newUser = $newUser['User'];
 						$this->Auth->login($newUser);
-						$this->Statistic->saveStat($newUser['User']['id'], 'connection', 'first', null, null);
+						$this->Statistic->saveStat($newUser['id'], 'connection', 'first', null, null);
 
 						
 						if(isset($sponsor['User'])){
