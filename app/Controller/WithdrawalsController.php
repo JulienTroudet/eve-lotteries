@@ -40,7 +40,7 @@ class WithdrawalsController extends AppController {
 			'contain' => array(
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),
@@ -58,7 +58,7 @@ class WithdrawalsController extends AppController {
 			'contain' => array(
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),
@@ -73,7 +73,7 @@ class WithdrawalsController extends AppController {
 		$this->set('claimed_awards', $claimed_awards);
 
 		$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
 			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
 			'order' => array('SuperLottery.created' => 'desc'), 
 			'limit' => 10, 
@@ -96,7 +96,7 @@ class WithdrawalsController extends AppController {
 				'contain' => array(
 					'Ticket' => array(
 						'Lottery' => array(
-							'EveItem'
+							'EveItem' => array('EveCategory')
 							)
 						),
 					),
@@ -120,7 +120,7 @@ class WithdrawalsController extends AppController {
 			'contain' => array(
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),
@@ -138,7 +138,7 @@ class WithdrawalsController extends AppController {
 			'contain' => array(
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),
@@ -159,7 +159,7 @@ class WithdrawalsController extends AppController {
 
 		$userGlobal = $this->Auth->user();
 		$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
 			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
 			'order' => array('SuperLottery.created' => 'desc'), 
 			'limit' => 10, 
@@ -178,7 +178,7 @@ class WithdrawalsController extends AppController {
 			'contain' => array(
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),
@@ -333,7 +333,7 @@ class WithdrawalsController extends AppController {
 				'User',
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),
@@ -365,7 +365,7 @@ class WithdrawalsController extends AppController {
 				'User',
 				'Ticket' => array(
 					'Lottery' => array(
-						'EveItem'
+						'EveItem' => array('EveCategory')
 						)
 					),
 				),

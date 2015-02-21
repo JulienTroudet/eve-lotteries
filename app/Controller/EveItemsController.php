@@ -89,6 +89,7 @@ class EveItemsController extends AppController {
 	 * @return void
 	 */
 	public function admin_edit($id = null) {
+		$this->EveItem->recursive = 0;
 		if (!$this->EveItem->exists($id)) {
 			throw new NotFoundException(__('Invalid eve item'));
 		}

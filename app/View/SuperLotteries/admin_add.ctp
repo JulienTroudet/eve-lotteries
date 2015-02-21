@@ -1,5 +1,5 @@
 <div id="wrapper">
-	<?php  echo $this->element('ManagerMenu', array());?>
+	<?php  echo $this->element('AdminMenu', array());?>
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
 			<div class="superLotteries form">

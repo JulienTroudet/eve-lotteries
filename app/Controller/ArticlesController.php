@@ -18,7 +18,7 @@ class ArticlesController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index');
+		$this->Auth->allow('index', 'read_all');
 	}
 
 	/**
@@ -44,6 +44,18 @@ class ArticlesController extends AppController {
 			$this->User->id = $userId;
 			$this->User->saveField('nb_unread_news', 0);
 		}
+	}
+
+	public function read_all() {
+
+		if($this->Auth->loggedIn()){
+			$this->loadModel('User');
+			$userId = $this->Auth->user('id');
+			$this->User->id = $userId;
+			$this->User->saveField('nb_unread_news', 0);
+		}
+
+		$this->redirect('/');
 	}
 
 	/**

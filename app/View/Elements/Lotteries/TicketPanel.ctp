@@ -8,7 +8,7 @@
 
 
 		<?php if ($ticket['buyer_user_id'] == null){?>
-		<button data-ticket-id="<?php echo $ticket['id'];?>" data-item-name="<?php echo $eveItem['name'];?>" class="btn btn-block btn-primary buy-ticket"><?php echo $ticket['position']+1;?>. Buy this ticket</button>
+		<button data-ticket-id="<?php echo $ticket['id'];?>" data-item-name="<?php echo $eveItem['name'];?>" class="btn btn-block btn-primary buy-ticket"data-toggle="tooltip" data-placement="top" title="<?php echo number_format($ticket['value']); ?> Credits"><?php echo $ticket['position']+1;?>. Buy this ticket</button>
 		<?php } ?>	
 
 

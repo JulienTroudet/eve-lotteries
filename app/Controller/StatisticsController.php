@@ -52,7 +52,10 @@ public function beforeFilter() {
 		$usersLotWon = $db->fetchAll("SELECT users.id, users.eve_name, stat.totalWon FROM users INNER JOIN ( SELECT COUNT(*) AS totalWon, user_id FROM statistics  WHERE type = 'win_lottery' GROUP BY user_id) stat ON stat.user_id = id ORDER BY totalWon DESC LIMIT 10");
 		$this->set('usersLotWon', $usersLotWon);
 
-		$popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, stat.totalItems FROM eve_items INNER JOIN ( SELECT COUNT(*) AS totalItems, eve_item_id FROM statistics  WHERE type = 'win_lottery' GROUP BY eve_item_id) stat ON stat.eve_item_id = id ORDER BY totalItems DESC LIMIT 10");
+		$popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, eve_categories.url_start, stat.totalItems 
+										FROM eve_items 
+										INNER JOIN eve_categories ON eve_categories.id = eve_items.eve_category_id 
+										INNER JOIN ( SELECT COUNT(*) AS totalItems, eve_item_id FROM statistics  WHERE type = 'win_lottery' GROUP BY eve_item_id) stat ON stat.eve_item_id = eve_items.id ORDER BY totalItems DESC LIMIT 10");
 		$this->set('popularsItems', $popularsItems);
 	}
 
@@ -78,5 +81,53 @@ public function beforeFilter() {
 			
 			$this->render('table', 'ajax'); // View, Layout
 		}
+	}
+
+	public function admin_index() {
+
+
+		//vas chercher le total gagné
+		$params = array(
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+			);
+		$total = $this->Statistic->find('first', $params);
+		if(isset($total[0])){
+			$this->set('totalWon', $total[0]['totalAmount']);
+		}
+		else{
+			$this->set('totalWon', 0);
+		}
+
+		$db = $this->Statistic->getDataSource();
+
+		$totalDeposited = $db->fetchAll("SELECT SUM(statistics.isk_value) as total FROM statistics  WHERE type='deposit_isk'");
+		$this->set('totalDeposited', $totalDeposited[0][0]['total']);
+
+		$totalWallets = $db->fetchAll("SELECT SUM(users.wallet) as total FROM users  WHERE users.id != 94931126");
+		$this->set('totalWallets', $totalWallets[0][0]['total']);
+
+		$totalUnclaimed = $db->fetchAll("SELECT SUM(lotteries.value) as total FROM withdrawals INNER JOIN tickets ON withdrawals.ticket_id = tickets.id INNER JOIN lotteries ON tickets.lottery_id = lotteries.id WHERE withdrawals.status='new'");
+		$this->set('totalUnclaimed', $totalUnclaimed[0][0]['total']);
+
+		$totalClaimed = $db->fetchAll("SELECT SUM(lotteries.value) as total FROM withdrawals INNER JOIN tickets ON withdrawals.ticket_id = tickets.id INNER JOIN lotteries ON tickets.lottery_id = lotteries.id WHERE withdrawals.status='claimed'");
+		$this->set('totalClaimed', $totalClaimed[0][0]['total']);
+
+		$totalClaimed = $db->fetchAll("SELECT SUM(lotteries.value) as total FROM withdrawals INNER JOIN tickets ON withdrawals.ticket_id = tickets.id INNER JOIN lotteries ON tickets.lottery_id = lotteries.id WHERE withdrawals.status='claimed'");
+		$this->set('totalClaimed', $totalClaimed[0][0]['total']);
+
+		$totalInPlay = $db->fetchAll("SELECT SUM(lotteries.value) as total FROM lotteries WHERE lotteries.lottery_status_id='1'");
+		$this->set('totalInPlay', $totalInPlay[0][0]['total']);
+
+		$totalInPlaySuper = $db->fetchAll("SELECT (eve_items.eve_value*super_lotteries.number_items) as total FROM super_lotteries INNER JOIN eve_items ON eve_items.id = super_lotteries.eve_item_id WHERE super_lotteries.status='ongoing'");
+		$this->set('totalInPlaySuper', $totalInPlaySuper[0][0]['total']);
+
+		// debug($totalDeposited);
+		// die();
+		// $usersLotWon = $db->fetchAll("SELECT users.id, users.eve_name, stat.totalWon FROM users INNER JOIN ( SELECT COUNT(*) AS totalWon, user_id FROM statistics  WHERE type = 'win_lottery' GROUP BY user_id) stat ON stat.user_id = id ORDER BY totalWon DESC LIMIT 10");
+		// $this->set('usersLotWon', $usersLotWon);
+
+		// $popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, stat.totalItems FROM eve_items INNER JOIN ( SELECT COUNT(*) AS totalItems, eve_item_id FROM statistics  WHERE type = 'win_lottery' GROUP BY eve_item_id) stat ON stat.eve_item_id = id ORDER BY totalItems DESC LIMIT 10");
+		// $this->set('popularsItems', $popularsItems);
 	}
 }

@@ -3,7 +3,7 @@
 		<div class="col-md-10 col-sm-12 col-md-offset-1 well well-sm <?php if($superLottery['SuperLottery']['status']=='unclaimed'){echo 'well-unclaimed';}else if($superLottery['SuperLottery']['status']=='claimed'){echo 'well-claimed';}else{echo 'well-finished';}?>">
 			<div class="row">
 				<div class="col-md-1">
-					<img src="https://image.eveonline.com/Render/<?php echo $superLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $superLottery['EveItem']['name']; ?>">
+					<img src="<?php echo $superLottery['EveItem']['EveCategory']['url_start'].$superLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $superLottery['EveItem']['name']; ?>">
 				</div>
 
 				<div class="col-md-8">

@@ -1,6 +1,7 @@
 <div id="sidebar-wrapper">
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Admin Menu</li>
+		<li><?php echo $this->Html->link(__('Statistics'), array('controller' => 'statistics', 'action' => 'index', 'admin' => true)); ?> </li>
 		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'index', 'admin' => true)); ?> </li>
 		<li><?php echo $this->Html->link(__('New Super Lottery'), array('controller' => 'super_lotteries', 'action' => 'add', 'admin' => true)); ?> </li>
 		<li><?php echo $this->Html->link(__('List Articles'), array('controller' => 'articles','action' => 'index', 'admin' => true)); ?></li>

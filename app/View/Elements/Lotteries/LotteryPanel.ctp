@@ -15,7 +15,7 @@ if ($ticketsCount == 8) {
 	<div class="panel panel-default">
 		<div class="media panel-heading">
 			<p class="pull-left">
-				<img class="media-object" src="https://image.eveonline.com/Render/<?php echo $lottery['EveItem']['eve_id']; ?>_128.png" alt="<?php echo $lottery['EveItem']['name']; ?>">
+				<img class="media-object" src="<?php echo $lottery['EveItem']['EveCategory']['url_start'].$lottery['EveItem']['eve_id'].$lottery['EveItem']['EveCategory']['url_big_end']; ?>" alt="<?php echo $lottery['EveItem']['name']; ?>">
 			</p>
 			<div class="media-body">
 				<h3 class="media-heading"><?php echo $lottery['EveItem']['name']; ?></h3>

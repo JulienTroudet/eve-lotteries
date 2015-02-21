@@ -8,7 +8,7 @@
 		<div class="container-fluid">
 			<div class="eveItems form">
 				<?php echo $this->Form->create('EveItem'); ?>
-				<img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']?>_64.png">
+				<img src="<?php echo $eveItem['EveCategory']['url_start'].$eveItem['EveItem']['eve_id']?>_64.png">
 				<fieldset>
 					<legend><?php echo __('Edit Eve Item'); ?></legend>
 					<?php

@@ -3,7 +3,7 @@
 		<div class="col-md-10 col-sm-12 col-md-offset-1 well well-sm <?php if($superLottery['SuperLottery']['status']=='ongoing'){echo 'well-ongoing';}else{echo 'well-finished';}?>">
 			<div class="row">
 				<div class="col-md-1">
-					<img src="https://image.eveonline.com/Render/<?php echo $superLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $superLottery['EveItem']['name']; ?>">
+					<img src="<?php echo $superLottery['EveItem']['EveCategory']['url_start'].$superLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $superLottery['EveItem']['name']; ?>">
 				</div>
 
 				<div class="col-md-8">
@@ -39,54 +39,38 @@
 				</div>
 				<div class="col-md-3">
 					<?php if($superLottery['SuperLottery']['status']=='ongoing'): ?>
-						<div class="form">
-							<?php echo $this->Form->create('SuperLotteryTicket', array('url' => array('controller' => 'SuperLotteryTickets', 'action' => 'buy'))); ?>
-							<div class="btn-group btn-group-vertical">
-								<?php
-								echo $this->Form->input('super_lottery_id', array(
-									'default' => $superLottery['SuperLottery']['id'],
-									'label' => false,
-									'type' => 'number',
-									'hidden' => 'true',
-									'div' => false,
-									));
-									?>
-									<?php
-									echo $this->Form->input('nb_tickets_buy', array(
-										'label' => false,
-										'type' => 'number',
-										'min' => '1',
-										'step' => '1',
-										'placeholder' => 'Number of tickets',
-										'div' => false,
-										'class' => 'form-control',
-										'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
-										));
-										?>
-
-										<?php 
-										$optionsForm = array(
-											'label' => 'Buy Tickets',
-											'div' => false,
-											'class' => 'btn btn-block btn-primary'
-											);
-											echo $this->Form->end($optionsForm); ?>
-										</div>
-									</div>
-								<?php else: ?>
-									<div class="media" >
-										<span class="pull-right">
-											<img src="https://image.eveonline.com/Character/<?php echo $superLottery['Winner']['id']; ?>_64.jpg" /> 
-										</span>
-										<span>
-											<p>Winner :</p>
-											<p class="pull-right"><strong><?php echo $superLottery['Winner']['eve_name']; ?></strong></p>
-										</span>
-									</div>
-								<?php endif; ?>
+						<div>
+							<h3>Buy Tickets:</h3>
+							<div class="row row-super-lot">
+								<div class="col-md-3 col-sm-6 col-btn-super-lot" data-toggle="tooltip" data-placement="right" title="1 ticket for <?php echo number_format($superLottery['SuperLottery']['ticket_value']*1, 0); ?> points">
+									<?php echo $this->Html->link('1', array('controller' => 'SuperLotteryTickets', 'action' => 'buy', 'admin'=>false, 'id' => $superLottery['SuperLottery']['id'], 'nb' => 1), array('class' => 'btn btn-primary')); ?>
+								</div>
+								<div class="col-md-3 col-sm-6 col-btn-super-lot" data-toggle="tooltip" data-placement="right" title="5 ticket for <?php echo number_format($superLottery['SuperLottery']['ticket_value']*5, 0); ?> points">
+									<?php echo $this->Html->link('5', array('controller' => 'SuperLotteryTickets', 'action' => 'buy', 'admin'=>false, 'id' => $superLottery['SuperLottery']['id'], 'nb' => 5), array('class' => 'btn btn-primary')); ?>
+								</div>
+								<div class="col-md-3 col-sm-6 col-btn-super-lot" data-toggle="tooltip" data-placement="right" title="10 ticket for <?php echo number_format($superLottery['SuperLottery']['ticket_value']*10, 0); ?> points">
+									<?php echo $this->Html->link('10', array('controller' => 'SuperLotteryTickets', 'action' => 'buy', 'admin'=>false, 'id' => $superLottery['SuperLottery']['id'], 'nb' => 10), array('class' => 'btn btn-primary')); ?>
+								</div>
+								<div class="col-md-3 col-sm-6 col-btn-super-lot" data-toggle="tooltip" data-placement="right" title="20 ticket for <?php echo number_format($superLottery['SuperLottery']['ticket_value']*20, 0); ?> points">
+									<?php echo $this->Html->link('20', array('controller' => 'SuperLotteryTickets', 'action' => 'buy', 'admin'=>false, 'id' => $superLottery['SuperLottery']['id'], 'nb' => 20), array('class' => 'btn btn-primary')); ?>
+								</div>
 							</div>
 
 						</div>
-					</div>
+					<?php else: ?>
+						<div class="media" >
+							<span class="pull-right">
+								<img src="https://image.eveonline.com/Character/<?php echo $superLottery['Winner']['id']; ?>_64.jpg" /> 
+							</span>
+							<span>
+								<p>Winner :</p>
+								<p class="pull-right"><strong><?php echo $superLottery['Winner']['eve_name']; ?></strong></p>
+							</span>
+						</div>
+					<?php endif; ?>
 				</div>
-			<?php endif; ?>
+
+			</div>
+		</div>
+	</div>
+<?php endif; ?>

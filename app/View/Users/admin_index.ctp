@@ -14,7 +14,7 @@
 							<th><?php echo $this->Paginator->sort('eve_name'); ?></th>
 							<th><?php echo $this->Paginator->sort('group_id'); ?></th>
 							<th><?php echo $this->Paginator->sort('created'); ?></th>
-							<th><?php echo $this->Paginator->sort('modified'); ?></th>
+							<th><?php echo $this->Paginator->sort('sponsor'); ?></th>
 							<th><?php echo $this->Paginator->sort('wallet'); ?></th>
 							<th><?php echo $this->Paginator->sort('tokens'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
@@ -26,7 +26,7 @@
 								<td><?php echo h($user['User']['eve_name']); ?>&nbsp;</td>
 								<td><?php echo h($user['Group']['name']); ?></td>
 								<td><?php echo h($user['User']['created']); ?>&nbsp;</td>
-								<td><?php echo h($user['User']['modified']); ?>&nbsp;</td>
+								<td><?php echo h($user['Sponsor']['eve_name']); ?>&nbsp;</td>
 								<td><?php echo h($user['User']['wallet']); ?>&nbsp;</td>
 								<td><?php echo h($user['User']['tokens']); ?>&nbsp;</td>
 								<td class="actions">

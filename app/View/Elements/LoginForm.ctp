@@ -1,5 +1,6 @@
 <?php
 //*
+if($this->params['action'] != 'register'){
 echo $this->Form->create(
 	'User', 
 	array(
@@ -10,6 +11,12 @@ echo $this->Form->create(
 		'class' => 'navbar-form navbar-right',
 		'role' => 'form'
 		));
+
+echo $this->Html->link(
+	'Register', 
+	array('controller' => 'users', 'action' => 'register'),
+	array('class' => 'btn btn-primary'));
+echo "&nbsp;";
 echo $this->Form->input(
 	'User.username',
 	array(
@@ -60,9 +67,15 @@ $optionsFormLogin = array(
 
 
 
-echo $this->Form->end($optionsFormLogin);//*/
+
+echo $this->Form->end($optionsFormLogin);
+}
 ?>
 
-<script>
-	$('.remember-me').tooltip()
-</script>
+<?php 
+
+	?>
+
+	<script>
+		$('.remember-me').tooltip()
+	</script>

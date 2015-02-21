@@ -18,7 +18,7 @@ class LotteriesController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'old_list', 'list_lotteries');
+		$this->Auth->allow('index', 'index_open', 'old_list', 'list_lotteries');
 	}
 
 	/**
@@ -26,15 +26,20 @@ class LotteriesController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function index($create = false) {
-		if($create){
+	public function index() {
+
+		$create = $this->Session->read('Index.open');
+
+		if($create == "open"){
 			$this->set('openCreate', $create);
+			$this->Session->write('Index.open', "closed");
 		}
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
 		$this->loadModel('SuperLottery');
 		$this->loadModel('SuperLotteryTicket');
 		$this->loadModel('Statistic');
+		$this->loadModel('Article');
 
 		//vas chercher le total gagné
 		$params = array(
@@ -53,7 +58,7 @@ class LotteriesController extends AppController {
 		//vas chercher les lotteries actuelles
 		$params = array(
 			'contain' => array(
-				'EveItem', 
+				'EveItem' => array('EveCategory'), 
 				'Ticket' => array(
 					'User' => array('id', 'eve_name')
 					)
@@ -71,13 +76,15 @@ class LotteriesController extends AppController {
 			}
 		}
 
-		$this->set('lotteries', $lotteries);
+		$orderedLot = $this->_order_lotteries($lotteries);
+
+		$this->set('lotteries', $orderedLot);
 
 
 		//vas chercher les anciennes lotteries
 		$paginateVar = array(
 			'contain' => array(
-				'EveItem', 
+				'EveItem' => array('EveCategory'), 
 				'Ticket' => array(
 					'User' => array('id', 'eve_name')
 					)
@@ -107,7 +114,7 @@ class LotteriesController extends AppController {
 		//vas chercher la liste des items
 		$params = array(
 			'contain' => 'EveCategory',
-			'conditions' => array('EveItem.status' => '1', 'EveCategory.type' => 'Ship'),
+			'conditions' => array('EveItem.status' => '1', 'EveCategory.status' => '1'),
 			'order' => array('EveItem.name ASC'),
 			);
 
@@ -119,17 +126,17 @@ class LotteriesController extends AppController {
 
 		//vas chercher la première super lotterie
 		$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket'),
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket'),
 			'conditions' => array('SuperLottery.status'=>'ongoing'), 
 			);
 		$superLottery = $this->SuperLottery->find('first', $params);
 
 		if(!isset($superLottery['SuperLottery'])){
 			$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
-			'conditions' => array('SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()'), 
-			'order' => array('SuperLottery.created' => 'desc'), 
-			);
+				'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
+				'conditions' => array('SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()'), 
+				'order' => array('SuperLottery.created' => 'desc'), 
+				);
 			$superLottery = $this->SuperLottery->find('first', $params);
 		}
 		
@@ -139,6 +146,17 @@ class LotteriesController extends AppController {
 			$superLottery['percentage'] = ($superLottery['SuperLottery']['nb_ticket_bought']*100)/$superLottery['SuperLottery']['nb_tickets'];
 			$this->set('superLottery', $superLottery);
 		}
+
+		$params = array(
+			'order' => array('Article.created DESC')
+			);
+		$article = $this->Article->find('first', $params);
+		$this->set('article', $article);
+	}
+
+	public function index_open() {
+		$this->Session->write('Index.open', "open");
+		$this->redirect(array("action" => "index"));
 	}
 
 
@@ -168,7 +186,7 @@ class LotteriesController extends AppController {
 		$this->layout = false;
 		$params = array(
 			'contain' => array(
-				'EveItem', 
+				'EveItem' => array('EveCategory'), 
 				'Ticket' => array(
 					'User' => array('id', 'eve_name')
 					)
@@ -178,12 +196,15 @@ class LotteriesController extends AppController {
 			);
 		
 		$lotteries = $this->Lottery->find('all', $params);
-		$this->set('lotteries', $lotteries);
+
+		$orderedLot = $this->_order_lotteries($lotteries);
+
+		$this->set('lotteries', $orderedLot);
 
 
 		$paginateVar = array(
 			'contain' => array(
-				'EveItem', 
+				'EveItem' => array('EveCategory'), 
 				'Ticket' => array(
 					'User' => array('id', 'eve_name')
 					)
@@ -199,17 +220,17 @@ class LotteriesController extends AppController {
 		$this->set('old_lotteries', $oldLotteries);
 
 		$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket'),
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket'),
 			'conditions' => array('SuperLottery.status'=>'ongoing'), 
 			);
 		$superLottery = $this->SuperLottery->find('first', $params);
 
 		if(!isset($superLottery['SuperLottery'])){
 			$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
-			'conditions' => array('SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()'), 
-			'order' => array('SuperLottery.created' => 'desc'), 
-			);
+				'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
+				'conditions' => array('SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()'), 
+				'order' => array('SuperLottery.created' => 'desc'), 
+				);
 			$superLottery = $this->SuperLottery->find('first', $params);
 		}
 		
@@ -252,7 +273,7 @@ class LotteriesController extends AppController {
 		//vas chercher les anciennes lotteries
 		$paginateVar = array(
 			'contain' => array(
-				'EveItem', 
+				'EveItem' => array('EveCategory'), 
 				'Ticket' => array(
 					'User' => array('id', 'eve_name')
 					)
@@ -295,6 +316,42 @@ class LotteriesController extends AppController {
 				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
+	}
+
+	protected function _order_lotteries($lotteries){
+
+		$lines = array('line1' => array(), 'line2' => array(), 'line3' => array(), 'line4' => array());
+
+		$linesPlaces = array('line1' => 0, 'line2' => 0, 'line3' => 0, 'line4' => 0);
+
+
+		foreach ($lotteries as $lottery) {
+			foreach ($lines as $key => $line) {
+				if($lottery['Lottery']['nb_tickets'] == 16){
+
+					if($linesPlaces[$key]<=1){
+						array_push($lines[$key], $lottery);
+						$linesPlaces[$key] +=2;
+						break;
+					}
+					else{
+						continue;
+					}
+				}
+				else{
+					if($linesPlaces[$key]<=2){
+						array_push($lines[$key], $lottery);
+						$linesPlaces[$key] +=1;
+						break;
+					}
+					else{
+						continue;
+					}
+				}
+			}
+		}
+		
+		return array_merge($lines['line1'], $lines['line2'], $lines['line3'], $lines['line4']);
 	}
 }
 

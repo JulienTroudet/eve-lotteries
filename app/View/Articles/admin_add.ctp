@@ -4,7 +4,7 @@
 <div id="wrapper">
 	<?php 
 	if ($userGlobal['group_id'] == 3) {
-		echo $this->element('ManagerMenu', array());
+		echo $this->element('AdminMenu', array());
 	}
 	?>
 	<div id="page-content-wrapper">
@@ -21,6 +21,13 @@
 						'class' => 'form-control',
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
+						echo $this->Form->input('lead', array(
+							'div' => array(
+								'class' => 'form-group',
+								),
+							'class' => 'form-control',
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+							));
 						echo $this->Form->input('body', array(
 							'div' => array(
 								'class' => 'form-group',
@@ -45,5 +52,6 @@
 			<script type="text/javascript">
 				$(document).ready(function(){
 					CKEDITOR.replace('ArticleBody');
+					CKEDITOR.replace('ArticleLead');
 				});
 			</script>

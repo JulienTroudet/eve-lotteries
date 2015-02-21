@@ -122,7 +122,7 @@ App::uses('AuthComponent', 'Controller/Component');
 				'message' => 'You must choose a login.',
 				),
 			'length' => array(
-				'rule'      => array('between', 6, 40),
+				'rule'      => array('between', 3, 40),
 				'message'   => 'Your login must be between 6 and 40 characters.',
 				'on'        => 'create',  
 				),

@@ -1,3 +1,6 @@
+<div>
+	<?php echo $this->element('Articles/Capo', array("article" => $article)); ?>
+</div>
 <div id="user-navbar">
 	<?php echo $this->element('UserNavbar', array("userGlobal" => $userGlobal)); ?>
 </div>
@@ -5,7 +8,7 @@
 	<div class="row">
 		<div class="col-md-12 col-sm-12">
 			<div class="panel panel-default">
-				<div id="collapse-item" class="panel-collapse collapse <?php if (isset($openCreate)) { echo 'in';} ?>">
+				<div id="collapse-item" class="panel-collapse collapse <?php if (isset($openCreate) && $openCreate == 'open') { echo 'in';} ?>">
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-md-2 cols-sm-12 pull-left">
@@ -14,11 +17,11 @@
 							<div class="col-md-8 cols-sm-12 pull-right">
 								<form class="form-inline pull-right" role="form">
 									<div class="form-group pull-right">
-										<label class="sr-only" for="item-search">Search : </label>
+										<label class="sr-only" for="item-search">Search: </label>
 										<input type="text" class="form-control" id="item-search" placeholder="Item name" style="margin-left:5px;">
 									</div>
 									<div class="form-group pull-right">
-										<label class="sr-only" for="item-select">Search : </label>
+										<label class="sr-only" for="item-select">Search: </label>
 
 										<?php 
 
@@ -59,7 +62,7 @@
 					<h2 class="pull-left">Ongoing Lotteries</h2>
 				</div>
 				<div class="col-md-9">
-					<h3 class="pull-right">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
+					<h3 class="pull-right">Total won: <?php echo number_format($totalWon, 2); ?> ISK</h3>
 				</div>
 			</div>
 			<div class="row">

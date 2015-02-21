@@ -4,7 +4,7 @@
 	<div class="well item-well">
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-item">
-				<img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $eveItem['EveItem']['name']; ?>" data-toggle="tooltip" data-placement="top" title="In game value: <?php echo number_format($eveItem['EveItem']['eve_value'],0); ?> ISK">
+				<img src="<?php echo $eveItem['EveCategory']['url_start'].$eveItem['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $eveItem['EveItem']['name']; ?>" data-toggle="tooltip" data-placement="top" title="In game value: <?php echo number_format($eveItem['EveItem']['eve_value'],0); ?> ISK">
 			</div>
 			<div class="col-md-6 col-sm-6 col-item">
 				<button class="btn btn-xs btn-block btn-primary item-random-button" 

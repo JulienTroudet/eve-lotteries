@@ -1,6 +1,6 @@
 <div class="media well well-sm" >
 	<span class="pull-left">
-		<img src="https://image.eveonline.com/Render/<?php echo $popularItem['eve_items']['eve_id']; ?>_64.png" /> 
+		<img src="<?php echo $popularItem['eve_categories']['url_start'].$popularItem['eve_items']['eve_id']; ?>_64.png" /> 
 	</span>
 	<span>
 		<h4><?php echo $popularItem['eve_items']['name']; ?></h4>

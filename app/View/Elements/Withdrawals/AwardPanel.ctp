@@ -2,7 +2,7 @@
 	<div class="panel panel-default">
 		<div class="media panel-heading">
 			<p class="pull-left">
-				<img class="media-object" src="https://image.eveonline.com/Render/<?php echo $unclaimed_award['Ticket']['Lottery']['EveItem']['eve_id']; ?>_128.png" alt="<?php echo $unclaimed_award['Ticket']['Lottery']['EveItem']['name']; ?>">
+				<img class="media-object" src="<?php echo $unclaimed_award['Ticket']['Lottery']['EveItem']['EveCategory']['url_start'].$unclaimed_award['Ticket']['Lottery']['EveItem']['eve_id'].$unclaimed_award['Ticket']['Lottery']['EveItem']['EveCategory']['url_big_end']; ?>" alt="<?php echo $unclaimed_award['Ticket']['Lottery']['EveItem']['name']; ?>">
 			</p>
 			<div class="media-body">
 				<h3 class="media-heading"><?php echo $unclaimed_award['Ticket']['Lottery']['name']; ?></h3>

@@ -64,7 +64,7 @@
 				
 				<ul class="nav navbar-nav">
 					<li><?php echo $this->Html->link(
-						'F.A.Q.', 
+						'FAQ', 
 						array('controller' => 'pages', 'action' => 'faq', 'admin'=>false, 'plugin' => false)
 						);?>	
 					</li>
@@ -100,9 +100,10 @@
 		</div>
 	</div>
 
+	<div class="visible-md visible-sm" style="padding-bottom:5em;">
+	</div>
 
-
-	<div class="container" style="margin-top:5em;margin-bottom: 12em;;">
+	<div class="container" style="margin-top:5em;margin-bottom: 12em;">
 
 		<?php echo $this->Session->flash(); ?>
 
@@ -113,7 +114,7 @@
 	<div class="footer">
 		<div class="container">
 			<p class="text-muted">
-				EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artworks, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of CCP hf. CCP hf. has granted permission to EVE-Lotteries to use EVE Online and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, EVE-Lotteries. CCP is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
+				<i>EVE Online</i> and the EVE logo are the registered trademarks of <i>CCP hf.</i> All rights are reserved worldwide. All other trademarks are the property of their respective owners. <i>EVE Online</i>, the EVE logo, EVE and all associated logos and designs are the intellectual property of <i>CCP hf</i>. All artworks, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of <i>CCP hf</i>. <i>CCP hf.</i> has granted permission to <i>EVE-Lotteries</i> to use <i>EVE Online</i> and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, <i>EVE-Lotteries</i>. <i>CCP</i> is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
 			</p>
 		</div>
 	</div>

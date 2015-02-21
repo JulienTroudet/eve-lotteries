@@ -25,7 +25,7 @@
 	if ($userGlobal['group_id'] == 3) {
 		echo $this->Html->link(
 			'Admin', 
-			array('controller' => 'lotteries', 'action' => 'index', 'admin' => true, 'plugin' => false),
+			array('controller' => 'statistics', 'action' => 'index', 'admin' => true, 'plugin' => false),
 			array('class' => 'btn btn-primary')
 			);
 	}

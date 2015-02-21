@@ -146,7 +146,7 @@
 								<h3 class="media-heading">Sponsor : <?php echo $sponsor['User']['eve_name']; ?></h3>
 							</div>
 						</div>
-						<p>You will get <strong>10 000 000 EVE-Credits as a bonus</strong> for having a sponsor !</p>
+						<p>You will get <strong>10 000 000 EVE-Credits as a bonus</strong> for having a sponsor!</p>
 					</div>
 				<?php endif; ?>
 

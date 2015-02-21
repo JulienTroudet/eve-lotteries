@@ -163,19 +163,6 @@ class UsersController extends AppController {
 	}
 
 	public function register($encodedId = null){
-		// on vas chercher le parrain si le lien est un lien de parrainage
-		if(isset($encodedId)){
-			$sponsor = $this->User->find('first', array(
-				'conditions' => array('MD5(User.id)' => $encodedId, 'active' => true)
-				)
-			);
-			$this->set('sponsor', $sponsor);
-			$this->set('sponsorCode', $encodedId);
-		}
-		else{
-			$this->set('sponsorCode', '');
-		}
-
 		if ($this->Session->read('Auth.User')) {
 			$this->Session->setFlash(
 				'You are logged in!',
@@ -184,6 +171,40 @@ class UsersController extends AppController {
 				);
 			return $this->redirect('/');
 		}
+		// on vas chercher le parrain si le lien est un lien de parrainage
+		
+		$this->log('Start register');
+		
+		if(isset($encodedId)){
+			$this->Session->write('Sponsor.code', $encodedId);
+		}
+		$encodedSessionId = $this->Session->read('Sponsor.code');
+
+		if(isset($encodedSessionId)){
+			$sponsor = $this->User->find('first', array(
+				'conditions' => array('MD5(User.id)' => $encodedSessionId, 'active' => true)
+				)
+			);
+			if(isset($sponsor['User'])){
+				$this->log('Referal : '.$sponsor['User']['id'].' => '.$sponsor['User']['eve_name']);
+			}
+			else{
+				$this->Session->setFlash(
+					'Error with refferal link !',
+					'FlashMessage',
+					array('type' => 'error')
+					);
+				return $this->redirect('/');
+			}
+			
+			$this->set('sponsor', $sponsor);
+			$this->set('sponsorCode', $encodedSessionId);
+		}
+		else{
+			$this->set('sponsorCode', '');
+		}
+
+		
 		if (!empty($this->data)){
 
 			$testUser = $this->User->findById($this->data['User']['id']);
@@ -211,6 +232,7 @@ class UsersController extends AppController {
 					$dataProxy['User']['group_id'] = 4;
 
 					if(isset($sponsor['User'])){
+						$this->log('Referal is OK');
 						$dataProxy['User']['sponsor_user_id'] = $sponsor['User']['id'];
 						$dataProxy['User']['wallet'] = 10000000;
 					}
@@ -236,6 +258,8 @@ class UsersController extends AppController {
 							'FlashMessage',
 							array('type' => 'success')
 							);
+
+						$this->log('Registration complete');
 
 						$this->redirect('/');
 					}

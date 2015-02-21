@@ -28,7 +28,7 @@
 					<tbody>
 						<?php foreach ($eveItems as $eveItem): ?>
 							<tr>
-								<td><img src="https://image.eveonline.com/Render/<?php echo $eveItem['EveItem']['eve_id']?>_64.png"></td>
+								<td><img src="<?php echo $eveItem['EveCategory']['url_start'].$eveItem['EveItem']['eve_id']?>_64.png"></td>
 								<td><?php echo $this->Html->link(h($eveItem['EveItem']['name']), array(
 									'action' => 'view', 'admin' => true, $eveItem['EveItem']['id']),
 								array()

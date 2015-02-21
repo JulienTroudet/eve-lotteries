@@ -4,7 +4,7 @@
 		<h2 class="pull-left">Ongoing Lotteries</h2>
 	</div>
 	<div class="col-md-9">
-		<h3 class="pull-right">Total won : <?php echo number_format($totalWon, 2); ?> ISK</h3>
+		<h3 class="pull-right">Total won: <?php echo number_format($totalWon, 2); ?> ISK</h3>
 	</div>
 </div>
 <div class="row">
@@ -22,4 +22,8 @@
 		<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
 	</div>
 </div>
-
+<script type="text/javascript">
+	$(document).ready(function() {
+	$("[data-toggle='tooltip']").tooltip(); 
+});
+</script>
