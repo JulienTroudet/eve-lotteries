@@ -47,6 +47,7 @@
 				<h3><?php echo __('Actions'); ?></h3>
 				<ul>
 					<li><?php echo $this->Html->link(__('Edit User'), array('action' => 'edit', 'admin' => true, $user['User']['id'])); ?> </li>
+					<li><?php echo $this->Html->link(__('Thanks user with special award.'), array('controller' => 'statistics', 'action' => 'thanks_player', 'admin' => true, $user['User']['id'])); ?> </li>
 				</ul>
 			</div>
 			<div class="related">

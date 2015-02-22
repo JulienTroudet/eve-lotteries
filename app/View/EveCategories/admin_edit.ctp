@@ -26,6 +26,27 @@
 						'class' => 'form-control',
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
+					echo $this->Form->input('url_start', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('url_small_end', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
+					echo $this->Form->input('url_big_end', array(
+						'div' => array(
+							'class' => 'form-group'
+							),
+						'class' => 'form-control',
+						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+						));
 					echo $this->Form->input('profit', array(
 						'div' => array(
 							'class' => 'form-group'

@@ -120,8 +120,12 @@ public function beforeFilter() {
 		$this->set('totalInPlay', $totalInPlay[0][0]['total']);
 
 		$totalInPlaySuper = $db->fetchAll("SELECT (eve_items.eve_value*super_lotteries.number_items) as total FROM super_lotteries INNER JOIN eve_items ON eve_items.id = super_lotteries.eve_item_id WHERE super_lotteries.status='ongoing'");
-		$this->set('totalInPlaySuper', $totalInPlaySuper[0][0]['total']);
-
+		if(isset($totalInPlaySuper[0][0]['total'])){
+			$this->set('totalInPlaySuper', $totalInPlaySuper[0][0]['total']);
+		}
+		else{
+			$this->set('totalInPlaySuper', '0');
+		}
 		// debug($totalDeposited);
 		// die();
 		// $usersLotWon = $db->fetchAll("SELECT users.id, users.eve_name, stat.totalWon FROM users INNER JOIN ( SELECT COUNT(*) AS totalWon, user_id FROM statistics  WHERE type = 'win_lottery' GROUP BY user_id) stat ON stat.user_id = id ORDER BY totalWon DESC LIMIT 10");
@@ -129,5 +133,18 @@ public function beforeFilter() {
 
 		// $popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, stat.totalItems FROM eve_items INNER JOIN ( SELECT COUNT(*) AS totalItems, eve_item_id FROM statistics  WHERE type = 'win_lottery' GROUP BY eve_item_id) stat ON stat.eve_item_id = id ORDER BY totalItems DESC LIMIT 10");
 		// $this->set('popularsItems', $popularsItems);
+	}
+
+	public function admin_thanks_player($id_player) {
+
+		$this->Statistic->saveStat($id_player, 'help_bug', null, null, null);
+
+		$this->Session->setFlash(
+				'The user has been thanked.',
+				'FlashMessage',
+				array('type' => 'info')
+				);
+
+		$this->redirect(array('controller' => 'users', 'action' => 'view', 'admin' => true, $id_player));
 	}
 }

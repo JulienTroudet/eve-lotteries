@@ -4943,7 +4943,6 @@ a.list-group-item-danger.active:focus {
 	color: #c7c7c7;
 	background-color: #1f1f1f;
 	border-color: rgba(250, 158, 14, 0);
-	height:10.5em;
 }
 .panel-default > .panel-heading + .panel-collapse .panel-body {
 	border-top-color: #dddddd;

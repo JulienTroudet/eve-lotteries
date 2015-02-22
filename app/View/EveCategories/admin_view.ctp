@@ -24,6 +24,21 @@
 						<?php echo h($eveCategory['EveCategory']['type']); ?>
 						&nbsp;
 					</dd>
+					<dt><?php echo __('URL DEBUT'); ?></dt>
+					<dd>
+						<?php echo h($eveCategory['EveCategory']['url_start']); ?>
+						&nbsp;
+					</dd>
+					<dt><?php echo __('URL FIN petite icone'); ?></dt>
+					<dd>
+						<?php echo h($eveCategory['EveCategory']['url_small_end']); ?>
+						&nbsp;
+					</dd>
+					<dt><?php echo __('URL FIN grande icone'); ?></dt>
+					<dd>
+						<?php echo h($eveCategory['EveCategory']['url_big_end']); ?>
+						&nbsp;
+					</dd>
 					<dt><?php echo __('Profit'); ?></dt>
 					<dd>
 						<?php echo h($eveCategory['EveCategory']['profit']); ?>%

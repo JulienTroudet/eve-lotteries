@@ -13,7 +13,7 @@ if ($ticketsCount == 8) {
 }?>
 
 	<div class="panel panel-default">
-		<div class="media panel-heading">
+		<div class="media panel-heading panel-heading-lottery">
 			<p class="pull-left">
 				<img class="media-object" src="<?php echo $lottery['EveItem']['EveCategory']['url_start'].$lottery['EveItem']['eve_id'].$lottery['EveItem']['EveCategory']['url_big_end']; ?>" alt="<?php echo $lottery['EveItem']['name']; ?>">
 			</p>

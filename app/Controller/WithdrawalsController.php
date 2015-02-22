@@ -205,7 +205,11 @@ class WithdrawalsController extends AppController {
 			$this->loadModel('User');
 			$this->loadModel('Statistic');
 
+
+
 			$withdrawalId = $this->request->query('withdrawal_id');
+			$withdrawalId = str_replace(",", "", $withdrawalId);
+
 			$claimType = $this->request->query('claim_type');
 
 			if (!$this->Withdrawal->exists($withdrawalId)) {
@@ -228,6 +232,8 @@ class WithdrawalsController extends AppController {
 					);
 
 				$claimedAward = $this->Withdrawal->find('first', $params);
+				$this->log($params);
+				$this->log($claimedAward);
 
 				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id']);
 				if($claimedAward['Withdrawal']['status'] != 'new'){

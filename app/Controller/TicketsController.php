@@ -70,7 +70,6 @@ class TicketsController extends AppController {
 			$this->loadModel('EveItem');
 			$this->loadModel('Lottery');
 			$this->loadModel('User');
-			$this->loadModel('Statistic');
 			
 			$this->disableCache();
 

@@ -36,7 +36,7 @@
 										<i class="fa fa-money"></i> 
 										<a id="button-deposit" href="#" onclick="CCPEVE.showInfo(2, 98342107);"><i class="fa fa-plus-square"></i></a>
 									</p>
-									<p><span id="points"><?php echo number_format($userGlobal['tokens']); ?></span> <span class="badge">Points</span></p>
+									<p><span id="points"><?php echo number_format(floor($userGlobal['tokens'])); ?></span> <span class="badge">Points</span></p>
 								</div>
 							</div>
 							<div class="col-md-3 col-sm-3 col-user-navbar">

@@ -21,12 +21,16 @@
 						<?php foreach ($superLotteries as $superLottery): ?>
 							<tr>
 								<td>
-									<?php echo $this->Html->link($superLottery['EveItem']['name'], array('controller' => 'eve_items', 'action' => 'view', $superLottery['EveItem']['id'])); ?>
+									<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $superLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $superLottery['EveItem']['name']; ?></button>
+									<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $superLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
+
 								</td>
 								<td><?php echo h($superLottery['SuperLottery']['number_items']); ?>&nbsp;</td>
 								<td><?php echo $this->Html->link($superLottery['SuperLottery']['name'], array('action' => 'view', $superLottery['SuperLottery']['id']));?>&nbsp;</td>
 								<td>
-									<?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Winner']['id'])); ?>
+									<div><img src="https://image.eveonline.com/Character/<?php echo $superLottery['Winner']['id']; ?>_32.jpg"></div>
+									<div><?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Winner']['id'])); ?></div>
+
 								</td>
 								<td><?php echo h($superLottery['SuperLottery']['nb_tickets']); ?>&nbsp;</td>
 								<td><?php echo h($superLottery['SuperLottery']['ticket_value']); ?>&nbsp;</td>

@@ -22,6 +22,13 @@
 							'class' => 'form-control',
 							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 							));
+							echo $this->Form->input('lead', array(
+							'div' => array(
+								'class' => 'form-group',
+								),
+							'class' => 'form-control',
+							'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
+							));
 						echo $this->Form->input('body', array(
 							'div' => array(
 								'class' => 'form-group',
@@ -47,6 +54,7 @@
 			<script type="text/javascript">
 				$(document).ready(function(){
 					CKEDITOR.replace('ArticleBody');
+					CKEDITOR.replace('ArticleLead');
 				});
 
 			</script>

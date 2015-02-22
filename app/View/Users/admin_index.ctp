@@ -1,3 +1,7 @@
+<?php echo $this->Html->css('dataTables.bootstrap'); ?>
+<?php echo $this->Html->script('jquery.dataTables.min');?>
+<?php echo $this->Html->script('dataTables.bootstrap');?>
+
 <div id="wrapper">
 	<?php 
 	if ($userGlobal['group_id'] == 3) {
@@ -8,15 +12,15 @@
 		<div class="container-fluid">
 			<div class="users index">
 				<h2><?php echo __('Users'); ?></h2>
-				<table class="table table-striped table-condensed">
+				<table class="table table-striped table-condensed" id="users-table">
 					<thead>
 						<tr>
-							<th><?php echo $this->Paginator->sort('eve_name'); ?></th>
-							<th><?php echo $this->Paginator->sort('group_id'); ?></th>
-							<th><?php echo $this->Paginator->sort('created'); ?></th>
-							<th><?php echo $this->Paginator->sort('sponsor'); ?></th>
-							<th><?php echo $this->Paginator->sort('wallet'); ?></th>
-							<th><?php echo $this->Paginator->sort('tokens'); ?></th>
+							<th><?php echo __('Nom'); ?></th>
+							<th><?php echo __('Groupe'); ?></th>
+							<th><?php echo __('Created'); ?></th>
+							<th><?php echo __('Sponsor'); ?></th>
+							<th><?php echo __('Wallet'); ?></th>
+							<th><?php echo __('Points'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
 						</tr>
 					</thead>
@@ -37,27 +41,17 @@
 						<?php endforeach; ?>
 					</tbody>
 				</table>
-				<div class="row">
-					<ul class="pager">
-						<li class="previous">
-							<?php
-							echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled'));
-							?>
-						</li>
-						<li>
-							<?php
-							echo $this->Paginator->counter(array(
-								'format' => __('Page {:page} of {:pages}, showing {:current} Users out of {:count}, starting on user {:start}, ending on {:end}')
-								));
-								?>	
-							</li>
-							<li class="next">
-								<?php
-								echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
-								?>
-							</li>
-						</ul>
-					</div>
-				</div>
 			</div>
 		</div>
+	</div>
+</div>
+
+<script>
+	$( document ).ready(function() {
+
+		var table = $('#users-table').DataTable({
+			"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]});
+
+
+	});
+</script>

@@ -53,6 +53,13 @@
 
 /* [END] USER NAVBAR */
 
+/* [START] PANEL LOTTERY */
+
+.panel-default > .panel-heading-lottery {
+	height:10.5em;
+}
+/* [END] PANEL LOTTERY */
+
 /* [START] TICKETS */
 .ticket-slot{
 	margin-bottom: 0.3em;
