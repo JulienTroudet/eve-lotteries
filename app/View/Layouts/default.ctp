@@ -3,11 +3,13 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
+	<meta name="description" content="EVE-Lotteries is a fresh new brand EVE Online gambling website !">
+	<meta name="keywords" content="Gambling, EVE Online, EVE-Lotteries, Lottery, Lotteries, ISK, WIN ISK, Titan, PLEX"/>
 	<?php echo $this->Html->meta( 'favicon.ico', 'img/favicon.ico', array('type' => 'icon', 'rel' => 'shortcut icon'));?>
 
-	<title>EVE-Lotteries</title>
+	<title>EVE-Lotteries.com - EVE Online Gambling Website</title>
 	<?php echo $this->Html->css('../ckeditor/contents'); ?>
 	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
@@ -30,20 +32,20 @@
 	<script>
 		$(document).ready(function() {
 			toastr.options = {
-			"closeButton": true,
-			"debug": false,
-			"positionClass": "toast-top-right",
-			"onclick": null,
-			"showDuration": "300",
-			"hideDuration": "1000",
-			"timeOut": "5000",
-			"extendedTimeOut": "1000",
-			"showEasing": "swing",
-			"hideEasing": "linear",
-			"showMethod": "fadeIn",
-			"hideMethod": "fadeOut"
-		};
-	});
+				"closeButton": true,
+				"debug": false,
+				"positionClass": "toast-top-right",
+				"onclick": null,
+				"showDuration": "300",
+				"hideDuration": "1000",
+				"timeOut": "5000",
+				"extendedTimeOut": "1000",
+				"showEasing": "swing",
+				"hideEasing": "linear",
+				"showMethod": "fadeIn",
+				"hideMethod": "fadeOut"
+			};
+		});
 	</script>
 </head>
 <body>
@@ -81,9 +83,15 @@
 					<li>
 						<?php echo $this->Html->link('Statistics', array('controller' => 'statistics', 'action' => 'index', 'admin'=>false, 'plugin' => false));?>	
 					</li>
-					<li>
-						<a href="#" onclick="CCPEVE.joinChannel('EVE-Lotteries')">Join In Game Chat</a>
-					</li>
+					<?php if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='No'): ?>
+						<li>
+						<a class="alert-link" href="javascript:CCPEVE.requestTrust('http://<?php echo $_SERVER['HTTP_HOST'];?>')">Add To Trusted Sites</a>
+						</li>
+					<?php elseif(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'): ?>
+						<li>
+							<a style="cursor:pointer;" onclick="CCPEVE.joinChannel('EVE-Lotteries')">Join In Game Chat</a>
+						</li>
+					<?php endif;?>
 				</ul>
 				
 				<?php 

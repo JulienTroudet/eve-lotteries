@@ -7,7 +7,7 @@
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
 			<div class="awards index">
-				<h2>Transactions you must complete</h2>
+				<h2>Withdrawals you must complete</h2>
 
 
 				<div id="list-awards">

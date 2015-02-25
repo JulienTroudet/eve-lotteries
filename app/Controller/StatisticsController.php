@@ -104,7 +104,7 @@ public function beforeFilter() {
 		$totalDeposited = $db->fetchAll("SELECT SUM(statistics.isk_value) as total FROM statistics  WHERE type='deposit_isk'");
 		$this->set('totalDeposited', $totalDeposited[0][0]['total']);
 
-		$totalWallets = $db->fetchAll("SELECT SUM(users.wallet) as total FROM users  WHERE users.id != 94931126");
+		$totalWallets = $db->fetchAll("SELECT SUM(users.wallet) as total FROM users  WHERE users.id != 94931126 AND users.group_id != 3");
 		$this->set('totalWallets', $totalWallets[0][0]['total']);
 
 		$totalUnclaimed = $db->fetchAll("SELECT SUM(lotteries.value) as total FROM withdrawals INNER JOIN tickets ON withdrawals.ticket_id = tickets.id INNER JOIN lotteries ON tickets.lottery_id = lotteries.id WHERE withdrawals.status='new'");

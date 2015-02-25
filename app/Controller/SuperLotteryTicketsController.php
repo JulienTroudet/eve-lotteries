@@ -106,8 +106,8 @@ class SuperLotteryTicketsController extends AppController {
 					$superLotTicket['SuperLotteryTicket']['nb_tickets'] += $nbTicketsBuy;
 				}
 
-				if ($superLotTicket['SuperLotteryTicket']['nb_tickets']>($superLottery['SuperLottery']['nb_tickets']/4)) {
-					$this->Session->setFlash('You can\'t buy more than one fourth of the tickets.', 'FlashMessage', array('type' => 'info'));
+				if ($superLotTicket['SuperLotteryTicket']['nb_tickets']>($superLottery['SuperLottery']['nb_tickets']/10)) {
+					$this->Session->setFlash('You can\'t buy more than a tenth part of the tickets.', 'FlashMessage', array('type' => 'info'));
 					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
 				}
 				$dataSource = $this->SuperLotteryTicket->getDataSource();

@@ -23,8 +23,13 @@ class Withdrawal extends AppModel {
  * @var array
  */
 	public $validate = array(
-		
-	);
+		'ticket_id' => array(
+			'ticket_id_unique' => array(
+				'rule' => array('isUnique'),
+				'message' => 'There is already a withdrawal for this ticket.'
+				),
+			)
+		);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 

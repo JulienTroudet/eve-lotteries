@@ -1,4 +1,3 @@
-<?php if (isset($superLottery)){ echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery ));} ?>
 <div class="row">
 	<div class="col-md-3">
 		<h2 class="pull-left">Ongoing Lotteries</h2>
@@ -18,12 +17,12 @@
 </div>
 <div class="row">
 	<div class="col-md-3 pull-right">
-		<?php echo $this->Html->link('See all super lotteries', array('controller' => 'super_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
+		<?php echo $this->Html->link('See all Super lotteries', array('controller' => 'super_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
 		<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
 	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
-	$("[data-toggle='tooltip']").tooltip(); 
+	$("[data-toggle='tooltip']").tooltip();
 });
 </script>

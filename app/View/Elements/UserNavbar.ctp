@@ -199,9 +199,7 @@
 								$(document).ready(function() {
 									function CountDownTimer(dt, div_class)
 									{	
-										console.log(dt);
 										var end = new Date(dt);
-										console.log(end);
 										var _second = 1000;
 										var _minute = _second * 60;
 										var _hour = _minute * 60;

@@ -31,8 +31,8 @@
 								<td><?php echo h($user['Group']['name']); ?></td>
 								<td><?php echo h($user['User']['created']); ?>&nbsp;</td>
 								<td><?php echo h($user['Sponsor']['eve_name']); ?>&nbsp;</td>
-								<td><?php echo h($user['User']['wallet']); ?>&nbsp;</td>
-								<td><?php echo h($user['User']['tokens']); ?>&nbsp;</td>
+								<td><?php echo number_format($user['User']['wallet']+0, 0); ?></td>
+								<td><?php echo number_format($user['User']['tokens']+0, 0); ?></td>
 								<td class="actions">
 									<?php echo $this->Html->link(__('View'), array('action' => 'view', 'admin' => true, $user['User']['id'])); ?>
 									<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', 'admin' => true, $user['User']['id'])); ?>

@@ -3,49 +3,43 @@
 	<div id="page-content-wrapper">
 		<div class="container-fluid">
 			<div class="row">
-				<h2><?php echo __('Super Lotteries'); ?></h2>
+				<h2><?php echo __('Flash Lotteries'); ?></h2>
 				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th><?php echo $this->Paginator->sort('eve_item_id'); ?></th>
 							<th><?php echo $this->Paginator->sort('number_items'); ?></th>
-							<th><?php echo $this->Paginator->sort('name'); ?></th>
-							<th><?php echo $this->Paginator->sort('winner_user_id'); ?></th>
+							<th>Winner</th>
 							<th><?php echo $this->Paginator->sort('nb_tickets'); ?></th>
-							<th><?php echo $this->Paginator->sort('ticket_value'); ?></th>
-							<th><?php echo $this->Paginator->sort('lottery_status_id'); ?></th>
+							<th><?php echo $this->Paginator->sort('lottery_status'); ?></th>
+							<th><?php echo $this->Paginator->sort('start_date'); ?></th>
+							<th><?php echo $this->Paginator->sort('expiration_date'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ($superLotteries as $superLottery): ?>
+						<?php foreach ($flashLotteries as $superLottery): ?>
 						<tr>
 							<td>
 								<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $superLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $superLottery['EveItem']['name']; ?></button>
 								<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $superLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
 							</td>
-							<td><?php echo h($superLottery['SuperLottery']['number_items']); ?>&nbsp;</td>
-							<td><?php echo $this->Html->link($superLottery['SuperLottery']['name'], array('action' => 'view', $superLottery['SuperLottery']['id']));?>&nbsp;</td>
+							<td><?php echo h($superLottery['FlashLottery']['number_items']); ?>&nbsp;</td>
 							<td>
-								<?php if(isset($superLottery['Winner']['id'])): ?>
-								<div><img src="https://image.eveonline.com/Character/<?php echo $superLottery['Winner']['id']; ?>_32.jpg"></div>
-								<div><?php echo $this->Html->link($superLottery['Winner']['eve_name'], array('controller' => 'users', 'action' => 'view', $superLottery['Winner']['id'])); ?></div>
-								<?php endif; ?>
+								
 							</td>
-							<td><?php echo h($superLottery['SuperLottery']['nb_tickets']); ?>&nbsp;</td>
-							<td><?php echo h($superLottery['SuperLottery']['ticket_value']); ?>&nbsp;</td>
-							<td><?php echo h($superLottery['SuperLottery']['status']); ?>&nbsp;</td>
+							<td><?php echo h($superLottery['FlashLottery']['nb_tickets']); ?>&nbsp;</td>
+							<td><?php echo h($superLottery['FlashLottery']['status']); ?>&nbsp;</td>
+							<td><?php echo CakeTime::niceShort(h($superLottery['FlashLottery']['start_date'])); ?>&nbsp;</td>
+							<td><?php echo CakeTime::niceShort(h($superLottery['FlashLottery']['expiration_date'])); ?>&nbsp;</td>
 							<td class="actions">
-								<?php if($superLottery['SuperLottery']['status'] == 'waiting'):?>
-									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $superLottery['SuperLottery']['id']), array(), __('Are you sure you want to delete # %s?', $superLottery['SuperLottery']['id'])); ?>
-								<?php elseif($superLottery['SuperLottery']['status'] == 'claimed'):?>
+								<?php if($superLottery['FlashLottery']['status'] == 'waiting'):?>
+									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $superLottery['FlashLottery']['id']), array(), __('Are you sure you want to delete # %s?', $superLottery['FlashLottery']['id'])); ?>
+								<?php elseif($superLottery['FlashLottery']['status'] == 'claimed'):?>
 								<?php echo $this->Html->link(
 									'Complete this',
-									array('controller' => 'super_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $superLottery['SuperLottery']['id']),
-									array('class' => 'btn btn-block btn-danger btn-xs btn-complete')
-								);?>
-								
-
+									array('controller' => 'super_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $superLottery['FlashLottery']['id']),
+								array('class' => 'btn btn-block btn-danger btn-xs btn-complete') );?>
 								<?php endif;?>
 							</td>
 						</tr>

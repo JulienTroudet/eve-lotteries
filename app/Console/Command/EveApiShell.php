@@ -55,12 +55,20 @@ class EveApiShell extends AppShell {
 							'eve_date' => $entry->date,
 							));
 
+						//search if there is a waiting transaction
+						$waitingTrans = $this->Transaction->findByRefidAndAmountAndUserId('waiting', $newTransaction['Transaction']['amount'], $newTransaction['Transaction']['user_id']);
+						if(isset($waitingTrans['Transaction']['id'])){
+							$newTransaction['Transaction']['id'] = $waitingTrans['Transaction']['id'];
+						}
+
 						$dataSource = $this->User->getDataSource();
 						$dataSource->begin();
 
-						$check_user_deposit['User']['wallet'] += $entry->amount;
+						if(!isset($newTransaction['Transaction']['id'])){
+							$check_user_deposit['User']['wallet'] += $entry->amount;
+						}
 
-						if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('refid', 'amount', 'user_id', 'eve_date'))){
+						if ($this->User->save($check_user_deposit, true, array('id', 'wallet')) && $this->Transaction->save($newTransaction, true, array('id', 'refid', 'amount', 'user_id', 'eve_date'))){
 
 							$this->Statistic->saveStat($check_user_deposit['User']['id'], 'deposit_isk', $this->Transaction->id, $entry->amount, null);
 

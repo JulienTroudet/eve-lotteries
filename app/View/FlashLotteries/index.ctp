@@ -2,11 +2,11 @@
 	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));} 
 	else{echo '<h2>Want to play? Log in with your EVE account!</h2>';}?>
 </div>
-<div class="superLotteries index">
-	<h2><?php echo __('Super Lotteries'); ?></h2>
+<div class="flashLotteries index">
+	<h2><?php echo __('Flash Lotteries'); ?></h2>
 	
-	<?php foreach ($superLotteries as $superLottery): ?>
-		<?php if (isset($superLottery)){ echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery ));} ?>
+	<?php foreach ($flashLotteries as $flashLottery): ?>
+		<?php if (isset($flashLottery)){ echo $this->element('FlashLotteries/FlashLotteryPanel', array("flashLottery" => $flashLottery ));} ?>
 	<?php endforeach; ?>
 	
 	<div class="row">

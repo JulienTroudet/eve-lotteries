@@ -5446,35 +5446,37 @@ button.close {
 .carousel-inner > .active.right {
 	left: 100%;
 }
+.carousel-inner .well {
+	margin-bottom: 0;
+}
 .carousel-control {
 	position: absolute;
 	top: 0;
 	left: 0;
 	bottom: 0;
-	width: 15%;
+	width: 8%;
 	opacity: 0.5;
 	filter: alpha(opacity=50);
 	font-size: 20px;
-	color: #ffffff;
+	color: #FA9E0E;
 	text-align: center;
 	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 .carousel-control.left {
-	background-image: -webkit-linear-gradient(left, color-stop(rgba(0, 0, 0, 0.5) 0%), color-stop(rgba(0, 0, 0, 0.0001) 100%));
-	background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
-	background-repeat: repeat-x;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
+
 }
 .carousel-control.right {
 	left: auto;
 	right: 0;
-	background-image: -webkit-linear-gradient(left, color-stop(rgba(0, 0, 0, 0.0001) 0%), color-stop(rgba(0, 0, 0, 0.5) 100%));
-	background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
-	background-repeat: repeat-x;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
 }
-.carousel-control:hover,
 .carousel-control:focus {
+	outline: none;
+	color: #FA9E0E;
+	text-decoration: none;
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}
+.carousel-control:hover{
 	outline: none;
 	color: #ffffff;
 	text-decoration: none;
@@ -5483,20 +5485,20 @@ button.close {
 }
 .carousel-control .icon-prev,
 .carousel-control .icon-next,
-.carousel-control .glyphicon-chevron-left,
-.carousel-control .glyphicon-chevron-right {
+.carousel-control .fa-chevron-left,
+.carousel-control .fa-chevron-right {
 	position: absolute;
-	top: 50%;
+	top: 37%;
 	z-index: 5;
 	display: inline-block;
 }
 .carousel-control .icon-prev,
-.carousel-control .glyphicon-chevron-left {
-	left: 50%;
+.carousel-control .fa-chevron-left {
+	left: 10%;
 }
 .carousel-control .icon-next,
-.carousel-control .glyphicon-chevron-right {
-	right: 50%;
+.carousel-control .fa-chevron-right {
+	right: 10%;
 }
 .carousel-control .icon-prev,
 .carousel-control .icon-next {

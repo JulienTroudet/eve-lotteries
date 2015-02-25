@@ -32,10 +32,26 @@ class WithdrawalsController extends AppController {
 	 * @return void
 	 */
 	public function index() {
+		$this->loadModel('User');
 		$this->loadModel('SuperLottery');
 
 		$userGlobal = $this->Auth->user();
 
+		//maj of withdrawal number
+		$parameters = array(
+			'conditions' => array(
+				'Withdrawal.status' => 'new', 
+				'Withdrawal.user_id' => $userGlobal['id'], 
+				'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
+			);
+		$nbNewAw = $this->Withdrawal->find('count', $parameters);
+
+		$userGlobal['nb_new_won_lotteries'] = $nbNewAw;
+
+		$this->User->save($userGlobal, true, array('id', 'nb_new_won_lotteries'));
+
+
+		//get unclaimed awards
 		$paginateVar = array(
 			'contain' => array(
 				'Ticket' => array(
@@ -208,7 +224,6 @@ class WithdrawalsController extends AppController {
 
 
 			$withdrawalId = $this->request->query('withdrawal_id');
-			$withdrawalId = str_replace(",", "", $withdrawalId);
 
 			$claimType = $this->request->query('claim_type');
 
@@ -232,8 +247,6 @@ class WithdrawalsController extends AppController {
 					);
 
 				$claimedAward = $this->Withdrawal->find('first', $params);
-				$this->log($params);
-				$this->log($claimedAward);
 
 				$claimerUser = $this->User->findById($claimedAward['Withdrawal']['user_id']);
 				if($claimedAward['Withdrawal']['status'] != 'new'){

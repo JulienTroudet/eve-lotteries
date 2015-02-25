@@ -27,6 +27,100 @@ class TransactionsController extends AppController {
 		}
 	}
 
+
+	/**
+	 * index method
+	 *
+	 * @return void
+	 */
+	public function admin_index() {
+		$this->Transaction->recursive = 0;
+		$paginateVar = array(
+			'contain' => array('User'),
+			'conditions' => array('Transaction.refid' => 'waiting'),
+			'order' => array(
+				'Transaction.created' => 'desc'
+				),
+			'limit' => 20
+			);
+		$this->Paginator->settings = $paginateVar;
+		$this->set('transactions', $this->Paginator->paginate());
+	}
+
+
+
+	/**
+	 * add method
+	 *
+	 * @return void
+	 */
+	public function admin_add() {
+		$this->loadModel('User');
+		$userId = $this->Auth->user('id');
+
+		$this->set('listUsers',$this->User->find('list', array('fields'=>array('id', 'eve_name'))));
+
+		if ($this->request->is('post')) {
+
+			$this->Transaction->create();
+			$dataProxy = $this->request->data;
+			$dataProxy['Transaction']['refid'] = "waiting";
+
+			$this->User->updateWallet($dataProxy['Transaction']['user_id'], $dataProxy['Transaction']['amount']);
+
+			if ($this->Transaction->save($dataProxy)) {
+				$this->Session->setFlash(
+					'The transaction has been saved.',
+					'FlashMessage',
+					array('type' => 'success')
+					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
+			} else {
+				$this->Session->setFlash(
+					'The transaction could not be saved. Please, try again.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
+			}
+		}
+	}
+
+	/**
+	 * delete method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function admin_delete($id = null) {
+		$this->loadModel('User');
+		
+		$this->Transaction->id = $id;
+		if (!$this->Transaction->exists()) {
+			throw new NotFoundException(__('Invalid transaction'));
+		}
+		$this->request->allowMethod('post', 'delete');
+
+		$transac = $this->Transaction->findById($id);
+
+		$this->User->updateWallet($transac['Transaction']['user_id'], -$transac['Transaction']['amount']);
+		
+		if ($this->Transaction->delete()) {
+			$this->Session->setFlash(
+				'The transaction has been deleted.',
+				'FlashMessage',
+				array('type' => 'success')
+				);
+		} else {
+			$this->Session->setFlash(
+				'The transaction could not be deleted. Please, try again.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
+		}
+		return $this->redirect(array('action' => 'index', 'admin' => true));
+	}
+
 	/**
 	 * index method
 	 *

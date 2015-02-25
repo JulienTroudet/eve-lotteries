@@ -75,7 +75,7 @@ class Ticket extends AppModel {
 				);
 
 			//sauvegarde des logs
-			$this->log('Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.']', 'eve-lotteries');
+			$this->log('Ticket bought : user_name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], ticket['.$ticketId.']', 'eve-lotteries');
 			$this->log('User state : name['.$buyer['User']['eve_name'].'], wallet['.number_format($buyer['User']['wallet'], 2).'], tokens['.number_format($buyer['User']['tokens'], 2).']', 'eve-lotteries');
 			
 			$lotteryModel->checkForWinner($choosenTicket['Ticket']['lottery_id'], $choosenTicket['Ticket']['id']);

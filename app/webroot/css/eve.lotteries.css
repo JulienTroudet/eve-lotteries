@@ -134,7 +134,7 @@
 	position: fixed;
 	left: 250px;
 	width: 0;
-	height: 600px;
+	height: 650px;
 	margin-top: -10px;
 	margin-left: -250px;
 	overflow-y: auto;
@@ -173,6 +173,12 @@
 .sidebar-nav li {
 	text-indent: 20px;
 	line-height: 40px;
+}
+
+.sidebar-nav .divider {
+	margin:10px 20px 0 20px;
+	line-height: 10px;
+	border-bottom: 1px solid rgb(68, 68, 68);
 }
 
 .sidebar-nav li a {
@@ -400,6 +406,34 @@ body {
 }
 /* [END] SUPER LOTTERY PANEL */
 
+/* [START] FLASH LOTTERY PANEL */
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+	.flash-ticket { width: 10%; }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+	.flash-ticket { width: 4.75%; }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+	.flash-ticket { width: 4.75%; }
+}
+
+.flash-ticket .fa{
+	cursor: pointer;
+	color: #FA9E0E;
+}
+
+
+.flash-ticket .fa:hover{
+	color: #ffffff;
+}
+
+
+/* [END] FLASH LOTTERY PANEL */
 .account-well{
 	background-color: #2c2c2c;
 }
@@ -417,3 +451,4 @@ img{
 .panel-news{
 	border: 1px solid rgba(68, 68, 68, 1);
 }
+

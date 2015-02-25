@@ -14,17 +14,17 @@
 				case 'new':
 				?>
 				<button class="btn btn-block btn-lg btn-default btn-claim btn-claim-credits" data-toggle="tooltip" data-placement="top" title="5% bonus if you claim this awward as EVE-Lotteries Credits"
-				data-award-id="<?php echo number_format($unclaimed_award['Withdrawal']['id']); ?>"
+				data-award-id="<?php echo $unclaimed_award['Withdrawal']['id']; ?>"
 				data-claim-type="credit"
 				>Claim <?php echo number_format($unclaimed_award['Ticket']['Lottery']['value']*1.05, 2); ?> <i class="fa fa-money"></i></button>
 
 				<button class="btn btn-block btn-lg btn-default btn-claim btn-claim-isk"
-				data-award-id="<?php echo number_format($unclaimed_award['Withdrawal']['id'], 2); ?>"
+				data-award-id="<?php echo $unclaimed_award['Withdrawal']['id']; ?>"
 				data-claim-type="isk"
 				>Claim <?php echo number_format($unclaimed_award['Ticket']['Lottery']['value'], 2); ?> <span class="badge">ISK</span></button>
 
 				<button class="btn btn-block btn-lg btn-default btn-claim btn-claim-item"
-				data-award-id="<?php echo number_format($unclaimed_award['Withdrawal']['id'], 2); ?>"
+				data-award-id="<?php echo $unclaimed_award['Withdrawal']['id']; ?>"
 				data-claim-type="item"
 				>Claim <?php echo preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$unclaimed_award['Ticket']['Lottery']['name']); ?></button>
 				<?php

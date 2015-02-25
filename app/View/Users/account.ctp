@@ -44,6 +44,8 @@
 											<h4>What is this ?</h4>
 											<p>This link allow you to sponsor one of your fellow EVE buddies. If a player use your link to register in our website, he will receive 10 millions EVE-Lotteries Credits and <strong>you will earn 5% of every deposit he will make on EVE-Lotteries</strong>. For example if he deposits 100 000 000 ISK in his wallet you will get 5 000 000 EVE-Lotteries Credits as a bonus in yours. Isn't it cool ?</p>
 										</div>
+
+										<p>Want a better looking Referal Link ? Try our <?php echo $this->Html->link('Link Makup Script', array('controller' => 'pages', 'action' => 'eve_link', 'admin' => false, 'plugin' => false));?></p>
 									</div>
 									<div class="well account-well">
 										<h2>Sponsorship</h2>

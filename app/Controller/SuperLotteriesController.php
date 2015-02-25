@@ -18,7 +18,20 @@ class SuperLotteriesController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index');
+		$this->Auth->allow('index', 'visible_super_lottery');
+	}
+
+
+	/**
+	 * get the first super lot without layout for Ajax
+	 * @return [type] [description]
+	 */
+	public function visible_super_lottery() {
+		$this->loadModel('SuperLotteryTicket');
+		$this->layout = false;
+		//get the last super lottery
+		$superLottery = $this->_get_last_super_lottery();
+		$this->set('superLottery', $superLottery);
 	}
 
 	/**
@@ -28,7 +41,7 @@ class SuperLotteriesController extends AppController {
 	 */
 	public function index() {
 		$params = array(
-			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
 			'conditions' => array('SuperLottery.status !=' => 'waiting'),
 			'order' => array('SuperLottery.created' => 'desc'), 
 			);
@@ -198,7 +211,7 @@ class SuperLotteriesController extends AppController {
 					'FlashMessage',
 					array('type' => 'info')
 					);
-				return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+				return $this->redirect(array('controller' => 'super_lotteries', 'action' => 'index', 'admin' => true));
 			} 
 			else {
 				$this->Session->setFlash(
@@ -206,37 +219,11 @@ class SuperLotteriesController extends AppController {
 					'FlashMessage',
 					array('type' => 'warning')
 					);
-				return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+				return $this->redirect(array('controller' => 'super_lotteries', 'action' => 'index', 'admin' => true));
 			}
 		}
 		$eveItems = $this->SuperLottery->EveItem->find('all', array('order'=>'EveItem.name asc'));
 		$this->set('eveItems', $eveItems);
-	}
-
-	/**
-	 * admin_edit method
-	 *
-	 * @throws NotFoundException
-	 * @param string $id
-	 * @return void
-	 */
-	public function admin_edit($id = null) {
-		if (!$this->SuperLottery->exists($id)) {
-			throw new NotFoundException(__('Invalid super lottery'));
-		}
-		if ($this->request->is(array('post', 'put'))) {
-			if ($this->SuperLottery->save($this->request->data)) {
-				$this->Session->setFlash(__('The super lottery has been saved.'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The super lottery could not be saved. Please, try again.'));
-			}
-		} else {
-			$options = array('conditions' => array('SuperLottery.' . $this->SuperLottery->primaryKey => $id));
-			$this->request->data = $this->SuperLottery->find('first', $options);
-		}
-		$eveItems = $this->SuperLottery->EveItem->find('list');
-		$this->set(compact('eveItems'));
 	}
 
 	/**
@@ -266,5 +253,32 @@ class SuperLotteriesController extends AppController {
 				);
 		}
 		return $this->redirect(array('action' => 'index'));
+	}
+
+	/**
+	* Gets the last super lottery in the database
+	* it is either the ongoing super or the las won super
+	* @return [type] [description]
+	*/
+	protected function _get_last_super_lottery(){
+		$superLottery = null;
+		$params = array(
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array(
+				'OR'=>array(
+					'AND'=>array(
+						'SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
+						'SuperLottery.status'=>array('completed', 'claimed')
+						),
+					'SuperLottery.status'=>'ongoing')),
+			'order' => array('SuperLottery.created' => 'desc'),
+			);
+		$superLottery = $this->SuperLottery->find('first', $params);
+		
+		if(isset($superLottery['SuperLottery'])){
+			$superLottery['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+			$superLottery['percentage'] = ($superLottery['SuperLottery']['nb_ticket_bought']*100)/$superLottery['SuperLottery']['nb_tickets'];
+		}
+		return $superLottery;
 	}
 }

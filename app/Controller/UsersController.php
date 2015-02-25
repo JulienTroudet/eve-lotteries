@@ -177,6 +177,7 @@ class UsersController extends AppController {
 		
 		if(isset($encodedId)){
 			$this->Session->write('Sponsor.code', $encodedId);
+			return $this->redirect('/');
 		}
 		$encodedSessionId = $this->Session->read('Sponsor.code');
 
@@ -187,18 +188,12 @@ class UsersController extends AppController {
 			);
 			if(isset($sponsor['User'])){
 				$this->log('Referal : '.$sponsor['User']['id'].' => '.$sponsor['User']['eve_name']);
+				$this->set('sponsor', $sponsor);
+				$this->set('sponsorCode', $encodedSessionId);
 			}
 			else{
-				$this->Session->setFlash(
-					'Error with refferal link !',
-					'FlashMessage',
-					array('type' => 'error')
-					);
-				return $this->redirect('/');
+				$this->set('sponsorCode', '');
 			}
-			
-			$this->set('sponsor', $sponsor);
-			$this->set('sponsorCode', $encodedSessionId);
 		}
 		else{
 			$this->set('sponsorCode', '');
@@ -332,6 +327,7 @@ class UsersController extends AppController {
 				'FlashMessage',
 				array('type' => 'warning')
 				);
+			$this->redirect('/');
 		}
 		$this->Auth->login($user['User']);
 		$this->redirect('/');

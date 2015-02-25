@@ -4,16 +4,15 @@ App::uses('User', 'Model');
 App::uses('Ticket', 'Model');
 App::uses('Statistic', 'Model');
 App::uses('Message', 'Model');
-App::uses('Withdrawal', 'Model');
 /**
- * Lottery Model
+ * FlashLottery Model
  *
  * @property EveItem $EveItem
  * @property LotteryStatus $LotteryStatus
  * @property User $User
  * @property Ticket $Ticket
  */
-class Lottery extends AppModel {
+class FlashLottery extends AppModel {
 
 	/**
 	 * Display field
@@ -26,76 +25,46 @@ class Lottery extends AppModel {
 
 	public function beforeValidate($options = array()) {
 		parent::beforeValidate($options);
-		unset($this->data['Lottery']['modified']);
+		unset($this->data['FlashLottery']['modified']);
 	}
 
-	public function createNewLotteryForItemByUser($choosenItem, $buyer) {
-		//l'array qui contient le message à renvoyer
-		$data = Array();
-
-		//chargement des models (ne pas les oublier dans le App:uses)
-		$statisticModel = new Statistic();
-		$ticketModel = new Ticket();
-		
-		//création de la nouvelle lotterie
-		$this->create();
-		$newLottery = array(
-			'Lottery'=>array(
-				'eve_item_id' =>  $choosenItem['EveItem']['id'],
-				'creator_user_id' => $buyer['User']['id'],
-				'nb_tickets' => $choosenItem['EveItem']['nb_tickets_default'],
-				'lottery_status_id' => 1,
-				'value' => $choosenItem['EveItem']['eve_value'],
-				'name'=> $choosenItem['EveItem']['name'],
-				),
-			'Ticket'=>array()
+	/**
+	* Starts the flash lottery when it's time
+	* @return [type] [description]
+	*/
+	public function initiate_flash_lottery(){
+		$this->updateAll(
+			array('FlashLottery.status' => '"ongoing"'),
+			array(
+				'AND'=>array(
+					'FlashLottery.expiration_date > NOW()',
+					'FlashLottery.start_date < NOW()',
+					'FlashLottery.status'=>'waiting')
+				)
 			);
+	}
 
-		//on récupère le prix individuel d'un ticket
-		$ticketPrice = $this->EveItem->getTicketPrice($choosenItem);
-
-		//on crée tous les nouveaux tickets et on les ajoute à l'objet lottery
-		for ($i=0; $i < $choosenItem['EveItem']['nb_tickets_default']; $i++) {
-			
-			$newTicket = array(
-				'position' => $i,
-				'value' => $ticketPrice,
-				);
-			array_push($newLottery['Ticket'], $newTicket);
-		}
-
-		//datasource pour éviter les problèmes de requètes
-		$dataSource = $this->Ticket->getDataSource();
-		$dataSource->begin();
-
-		//si la sauvegarde de la nouvelle lottery et des tickets associés fonctionne
-		if ($this->saveAssociated($newLottery)) {
-
-			$statisticModel->saveStat($buyer['User']['id'], 'init_lottery', $this->id, $choosenItem['EveItem']['eve_value'], $choosenItem['EveItem']['id']);
-
-			$this->log('New Lottery : name['.$buyer['User']['eve_name'].'], id['.$buyer['User']['id'].'], lottery['.$this->id.'], item['.$choosenItem['EveItem']['name'].']', 'eve-lotteries');
-
-			$data = array(
-				'success' => true,
-				'lotteryId' => $this->id
-				);
-
-			$dataSource->commit();
-			return $data;
-		}
-		else {
-			$dataSource->rollback();
-			$data = array('error' => 'Error while processing.');
-			return $data;
-		}
-
+	/**
+	* Ends the flash lottery when it's time
+	* @return [type] [description]
+	*/
+	public function end_flash_lottery(){
+		$this->updateAll(
+			array('FlashLottery.status' => '"unclaimed"'),
+			array(
+				'AND'=>array(
+					'FlashLottery.expiration_date < NOW()',
+					'FlashLottery.start_date < NOW()',
+					'FlashLottery.status'=>'ongoing')
+				)
+			);
 	}
 
 	public function checkForWinner($lotteryId, $lastBoughtTicketId = null) {
 
 		//chargement des models (ne pas les oublier dans le App:uses)
 		$ticketModel = new Ticket();
-				
+		
 
 
 		$this->contain(array(
@@ -144,7 +113,7 @@ class Lottery extends AppModel {
 						'user_id' =>$ticket['buyer_user_id'],
 						'ticket_id' =>$ticket['id'],
 						));
-					
+
 					$withdrawalModel->save($newWithdrawal, true, array('type', 'value', 'status','user_id', 'ticket_id'));
 
 					$messageModel->sendLotteryMessage(
@@ -233,17 +202,7 @@ class Lottery extends AppModel {
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'name' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
-				//'message' => 'Your custom message here',
-				'allowEmpty' => true,
-				//'required' => false,
+				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				),
@@ -258,26 +217,7 @@ class Lottery extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				),
 			),
-		'created' => array(
-			'datetime' => array(
-				'rule' => array('datetime'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'modified' => array(
-			'datetime' => array(
-				'rule' => array('datetime'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
+		
 		'nb_tickets' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
@@ -286,32 +226,24 @@ class Lottery extends AppModel {
 				'required' => true,
 				//'last' => false, // Stop validation after this rule
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			'limitTickets' => array(
-				'rule'    => array('inList', array(8, 16)),
-				'message' => 'You can only propose 8 or 16 tickets.'
 				)
 			),
-		'lottery_status_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
-		'value' => array(
-			'decimal' => array(
-				'rule' => array('decimal'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-				),
-			),
+		// 'start_date' => array(
+		// 		'rule' => array('datetime', 'c'),
+		// 		'message' => 'Bad Start date',
+		// 		//'allowEmpty' => false,
+		// 		//'required' => true,
+		// 		//'last' => false, // Stop validation after this rule
+		// 		//'on' => 'create', // Limit validation to 'create' or 'update' operations
+		// 	),
+		// 'expiration_date' => array(
+		// 		'rule' => array('datetime', 'c'),
+		// 		'message' => 'Bad end date',
+		// 		//'allowEmpty' => false,
+		// 		//'required' => true,
+		// 		//'last' => false, // Stop validation after this rule
+		// 		//'on' => 'create', // Limit validation to 'create' or 'update' operations
+		//		),
 		);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -329,14 +261,7 @@ public $belongsTo = array(
 		'fields' => '',
 		'order' => ''
 		),
-	'LotteryStatus' => array(
-		'className' => 'LotteryStatus',
-		'foreignKey' => 'lottery_status_id',
-		'conditions' => '',
-		'fields' => '',
-		'order' => ''
-		),
-	'User' => array(
+	'Creator' => array(
 		'className' => 'User',
 		'foreignKey' => 'creator_user_id',
 		'conditions' => '',
@@ -351,9 +276,9 @@ public $belongsTo = array(
  * @var array
  */
 public $hasMany = array(
-	'Ticket' => array(
-		'className' => 'Ticket',
-		'foreignKey' => 'lottery_id',
+	'FlashTicket' => array(
+		'className' => 'FlashTicket',
+		'foreignKey' => 'flash_lottery_id',
 		'dependent' => true,
 		'conditions' => '',
 		'fields' => '',
