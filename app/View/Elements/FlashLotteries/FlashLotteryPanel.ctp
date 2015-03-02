@@ -1,42 +1,62 @@
-<?php echo $this->Html->script('isotope.pkgd.min');?>
 <?php if(isset($flashLottery['FlashLottery'])):?>
-<div class="row" id="flash-lot">
-	<div class="col-md-10 col-sm-10 col-md-offset-1 well well-sm <?php if($flashLottery['FlashLottery']['status']=='ongoing'){echo 'well-ongoing';}else{echo 'well-finished';}?>">
-		<div class="row">
-			<div class="col-md-1">
-				<img src="<?php echo $flashLottery['EveItem']['EveCategory']['url_start'].$flashLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $flashLottery['EveItem']['name']; ?>"
-				data-toggle="tooltip"
-				data-placement="right"
-				title = "Prize: <?php echo $flashLottery['EveItem']['name'];?> x <?php echo $flashLottery['FlashLottery']['number_items']; ?>"
-				>
-			</div>
-			<div class="col-md-9" id="flash-tickets-container">
-				
-				<?php foreach ($flashLottery['FlashTicket'] as $key => $ticket) :?>
-				
-				<?php echo $this->element('FlashLotteries/FlashTicketIcon', array("flashTicket" => $ticket )); ?>
-				<?php endforeach; ?>
-				
-			</div>
-			<div class="col-md-2">
-				<?php if($flashLottery['FlashLottery']['status']=='ongoing'): ?>
-				<div>
-					<h3>Flash Lottery</h3>
-					<p>End :</p>
+	<div class="row flash-lot">
+		<div class="col-md-10 col-sm-12 col-md-offset-1 well well-sm <?php if($flashLottery['FlashLottery']['status']=='ongoing'){echo 'well-ongoing';}else{echo 'well-finished';}?>">
+			<div class="row">
+				<div class="col-md-1 col-sm-2">
+					<img src="<?php echo $flashLottery['EveItem']['EveCategory']['url_start'].$flashLottery['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $flashLottery['EveItem']['name']; ?>">
 				</div>
-				<?php else: ?>
-				<div class="media" >
-					<span class="pull-right">
-						<img src="https://image.eveonline.com/Character/<?php echo $flashLottery['Winner']['id']; ?>_64.jpg" />
-					</span>
-					<span>
-						<p>Winner :</p>
-						<p class="pull-right"><strong><?php echo $flashLottery['Winner']['eve_name']; ?></strong></p>
-					</span>
+
+				<div class="col-md-8 col-sm-6">
+					<div class="row">
+						<div class="col-md-12">
+							<h3><?php echo $this->Html->link(
+								$flashLottery['EveItem']['name'].' Flash Lottery ! <strong class="flash-countdown"></strong>', 
+								array('controller' => 'flash_lotteries', 'action' => 'view', 'admin'=>false, 'plugin' => false, $flashLottery['FlashLottery']['id']),
+								array('escape' => false)
+								);?>
+							</h3>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-5">
+							
+							<p>Prize : <strong><?php echo $flashLottery['EveItem']['name']; ?> X <?php echo $flashLottery['FlashLottery']['number_items']; ?></strong></p>
+						</div>
+
+						<div class="col-md-7">
+
+							
+						</div>
+
+					</div>
 				</div>
-				<?php endif; ?>
+				<div class="col-md-3 col-sm-4">
+					<?php if($flashLottery['FlashLottery']['status']=='ongoing'): ?>
+						<div>
+							
+							
+
+						</div>
+					<?php else: ?>
+						<div class="media" >
+							<?php if(isset($flashLottery['Winner']['id'])): ?>
+							<span class="pull-right">
+								<img src="https://image.eveonline.com/Character/<?php echo $flashLottery['Winner']['id']; ?>_64.jpg" /> 
+							</span>
+							<span>
+								<h3>Winner :</h3>
+								<p class="pull-right"><strong><?php echo $flashLottery['Winner']['eve_name']; ?></strong></p>
+							</span>
+						<?php else: ?>
+							<span>
+								<h3>No Winner for this Flash Lottery</h3>
+							</span>
+						<?php endif; ?>
+						</div>
+					<?php endif; ?>
+				</div>
+
 			</div>
 		</div>
 	</div>
-</div>
 <?php endif; ?>

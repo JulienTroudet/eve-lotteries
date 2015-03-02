@@ -1,5 +1,4 @@
 <?php echo $this->Html->css('bootstrap-datetimepicker.min'); ?>
-<?php echo $this->Html->script('moment');?>
 <?php echo $this->Html->script('bootstrap-datetimepicker.min');?>
 <div id="wrapper">
 	<?php  echo $this->element('ManagerMenu', array());?>
@@ -33,7 +32,7 @@
 						));
 					echo $this->Form->input('nb_tickets', array(
 						'label' => 'Number of tickets',
-						'options' => array('20' => 20, '30' => 30, '60' => 60, '120' => 120 ),
+						'options' => array('50' => 50, '100' => 100, '200' => 200, '300' => 300 ),
 						'div' => array(
 							'class' => 'form-group'
 							),

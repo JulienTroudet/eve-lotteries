@@ -297,7 +297,7 @@ class LotteriesController extends AppController {
 				'OR'=>array(
 					'AND'=>array(
 						'SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
-						'SuperLottery.status'=>array('completed', 'claimed')
+						'SuperLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'SuperLottery.status'=>'ongoing')),
 			'order' => array('SuperLottery.created' => 'desc'),
@@ -319,12 +319,12 @@ class LotteriesController extends AppController {
 		
 		$flashLottery = null;
 		$params = array(
-			'contain' => array('EveItem' => array('EveCategory'), 'FlashTicket'=>array('Buyer')),
+			'contain' => array('EveItem' => array('EveCategory'), 'Winner'),
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
 						'FlashLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
-						'FlashLottery.status'=>array('completed', 'claimed')
+						'FlashLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'FlashLottery.status'=>'ongoing')),
 			'order' => array('FlashLottery.created' => 'desc'),
@@ -332,13 +332,10 @@ class LotteriesController extends AppController {
 		$flashLottery = $this->FlashLottery->find('first', $params);
 
 
-		if(empty($flashLottery)){
-			$this->FlashLottery->initiate_flash_lottery();
-		}
-		else{
-			$this->FlashLottery->end_flash_lottery();
-		}
-
+		$this->FlashLottery->initiate_flash_lottery();
+		
+		$this->FlashLottery->end_flash_lottery();
+		
 		return $flashLottery;
 	}
 }

@@ -1,3 +1,4 @@
+<?php echo $this->Html->script('isotope.pkgd.min');?>
 <?php if (!empty($superLottery) && !empty($flashLottery)): ?>
 	<div id="carousel-special-lotteries" class="carousel slide" data-ride="carousel">
 		<div class="carousel-inner" role="listbox">
@@ -28,65 +29,27 @@
 			interval: false
 		});
 
-		var $container = $('#flash-tickets-container');
-
-		$container.isotope({
-			itemSelector: '.flash-ticket',
-			layoutMode: 'fitRows'
-		});
-
-
+		updateFlashCountDown();
 	});
 
-	function instanciateButtons(){
-		$('.buy-flash').click(function(){
-			var idTicket = $(this).data('ticket-id');
-			var itemName = $(this).data('item-name');
-			$.ajax({
-				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'tickets', 'action' => 'buy','ext' => 'json')); ?>",
-				data:{
-					ticket_id:idTicket
-				},
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				},
-				success: function(response) {
-					if (response.error) {
-						toastr.warning(response.error);
-						console.log(response.error);
-					}
-					if (response.success) {
-						refreshFlashLottery();
-						refreshUserNavbar();
-						toastr.success('You have bought a ticket for the '+itemName+' !');
-					}
-				},
-				error: function(e) {
-					toastr.warning(e.responseText);
-					console.log(e);
-				}
-			});
-		});
-	}
+	function updateFlashCountDown() {
+			countdown.setLabels(
+				'ms| sec| min| hr|| wk|| yr',
+				'ms| secs| mins| hrs|| wk|| yrs',
+				' and ');
+			exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
 
-	function refreshFlashLottery(){
-		$.ajax({
-			type:"get",
-			url:"<?php echo $this->Html->url(array('controller' => 'flash_lotteries', 'action' => 'visible_flash_lottery')); ?>",
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-			},
-			success: function(response) {
-				$('#flash-lot').html(response);
-				instanciateButtons()
-			},
-			error: function(e) {
-				toastr.warning(e.responseText);
-				console.log(e);
+			if(moment(exp_date).isAfter()){
+				$('.flash-countdown').html("End in "+moment(exp_date).countdown().toString());
 			}
-		});
-	}
+			else{
+				$('.flash-countdown').html("Closed");
+			}
+			setTimeout(updateFlashCountDown, 10 );
+		}
+
+	
+	
 	function refreshUserNavbar(){
 	$.ajax({
 		type:"get",

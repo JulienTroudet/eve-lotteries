@@ -28,7 +28,8 @@
 		</div>
 		<div>
 			<h3 class="bg-default">
-				<strong><?php echo $eveItem['EveItem']['name']; ?></strong>
+			<!-- font size change for large string-->
+				<strong <?php if(strlen($eveItem['EveItem']['name'])>30){echo 'style="font-size: 0.75em;"';} ?>><?php echo $eveItem['EveItem']['name']; ?></strong>
 			</h3>
 		</div>
 	</div>

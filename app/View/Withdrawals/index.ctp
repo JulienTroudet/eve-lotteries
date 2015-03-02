@@ -2,13 +2,11 @@
 	<?php if ($userGlobal != null) { echo $this->element('UserNavbar', array("userGlobal" => $userGlobal));}?>
 </div>
 <div>
-
-
 	<ul id="award-tabs" class="nav nav-tabs" role="tablist">
 		<li class="active"><a href="#lotteries-pane" role="tab" data-toggle="tab">My Lotteries</a></li>
 		<li><a href="#super-lotteries-pane" role="tab" data-toggle="tab">My Super Lotteries</a></li>
+		<li><a href="#flash-lotteries-pane" role="tab" data-toggle="tab">My Flash Lotteries</a></li>
 	</ul>
-
 	<!-- Tab panes -->
 	<div class="tab-content">
 		<div class="tab-pane fade in active" id="lotteries-pane">
@@ -24,7 +22,7 @@
 								<?php echo $this->Paginator->prev('Previous', array(), null, array('class' => 'prev disabled')); ?>
 							</li>
 							<li>
-								<?php echo $this->Paginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>	
+								<?php echo $this->Paginator->counter(array('format' => __('Page {:page} of {:pages}'))); ?>
 							</li>
 							<li class="next">
 								<?php echo $this->Paginator->next('Next', array(), null, array('class' => 'next disabled')); ?>
@@ -50,7 +48,7 @@
 										<?php echo $claimed_award['Ticket']['Lottery']['name']; ?>
 									</td>
 									<td>
-										<?php 
+										<?php
 										switch ($claimed_award['Withdrawal']['type']) {
 											case 'award_credit':
 											echo number_format($claimed_award['Withdrawal']['value'], 2).' Credits';
@@ -72,7 +70,6 @@
 							</tbody>
 						</table>
 					</div>
-
 				</div>
 				<div class="pull-right">
 					<?php echo $this->Html->link('See all my claimed Lotteries', array('controller' => 'withdrawals', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
@@ -83,48 +80,40 @@
 			<div id="list-super-awards">
 				<h2>Won Super Lotteries</h2>
 				<?php foreach ($superWithdrawals as $superWithdrawal): ?>
-					<?php if (isset($superWithdrawal)){ echo $this->element('SuperLotteries/SuperLotteryWithdrawal', array("superLottery" => $superWithdrawal ));} ?>
+				<?php if (isset($superWithdrawal)){ echo $this->element('SuperLotteries/SuperLotteryWithdrawal', array("superLottery" => $superWithdrawal ));} ?>
 				<?php endforeach; ?>
-				<!-- <div class="pull-right">
-					<?php echo $this->Html->link('See all my Super Lotteries', array('controller' => 'withdrawals', 'action' => 'list_super_awards'), array('class' => 'btn btn-lg btn-primary') ); ?>
-				</div> -->
+				
+			</div>
+		</div>
+		<div class="tab-pane fade" id="flash-lotteries-pane">
+			<div id="list-flash-awards">
+				<h2>Won Flash Lotteries</h2>
+				<?php foreach ($flashWithdrawals as $flashWithdrawal): ?>
+				<?php if (isset($flashWithdrawal)){ echo $this->element('FlashLotteries/FlashLotteryWithdrawal', array("flashLottery" => $flashWithdrawal ));} ?>
+				<?php endforeach; ?>
+				
 			</div>
 		</div>
 	</div>
-
 	
 </div>
-
-
-
-
 <script>
 	$(document).ready(function() {
-
-		$("[data-toggle='tooltip']").tooltip(); 
-
+		$("[data-toggle='tooltip']").tooltip();
 		var hash = document.location.hash;
 		var prefix = "tab_";
 		if (hash) {
 			$('.nav-tabs a[href='+hash.replace(prefix,"")+']').tab('show');
-		} 
-
+		}
 		$('.nav-tabs a').on('shown.bs.tab', function (e) {
 			window.location.hash = e.target.hash.replace("#", "#" + prefix);
 		});
-
 		instanciateButtons();
-
 	});
-
-
-
 	function refreshListAwards(){
 		$.ajax({
 			type:"get",
 			url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'list_awards')); ?>",
-
-
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 			},
@@ -138,13 +127,10 @@
 			}
 		});
 	}
-
 	function refreshListSuperLotteries(){
 		$.ajax({
 			type:"get",
 			url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'list_super_awards')); ?>",
-
-
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 			},
@@ -158,13 +144,10 @@
 			}
 		});
 	}
-
 	function refreshUserNavbar(){
 		$.ajax({
 			type:"get",
 			url:"<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'user_navbar')); ?>",
-
-
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 			},
@@ -177,7 +160,6 @@
 			}
 		});
 	}
-
 	function instanciateButtons(){
 		$('.btn-claim').click(function(){
 			var idWithdrawal = $(this).data('award-id');
@@ -186,7 +168,6 @@
 			$.ajax({
 				type:"get",
 				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'claim','ext' => 'json')); ?>",
-
 				data:{
 					withdrawal_id:idWithdrawal,
 					claim_type:claimType
@@ -211,13 +192,11 @@
 				}
 			});
 		});
-
 		$('.btn-super-claim').click(function(){
 			var idSuperLottery = $(this).data('super-lottery-id');
 			$.ajax({
 				type:"get",
 				url:"<?php echo $this->Html->url(array('controller' => 'super_lotteries', 'action' => 'claim','ext' => 'json')); ?>",
-
 				data:{
 					super_lottery_id:idSuperLottery,
 				},
@@ -242,6 +221,4 @@
 			});
 		});
 	}
-
-
 </script>

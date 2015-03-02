@@ -172,13 +172,7 @@ class UsersController extends AppController {
 			return $this->redirect('/');
 		}
 		// on vas chercher le parrain si le lien est un lien de parrainage
-		
-		$this->log('Start register');
-		
-		if(isset($encodedId)){
-			$this->Session->write('Sponsor.code', $encodedId);
-			return $this->redirect('/');
-		}
+		// 
 		$encodedSessionId = $this->Session->read('Sponsor.code');
 
 		if(isset($encodedSessionId)){
@@ -198,8 +192,9 @@ class UsersController extends AppController {
 		else{
 			$this->set('sponsorCode', '');
 		}
-
 		
+		$this->log('Start register');
+
 		if (!empty($this->data)){
 
 			$testUser = $this->User->findById($this->data['User']['id']);
@@ -282,6 +277,35 @@ class UsersController extends AppController {
 					);
 			}
 		}
+		
+		if(isset($encodedId)){
+			$this->Session->write('Sponsor.code', $encodedId);
+			$this->redirect('/');
+		}
+
+		$encodedSessionId = $this->Session->read('Sponsor.code');
+
+		if(isset($encodedSessionId)){
+			$sponsor = $this->User->find('first', array(
+				'conditions' => array('MD5(User.id)' => $encodedSessionId, 'active' => true)
+				)
+			);
+			if(isset($sponsor['User'])){
+				$this->log('Referal : '.$sponsor['User']['id'].' => '.$sponsor['User']['eve_name']);
+				$this->set('sponsor', $sponsor);
+				$this->set('sponsorCode', $encodedSessionId);
+			}
+			else{
+				$this->set('sponsorCode', '');
+			}
+		}
+		else{
+			$this->set('sponsorCode', '');
+		}
+
+
+		
+		
 	}
 
 	/**

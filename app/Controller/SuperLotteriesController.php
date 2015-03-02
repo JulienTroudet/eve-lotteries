@@ -268,7 +268,7 @@ class SuperLotteriesController extends AppController {
 				'OR'=>array(
 					'AND'=>array(
 						'SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
-						'SuperLottery.status'=>array('completed', 'claimed')
+						'SuperLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'SuperLottery.status'=>'ongoing')),
 			'order' => array('SuperLottery.created' => 'desc'),

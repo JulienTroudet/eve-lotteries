@@ -1,7 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 App::uses('User', 'Model');
-App::uses('Ticket', 'Model');
+App::uses('FlashTicket', 'Model');
 App::uses('Statistic', 'Model');
 App::uses('Message', 'Model');
 /**
@@ -60,22 +60,17 @@ class FlashLottery extends AppModel {
 			);
 	}
 
-	public function checkForWinner($lotteryId, $lastBoughtTicketId = null) {
+	public function checkForWinner($flashLotteryId, $lastBoughtTicketId = null) {
 
 		//chargement des models (ne pas les oublier dans le App:uses)
-		$ticketModel = new Ticket();
-		
-
+		$flashTicketModel = new FlashTicket();
 
 		$this->contain(array(
-			'Ticket' => array(
-				'User' => array('id', 'eve_name')
-				),
-			'EveItem'
+			'FlashTicket' => array('Buyer'),
 			)
 		);
 
-		$testedLottery = $this->findById($lotteryId);
+		$testedLottery = $this->findById($flashLotteryId);
 
 		$winnerPosition = $this->getWinnerTicketPosition($testedLottery);
 
@@ -84,62 +79,59 @@ class FlashLottery extends AppModel {
 			$messageModel = new Message();
 			$userModel = new User();
 			$statisticModel = new Statistic();
-			$withdrawalModel = new Withdrawal();
 
-			$testedLottery['Lottery']['lottery_status_id'] = 2;
-			unset($testedLottery['modified']);
+			$testedLottery['FlashLottery']['status'] = 'unclaimed';
 
 			//on utilise une datasource pour éviter les erreurs en cas de rafraichissement pendant les requetes SQL
 			$dataSource = $this->getDataSource();
 			$dataSource->begin();
 
+			//add to the stats that the player get the last ticket
 			if(isset($lastBoughtTicketId)){
-				$lastTicket = $ticketModel->findById($lastBoughtTicketId);
-				$statisticModel->saveStat($lastTicket['Ticket']['buyer_user_id'], 'end_lottery', $lastTicket['Ticket']['lottery_id'], $testedLottery['Lottery']['value'], $testedLottery['Lottery']['eve_item_id']);
+				$lastTicket = $flashTicketModel->findById($lastBoughtTicketId);
+				$statisticModel->saveStat($lastTicket['FlashTicket']['buyer_user_id'], 'end_flash_lottery', $lastTicket['FlashTicket']['flash_lottery_id'], 1, $testedLottery['FlashLottery']['eve_item_id']);
 			}
 			
 			$hasFailed = false;
-			foreach ($testedLottery['Ticket'] as $key => $ticket) {
 
-				if((int)$ticket['position'] == (int)$winnerPosition){
+			//loop on all 
+			foreach ($testedLottery['FlashTicket'] as $key => $flashTicket) {
 
-					$testedLottery['Ticket'][$key]['is_winner'] = true;
+				if((int)$flashTicket['position'] == (int)$winnerPosition){
 
-					$withdrawalModel->create();
-					$newWithdrawal = array('Withdrawal'=>array(
-						'type' =>'award',
-						'value' => '',
-						'status' =>'new',
-						'user_id' =>$ticket['buyer_user_id'],
-						'ticket_id' =>$ticket['id'],
-						));
+					$testedLottery['FlashTicket'][$key]['is_winner'] = true;
 
-					$withdrawalModel->save($newWithdrawal, true, array('type', 'value', 'status','user_id', 'ticket_id'));
+					$messageModel->sendFlashLotteryMessage(
+						$flashTicket['buyer_user_id'], 
+						'Flash Lottery Won', 
+						'You have won a Flash Lottery ! You can now claim your prize.', 
+						$flashLotteryId);
 
-					$messageModel->sendLotteryMessage(
-						$ticket['buyer_user_id'], 
-						'Lottery Won', 
-						'You have won '.preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$testedLottery['EveItem']['name']).'. You can now claim your prize.', 
-						$withdrawalModel->id);
+					//insert the "win" stat
+					$statisticModel->saveStat($flashTicket['buyer_user_id'], 'win_flash_lottery', $testedLottery['FlashLottery']['id'], $testedLottery['FlashLottery']['value'], $testedLottery['FlashLottery']['eve_item_id']);
+					
+					//writes in the log
+					$this->log('FlashLottery won : lottery['.$flashLotteryId.'], user_id['.$flashTicket['buyer_user_id'].'], ticket['.$flashTicket['id'].']', 'eve-lotteries');
 
-					$statisticModel->saveStat($ticket['buyer_user_id'], 'win_lottery', $testedLottery['Lottery']['id'], $testedLottery['Lottery']['value'], $testedLottery['Lottery']['eve_item_id']);
-					$this->log('Lottery won : lottery['.$lotteryId.'], user_id['.$ticket['buyer_user_id'].'], ticket['.$ticket['id'].']', 'eve-lotteries');
+					$userModel->updateNbNewWonFlashLotteries($flashTicket['Buyer']['id'], 1);
 
-					$userModel->updateNbNewWonLotteries($ticket['User']['id'], 1);
+					$testedLottery['FlashLottery']['winner_user_id'] = $flashTicket['Buyer']['id'];
 
 					
 
 				}
 				else{
-					$testedLottery['Ticket'][$key]['is_winner'] = false;
+					$testedLottery['FlashTicket'][$key]['is_winner'] = false;
 				}
-
-				unset($testedLottery['Ticket'][$key]['User']);
+				//remove the users so it doesn't save it
+				unset($testedLottery['FlashTicket'][$key]['Buyer']);
 
 
 			}
-
+			//remove the item so it doesn't save it
 			unset($testedLottery['EveItem']);
+
+			//save the lottery and the tickets
 			$this->saveAssociated($testedLottery);
 
 			if($hasFailed){
@@ -156,8 +148,8 @@ class FlashLottery extends AppModel {
 
 	public function getWinnerTicketPosition($lottery) {
 
-		$tickets = $lottery['Ticket'];
-		$lotteryNbTickets = (int)$lottery['Lottery']['nb_tickets'];
+		$tickets = $lottery['FlashTicket'];
+		$lotteryNbTickets = (int)$lottery['FlashLottery']['nb_tickets'];
 		$nbSell = 0;
 		foreach ($tickets as $id => $ticket) {
 			if($ticket['buyer_user_id'] != null){
@@ -175,8 +167,8 @@ class FlashLottery extends AppModel {
 
 	public function areAllTicketBought($lottery) {
 
-		$tickets = $lottery['Ticket'];
-		$lotteryNbTickets = (int)$lottery['Lottery']['nb_tickets'];
+		$tickets = $lottery['FlashTicket'];
+		$lotteryNbTickets = (int)$lottery['FlashLottery']['nb_tickets'];
 		$nbSell = 0;
 		foreach ($tickets as $id => $ticket) {
 			if($ticket['buyer_user_id'] != null){
@@ -264,6 +256,13 @@ public $belongsTo = array(
 	'Creator' => array(
 		'className' => 'User',
 		'foreignKey' => 'creator_user_id',
+		'conditions' => '',
+		'fields' => '',
+		'order' => ''
+		),
+	'Winner' => array(
+		'className' => 'User',
+		'foreignKey' => 'winner_user_id',
 		'conditions' => '',
 		'fields' => '',
 		'order' => ''

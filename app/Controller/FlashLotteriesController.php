@@ -20,7 +20,7 @@ class FlashLotteriesController extends AppController
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'visible_flash_lottery');
+		$this->Auth->allow('index', 'visible_flash_lottery', 'list_tickets');
 	}
 
 	/**
@@ -41,11 +41,64 @@ class FlashLotteriesController extends AppController
 	 * @return void
 	 */
 	public function index() {
-		$params = array('contain' => array('EveItem' => array('EveCategory'), 'FlashLotteryTicket' => array('Buyer')), 'order' => array('FlashLottery.created' => 'desc'),);
+		$params = array('contain' => array('EveItem' => array('EveCategory'), 'FlashTicket' => array('Buyer')), 'order' => array('FlashLottery.created' => 'desc'),);
 		$this->Paginator->settings = $params;
 		$flashLotteries = $this->Paginator->paginate();
 
+
+
 		$this->set('flashLotteries', $flashLotteries);
+	}
+
+	/**
+	 * view method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function view($id = null) {
+		
+		if (!$this->FlashLottery->exists($id)) {
+			throw new NotFoundException(__('Invalid article'));
+		}
+
+		$this->loadModel('FlashTicket');
+
+		$params = array(
+			'contain' => array('EveItem' => array('EveCategory'), 'FlashTicket'=>array('Buyer'), 'Winner'),
+			'conditions' => array('FlashLottery.' . $this->FlashLottery->primaryKey => $id),
+			);
+		$flot = $this->FlashLottery->find('first', $params);
+
+		$flot['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$id, 'buyer_user_id is not null')));
+
+		$this->set('flashLottery', $flot);
+	}
+
+	/**
+	 * view method
+	 *
+	 * @throws NotFoundException
+	 * @param string $id
+	 * @return void
+	 */
+	public function list_tickets($id = null) {
+		$this->layout = false;
+		if (!$this->FlashLottery->exists($id)) {
+			throw new NotFoundException(__('Invalid article'));
+		}
+		$this->loadModel('FlashTicket');
+
+		$params = array(
+			'contain' => array('EveItem' => array('EveCategory'), 'FlashTicket'=>array('Buyer'), 'Winner'),
+			'conditions' => array('FlashLottery.' . $this->FlashLottery->primaryKey => $id),
+			);
+		$flot = $this->FlashLottery->find('first', $params);
+
+		$flot['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$id, 'buyer_user_id is not null')));
+
+		$this->set('flashLottery', $flot);
 	}
 
 	/**
@@ -92,7 +145,7 @@ class FlashLotteriesController extends AppController
 			$newFlashLottery['FlashLottery']['creator_user_id'] = $userId;
 			$newFlashLottery['FlashTicket'] = array();
 
-			for ($i = 1; $i <= $newFlashLottery['FlashLottery']['nb_tickets']; $i++) {
+			for ($i = 0; $i < $newFlashLottery['FlashLottery']['nb_tickets']; $i++) {
 				$flashTicket = array('position' => $i);
 
 				array_push($newFlashLottery['FlashTicket'], $flashTicket);
@@ -147,12 +200,12 @@ class FlashLotteriesController extends AppController
 		
 		$flashLottery = null;
 		$params = array(
-			'contain' => array('EveItem' => array('EveCategory'), 'FlashTicket'=>array('Buyer')),
+			'contain' => array('EveItem' => array('EveCategory'), 'FlashTicket'=>array('Buyer'), 'Winner'),
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
-						'FlashLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
-						'FlashLottery.status'=>array('completed', 'claimed')
+						'FlashLottery.modified BETWEEN NOW() -INTERVAL 12 HOUR AND NOW()',
+						'FlashLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'FlashLottery.status'=>'ongoing')),
 			'order' => array('FlashLottery.created' => 'desc'),
@@ -160,12 +213,9 @@ class FlashLotteriesController extends AppController
 		$flashLottery = $this->FlashLottery->find('first', $params);
 
 
-		if(empty($flashLottery)){
-			$this->FlashLottery->initiate_flash_lottery();
-		}
-		else{
-			$this->FlashLottery->end_flash_lottery();
-		}
+		$this->FlashLottery->initiate_flash_lottery();
+		
+		$this->FlashLottery->end_flash_lottery();
 
 		return $flashLottery;
 	}

@@ -34,6 +34,7 @@ class WithdrawalsController extends AppController {
 	public function index() {
 		$this->loadModel('User');
 		$this->loadModel('SuperLottery');
+		$this->loadModel('FlashLottery');
 
 		$userGlobal = $this->Auth->user();
 
@@ -92,7 +93,6 @@ class WithdrawalsController extends AppController {
 			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
 			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
 			'order' => array('SuperLottery.created' => 'desc'), 
-			'limit' => 10, 
 			);
 		$superWithdrawals = $this->SuperLottery->find('all', $params);
 		foreach ($superWithdrawals as $key => $superLottery) {
@@ -101,7 +101,15 @@ class WithdrawalsController extends AppController {
 
 		$this->set('superWithdrawals', $superWithdrawals);
 
-		$db = $this->Withdrawal->getDataSource();
+		$params = array(
+			'contain' => array('EveItem' => array('EveCategory'), 'FlashTicket'=>array('Buyer'), 'Winner'),
+			'conditions' => array('FlashLottery.winner_user_id' => $userGlobal['id']),
+			'order' => array('FlashLottery.created' => 'desc'), 
+			);
+		$flashWithdrawals = $this->FlashLottery->find('all', $params);
+
+		$this->set('flashWithdrawals', $flashWithdrawals);
+
 	}
 
 	public function view($group_id = null) {

@@ -110,6 +110,14 @@ App::uses('AuthComponent', 'Controller/Component');
 		$this->save($user, true, array('id', 'nb_new_won_lotteries'));
 	}
 
+	public function updateNbNewWonFlashLotteries($userId, $nb) {
+		$this->id = $userId;
+		$user = $this->findById($userId);
+		$user['User']['nb_new_won_flash_lotteries'] += $nb;
+
+		$this->save($user, true, array('id', 'nb_new_won_flash_lotteries'));
+	}
+
 	/**
 	 * Validation rules
 	 *
@@ -293,6 +301,19 @@ App::uses('AuthComponent', 'Controller/Component');
 			),
 		'SuperLotteryWinner' => array(
 			'className' => 'SuperLottery',
+			'foreignKey' => 'winner_user_id',
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
+		'FlashLotteryWinner' => array(
+			'className' => 'FlashLottery',
 			'foreignKey' => 'winner_user_id',
 			'dependent' => true,
 			'conditions' => '',

@@ -35,6 +35,10 @@ class FlashTicketsController extends AppController {
 		$this->request->onlyAllow('ajax');
 
 		if ($this->request->is('ajax')) {
+
+			$this->loadModel('FlashLottery');
+		
+			$this->FlashLottery->end_flash_lottery();
 			
 			$this->disableCache();
 

@@ -69,6 +69,23 @@ class Message extends AppModel {
 		return $this->save($statData, true, array('user_id', 'status', 'title', 'body', 'controller_name', 'action_name', 'anchor_name'));
 	}
 
+	public function sendFlashLotteryMessage($user_id, $title, $body, $flash_lotteries_id) {
+		$this->create();
+		$statData = array(
+			'user_id' => $user_id,
+			'status' => 'unread',
+			'title' => $title,
+			'body' => $body,
+			'controller_name' => 'withdrawals',
+			'action_name' => 'index',
+			'anchor_name' => 'tab_flash-lotteries-pane',
+			);
+
+		$this->incrementMessageCount($user_id);
+
+		return $this->save($statData, true, array('user_id', 'status', 'title', 'body', 'controller_name', 'action_name', 'anchor_name'));
+	}
+
 	public function sendSponsorMessage($user_id, $budy) {
 
 		$this->create();
