@@ -2,10 +2,10 @@
 <?php if (!empty($superLottery) && !empty($flashLottery)): ?>
 	<div id="carousel-special-lotteries" class="carousel slide" data-ride="carousel">
 		<div class="carousel-inner" role="listbox">
-			<div class="item active">
+			<div class="item active" id="last-flash-lottery">
 				<?php echo $this->element('FlashLotteries/FlashLotteryPanel', array("flashLottery" => $flashLottery, "userGlobal" => $userGlobal)); ?>
 			</div>
-			<div class="item">
+			<div class="item" id="last-super-lottery">
 				<?php echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery, "userGlobal" => $userGlobal)); ?>
 			</div>
 		</div>
@@ -19,51 +19,40 @@
 		</a>
 	</div>
 <?php else: ?>
-	<?php if (!empty($superLottery)){ echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery, "userGlobal" => $userGlobal));} ?>
-	<?php if (!empty($flashLottery)){ echo $this->element('FlashLotteries/FlashLotteryPanel', array("flashLottery" => $flashLottery, "userGlobal" => $userGlobal));} ?>
+	<?php if (!empty($superLottery)): ?>
+		<div id="last-flash-lottery">
+			<?php echo $this->element('FlashLotteries/FlashLotteryPanel', array("flashLottery" => $flashLottery, "userGlobal" => $userGlobal)); ?>
+		</div>
+	<?php elseif (!empty($flashLottery)): ?>
+		<div id="last-super-lottery">
+			<?php echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery, "userGlobal" => $userGlobal)); ?>
+		</div>
+	<?php endif; ?>
 <?php endif; ?>
 
 <script>
 	$(document).ready(function() {
 		$('.carousel').carousel({
-			interval: false
+			interval: 20000
 		});
 
 		updateFlashCountDown();
 	});
 
 	function updateFlashCountDown() {
-			countdown.setLabels(
-				'ms| sec| min| hr|| wk|| yr',
-				'ms| secs| mins| hrs|| wk|| yrs',
-				' and ');
-			exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
+		countdown.setLabels(
+			'ms| sec| min| hr|| wk|| yr',
+			'ms| secs| mins| hrs|| wk|| yrs',
+			' and ');
+		exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
 
-			if(moment(exp_date).isAfter()){
-				$('.flash-countdown').html("End in "+moment(exp_date).countdown().toString());
-			}
-			else{
-				$('.flash-countdown').html("Closed");
-			}
-			setTimeout(updateFlashCountDown, 10 );
+		if(moment(exp_date).isAfter()){
+			$('.flash-countdown').html("End in "+moment(exp_date).countdown().toString());
 		}
+		else{
+			$('.flash-countdown').html("Closed");
+		}
+		setTimeout(updateFlashCountDown, 10 );
+	}
 
-	
-	
-	function refreshUserNavbar(){
-	$.ajax({
-		type:"get",
-		url:"<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'user_navbar')); ?>",
-		beforeSend: function(xhr) {
-			xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-		},
-		success: function(response) {
-			$('#user-navbar').html(response);
-		},
-		error: function(e) {
-			toastr.warning(e.responseText);
-			console.log(e);
-		}
-	});
-}
 </script>

@@ -58,6 +58,12 @@ class FlashTicket extends AppModel
     		return $data;
     	}
 
+        $existingTicket = $this->findByBuyerUserIdAndFlashLotteryId($choosenFlashTicket['FlashTicket']['buyer_user_id'], $choosenFlashTicket['FlashTicket']['flash_lottery_id']);
+        if (!empty($existingTicket)) {
+            $data = array('error' => 'You have already bought a ticket for this Flash Lottery !');
+            return $data;
+        }
+
         //on modifie le wallet et le nombre de tokens du joueur
     	$buyer['User']['tokens']--;
 
@@ -84,8 +90,6 @@ class FlashTicket extends AppModel
             //sauvegarde des logs
     		$this->log('FlashTicket bought : user_name[' . $buyer['User']['eve_name'] . '], id[' . $buyer['User']['id'] . '],flash  ticket[' . $flashTicketId . ']', 'eve-lotteries');
     		$this->log('User state : name[' . $buyer['User']['eve_name'] .  '], tokens[' . number_format($buyer['User']['tokens'], 2) . ']', 'eve-lotteries');
-
-    		$flashLotteryModel->checkForWinner($choosenFlashTicket['FlashTicket']['flash_lottery_id'], $choosenFlashTicket['FlashTicket']['id']);
 
     		$dataSource->commit();
 

@@ -16,7 +16,7 @@ class LotteriesController extends AppController {
 	public $components = array('Paginator', 'Session', 'RequestHandler');
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'index_open', 'old_list', 'list_lotteries');
+		$this->Auth->allow('index', 'index_open', 'old_list', 'list_lotteries', 'list_special_lotteries');
 	}
 	/**
 	* index method
@@ -129,9 +129,6 @@ class LotteriesController extends AppController {
 	* @return void
 	*/
 	public function list_lotteries() {
-		$this->loadModel('SuperLottery');
-		$this->loadModel('SuperLotteryTicket');
-		$this->loadModel('FlashLottery');
 		$this->loadModel('Statistic');
 		//vas chercher le total gagné
 		$params = array(
@@ -176,6 +173,24 @@ class LotteriesController extends AppController {
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');
 		$this->set('old_lotteries', $oldLotteries);
+	}
+
+	/**
+	 * gets the special lotteries list for refreshing
+	 * @return [type] [description]
+	 */
+	public function list_special_lotteries() {
+		$this->loadModel('SuperLottery');
+		$this->loadModel('SuperLotteryTicket');
+		$this->loadModel('FlashLottery');
+
+		//get the last super lottery
+		$superLottery = $this->_get_last_super_lottery();
+		$this->set('superLottery', $superLottery);
+		//get the last flash lottery
+		$flashLottery = $this->_get_last_flash_lottery();
+		$this->set('flashLottery', $flashLottery);
+		
 	}
 
 
@@ -323,7 +338,7 @@ class LotteriesController extends AppController {
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
-						'FlashLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
+						'FlashLottery.modified BETWEEN NOW() -INTERVAL 12 HOUR AND NOW()',
 						'FlashLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'FlashLottery.status'=>'ongoing')),

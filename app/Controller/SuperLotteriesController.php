@@ -18,7 +18,7 @@ class SuperLotteriesController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'visible_super_lottery');
+		$this->Auth->allow('index', 'see_last');
 	}
 
 
@@ -26,7 +26,7 @@ class SuperLotteriesController extends AppController {
 	 * get the first super lot without layout for Ajax
 	 * @return [type] [description]
 	 */
-	public function visible_super_lottery() {
+	public function see_last() {
 		$this->loadModel('SuperLotteryTicket');
 		$this->layout = false;
 		//get the last super lottery

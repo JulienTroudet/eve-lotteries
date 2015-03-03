@@ -53,6 +53,7 @@ class TicketsController extends AppController {
 			}
 			$this->set(compact('data')); // Pass $data to the view
 			$this->set('_serialize', 'data');
+			return $data;
 		}
 	}
 

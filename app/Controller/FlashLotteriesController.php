@@ -20,14 +20,14 @@ class FlashLotteriesController extends AppController
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow('index', 'visible_flash_lottery', 'list_tickets');
+		$this->Auth->allow('index', 'view', 'see_last', 'list_tickets');
 	}
 
 	/**
 	 * get the first flash lot without layout for Ajax
 	 * @return [type] [description]
 	 */
-	public function visible_flash_lottery() {
+	public function see_last() {
 		$this->layout = false;
 		//get the last flash lottery
 		$flashLottery = $this->_get_last_flash_lottery();

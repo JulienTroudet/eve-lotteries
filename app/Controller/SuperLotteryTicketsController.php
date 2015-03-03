@@ -37,95 +37,119 @@ class SuperLotteryTicketsController extends AppController {
 	 */
 	public function buy() {
 
-		$this->autoRender = false;
-		$userId = $this->Auth->user('id');
+		$this->request->onlyAllow('ajax');
+
+		if ($this->request->is('ajax')) {
+			
+			$this->disableCache();
+
+			$nbTicketsBuy = $this->request->query('nb_tickets');
+			$superLotteryId = $this->request->query('id_super');
+
+			$userId = $this->Auth->user('id');
 
 
 
-		$nbTicketsBuy = $this->request->params['named']['nb'];
-		$superLotteryId = $this->request->params['named']['id'];
+			if (!$this->SuperLottery->exists($superLotteryId)) {
 
-		
-
-		if (!$this->SuperLottery->exists($superLotteryId)) {
-
-			$this->Session->setFlash( 'This Super Lottery does not exist.', 'FlashMessage', array('type' => 'error'));
-			return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-		}
-		else if (!$this->User->exists($userId)) {
-
-			$this->Session->setFlash('You must log in to buy a ticket !', 'FlashMessage', array('type' => 'warning'));
-			return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-		}
-		else if ($nbTicketsBuy<=0) {
-			$this->Session->setFlash('Please choose the number of tickets you want to buy.', 'FlashMessage', array('type' => 'info'));
-			return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-		}
-
-		else{
-
-			$superLottery = $this->SuperLottery->findById($superLotteryId);
-			$buyer = $this->User->findById($userId);
-
-			if ($superLottery['SuperLottery']['status'] != 'ongoing') {
-
-				$this->Session->setFlash('Invalid super Lottery !',	'FlashMessage',	array('type' => 'error'));
-				return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+				$data = array('error' => 'This Super Lottery does not exist.' );
+				$this->set(compact('data')); // Pass $data to the view
+				$this->set('_serialize', 'data');
+				return $data;
 			}
-			else if ($nbTicketsBuy>($superLottery['SuperLottery']['nb_tickets']-$superLottery['SuperLottery']['nb_ticket_bought'])) {
-				$this->Session->setFlash('There is not enough tickets to buy.', 'FlashMessage', array('type' => 'info'));
-				return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+			else if (!$this->User->exists($userId)) {
+
+				$data = array('error' => 'You must log in to buy a ticket !' );
+				$this->set(compact('data')); // Pass $data to the view
+				$this->set('_serialize', 'data');
+				return $data;			
+			}
+			else if ($nbTicketsBuy<=0) {
+
+				$data = array('error' => 'Please choose the number of tickets you want to buy.' );
+				$this->set(compact('data')); // Pass $data to the view
+				$this->set('_serialize', 'data');
+				return $data;			
 			}
 
-			else if($buyer['User']['tokens'] < ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy)){
-
-				$this->Session->setFlash('Not enough Points.', 'FlashMessage', array('type' => 'warning'));
-				return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-			}
 			else{
-				$this->loadModel('Message');
 
-				$buyer['User']['tokens'] -= ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy);
+				$superLottery = $this->SuperLottery->findById($superLotteryId);
+				$buyer = $this->User->findById($userId);
 
-				$superLottery['SuperLottery']['nb_ticket_bought'] += $nbTicketsBuy;
-				unset($superLottery['SuperLottery']['modified']);
+				if ($superLottery['SuperLottery']['status'] != 'ongoing') {
 
-				$superLotTicket = $this->SuperLotteryTicket->findBySuperLotteryIdAndBuyerUserId($superLottery['SuperLottery']['id'], $buyer['User']['id']);
-
-				if(!isset($superLotTicket['SuperLotteryTicket'])){
-					$this->SuperLotteryTicket->create();
-
-					$superLotTicket = array('SuperLotteryTicket'=>array(
-						'super_lottery_id' =>  $superLottery['SuperLottery']['id'],
-						'buyer_user_id' =>$buyer['User']['id'],
-						'nb_tickets' => $nbTicketsBuy,
-
-						));
+					$data = array('error' => 'Invalid super Lottery !' );
+					$this->set(compact('data')); // Pass $data to the view
+					$this->set('_serialize', 'data');
+					return $data;		
 				}
+				else if ($nbTicketsBuy>($superLottery['SuperLottery']['nb_tickets']-$superLottery['SuperLottery']['nb_ticket_bought'])) {
+					$data = array('error' => 'There is not enough tickets to buy.' );
+					$this->set(compact('data')); // Pass $data to the view
+					$this->set('_serialize', 'data');
+					return $data;
+				}
+
+				else if($buyer['User']['tokens'] < ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy)){
+
+					$data = array('error' => 'Not enough Points.' );
+					$this->set(compact('data')); // Pass $data to the view
+					$this->set('_serialize', 'data');
+					return $data;
+
+				}
+
 				else{
-					$superLotTicket['SuperLotteryTicket']['nb_tickets'] += $nbTicketsBuy;
-				}
+					$this->loadModel('Message');
 
-				if ($superLotTicket['SuperLotteryTicket']['nb_tickets']>($superLottery['SuperLottery']['nb_tickets']/10)) {
-					$this->Session->setFlash('You can\'t buy more than a tenth part of the tickets.', 'FlashMessage', array('type' => 'info'));
-					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
-				}
-				$dataSource = $this->SuperLotteryTicket->getDataSource();
-				$dataSource->begin();
-				if ($this->User->save($buyer, true, array('id', 'tokens')) && $this->SuperLottery->save($superLottery, true, array('id', 'nb_ticket_bought')) && $this->SuperLotteryTicket->save($superLotTicket)) {
+					$buyer['User']['tokens'] -= ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy);
 
-					$this->log('Super Ticket Buyed : user_name['.$buyer['User']['eve_name'].'], idSuperTickets['.$this->SuperLotteryTicket->id.'], superLottery['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
+					$superLottery['SuperLottery']['nb_ticket_bought'] += $nbTicketsBuy;
+					unset($superLottery['SuperLottery']['modified']);
 
-					$this->Session->setFlash('You have bought '.$nbTicketsBuy.' Super tickets !', 'FlashMessage', array('type' => 'success'));
+					$superLotTicket = $this->SuperLotteryTicket->findBySuperLotteryIdAndBuyerUserId($superLottery['SuperLottery']['id'], $buyer['User']['id']);
 
-					$this->_checkWinner($superLottery['SuperLottery']['id']);
-					$dataSource->commit();
-					return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
+					if(!isset($superLotTicket['SuperLotteryTicket'])){
+						$this->SuperLotteryTicket->create();
+
+						$superLotTicket = array('SuperLotteryTicket'=>array(
+							'super_lottery_id' =>  $superLottery['SuperLottery']['id'],
+							'buyer_user_id' =>$buyer['User']['id'],
+							'nb_tickets' => $nbTicketsBuy,
+
+							));
+					}
+					else{
+						$superLotTicket['SuperLotteryTicket']['nb_tickets'] += $nbTicketsBuy;
+					}
+
+					if ($superLotTicket['SuperLotteryTicket']['nb_tickets']>($superLottery['SuperLottery']['nb_tickets']/10)) {
+						$data = array('error' => 'You can\'t buy more than a tenth part of the tickets.' );
+						$this->set(compact('data')); 
+						$this->set('_serialize', 'data');
+						return $data;
+					}
+					$dataSource = $this->SuperLotteryTicket->getDataSource();
+					$dataSource->begin();
+					if ($this->User->save($buyer, true, array('id', 'tokens')) && $this->SuperLottery->save($superLottery, true, array('id', 'nb_ticket_bought')) && $this->SuperLotteryTicket->save($superLotTicket)) {
+
+						$this->log('Super Ticket Bought : user_name['.$buyer['User']['eve_name'].'], idSuperTickets['.$this->SuperLotteryTicket->id.'], superLottery['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
 
 
-				}
-				else {
-					$dataSource->rollback();
+						$this->_checkWinner($superLottery['SuperLottery']['id']);
+						$dataSource->commit();
+
+						$data = array('success' => 'You have bought super tickets.' );
+						$this->set(compact('data')); 
+						$this->set('_serialize', 'data');
+						return $data;
+
+
+					}
+					else {
+						$dataSource->rollback();
+					}
 				}
 			}
 		}
