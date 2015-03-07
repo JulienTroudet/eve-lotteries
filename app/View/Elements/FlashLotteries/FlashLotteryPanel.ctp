@@ -10,7 +10,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<h3><?php echo $this->Html->link(
-								$flashLottery['EveItem']['name'].' Flash Lottery ! <strong class="flash-countdown"></strong>', 
+								' Flash Lottery ! <strong class="flash-countdown"></strong>', 
 								array('controller' => 'flash_lotteries', 'action' => 'view', 'admin'=>false, 'plugin' => false, $flashLottery['FlashLottery']['id']),
 								array('escape' => false)
 								);?>
@@ -18,14 +18,18 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-5">
+						<div class="col-md-4 col-flash-panel">
 							
 							<p>Prize : <strong><?php echo $flashLottery['EveItem']['name']; ?> X <?php echo $flashLottery['FlashLottery']['number_items']; ?></strong></p>
 						</div>
 
-						<div class="col-md-7">
-
+						<div class="col-md-4 col-flash-panel">
 							
+							<p><?php echo $flashLottery['FlashLottery']['nb_bought']?> out of <?php echo $flashLottery['FlashLottery']['nb_tickets']?> tickets bought.</p>
+						</div>
+
+						<div class="col-md-4 col-flash-panel">
+							<p><?php echo CakeTime::niceShort(h($flashLottery['FlashLottery']['start_date'])); ?> - <?php echo CakeTime::niceShort(h($flashLottery['FlashLottery']['expiration_date'])); ?></p>
 						</div>
 
 					</div>
@@ -33,8 +37,25 @@
 				<div class="col-md-3 col-sm-4">
 					<?php if($flashLottery['FlashLottery']['status']=='ongoing'): ?>
 						<div>
-							
-							
+							<?php 
+								$flashLabel = 'Buy my Ticket';
+								foreach ($flashLottery['FlashTicket'] as $key => $ticket) {
+
+									if(isset($ticket['Buyer']['id']) && $ticket['Buyer']['id'] == $userGlobal['id']){
+										$flashLabel = 'Ticket Bought <i class="fa fa-thumbs-up"></i>';
+										break;
+									}
+								}
+								?>
+
+							<?php echo $this->Html->link(
+								$flashLabel,
+								array('controller' => 'flash_lotteries', 'action' => 'view', 'admin'=>false, 'plugin' => false, $flashLottery['FlashLottery']['id']),
+								array(
+									'class' => 'btn btn-primary btn-block',
+									'escape'=> false,
+									)
+								);?>
 
 						</div>
 					<?php else: ?>

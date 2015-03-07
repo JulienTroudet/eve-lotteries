@@ -1,27 +1,45 @@
 <div id="sidebar-wrapper">
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Manager Menu</li>
-		<li><?php echo $this->Html->link(__('Give Won Lotteries'), array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true)); ?> </li>
+		<li>
+			<?php $label = ''; ?>
+			<?php if(isset($nbWithdrawalClaimed) && $nbWithdrawalClaimed>0): ?>
+				<?php $label =  ' <span class="badge" style="display: inline;">'.$nbWithdrawalClaimed.'</span>'; ?>
+			<?php endif; ?>
+
+			<?php echo $this->Html->link(__('Give Won Lotteries'.$label), array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true), array('escape'=>false)); ?>
+			
+		</li>
 		<li class="divider"></li>
-		<li><?php echo $this->Html->link(__('Give Won Super Lotteries'), array('controller' => 'super_lotteries', 'action' => 'index', 'admin' => true)); ?> </li>
-		<li><?php echo $this->Html->link(__('New Super Lottery'), array('controller' => 'super_lotteries', 'action' => 'add', 'admin' => true)); ?> </li>
+		<li>
+			<?php $label = ''; ?>
+			<?php if(isset($nbSuperClaimed) && $nbSuperClaimed>0): ?>
+				<?php $label =  ' <span class="badge" style="display: inline;">'.$nbSuperClaimed.'</span>'; ?>
+			<?php endif; ?>
+			<?php echo $this->Html->link(__('Give Won Super Lotteries'.$label), array('controller' => 'super_lotteries', 'action' => 'index', 'admin' => true), array('escape'=>false)); ?>
+		</li>
+		<li>
+			<?php echo $this->Html->link(__('New Super Lottery'), array('controller' => 'super_lotteries', 'action' => 'add', 'admin' => true)); ?>
+		</li>
 		<li class="divider"></li>
-		<li><?php echo $this->Html->link(__('Give Won Flash Lotteries'), array('controller' => 'flash_lotteries', 'action' => 'index', 'admin' => true)); ?> </li>
-		<li><?php echo $this->Html->link(__('New Flash Lottery'), array('controller' => 'flash_lotteries', 'action' => 'add', 'admin' => true)); ?> </li>
+		<li>
+			<?php $label = ''; ?>
+			<?php if(isset($nbFlashClaimed) && $nbFlashClaimed>0): ?>
+				<?php $label =  ' <span class="badge" style="display: inline;">'.$nbFlashClaimed.'</span>'; ?>
+			<?php endif; ?>
+			<?php echo $this->Html->link(__('Give Won Flash Lotteries'.$label), array('controller' => 'flash_lotteries', 'action' => 'index', 'admin' => true), array('escape'=>false)); ?>
+		</li>
+		<li>
+			<?php echo $this->Html->link(__('New Flash Lottery'), array('controller' => 'flash_lotteries', 'action' => 'add', 'admin' => true)); ?>
+		</li>
 		<li class="divider"></li>
-		<li><?php echo $this->Html->link(__('See transactions'), array('controller' => 'transactions', 'action' => 'index', 'admin' => true)); ?> </li>
-		<li><?php echo $this->Html->link(__('Add a transaction'), array('controller' => 'transactions', 'action' => 'add', 'admin' => true)); ?> </li>
+		<li>
+			<?php echo $this->Html->link(__('See transactions'), array('controller' => 'transactions', 'action' => 'index', 'admin' => true)); ?>
+		</li>
+		<li>
+			<?php echo $this->Html->link(__('Add a transaction'), array('controller' => 'transactions', 'action' => 'add', 'admin' => true)); ?>
+		</li>
 	</ul>
 </div>
-<div id="page-content-wrapper">
-	<div class="page-content">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<!-- content of page -->
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+
 

@@ -23,15 +23,5 @@
 
 	</ul>
 </div>
-<div id="page-content-wrapper">
-	<div class="page-content">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<!-- content of page -->
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+
 

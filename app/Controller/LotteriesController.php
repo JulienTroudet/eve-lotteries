@@ -38,7 +38,7 @@ class LotteriesController extends AppController {
 		$this->loadModel('Article');
 		//vas chercher le total gagné
 		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
 			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
 			);
 		$total = $this->Statistic->find('first', $params);
@@ -132,7 +132,7 @@ class LotteriesController extends AppController {
 		$this->loadModel('Statistic');
 		//vas chercher le total gagné
 		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
 			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
 			);
 		$total = $this->Statistic->find('first', $params);
@@ -332,13 +332,14 @@ class LotteriesController extends AppController {
 	*/
 	protected function _get_last_flash_lottery(){
 		
+		$this->loadModel('FlashTicket');
 		$flashLottery = null;
 		$params = array(
-			'contain' => array('EveItem' => array('EveCategory'), 'Winner'),
+			'contain' => array('EveItem' => array('EveCategory'), 'Winner', 'FlashTicket'=>array('Buyer')),
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
-						'FlashLottery.modified BETWEEN NOW() -INTERVAL 12 HOUR AND NOW()',
+						'FlashLottery.modified BETWEEN NOW() -INTERVAL 2 HOUR AND NOW()',
 						'FlashLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'FlashLottery.status'=>'ongoing')),
@@ -346,6 +347,9 @@ class LotteriesController extends AppController {
 			);
 		$flashLottery = $this->FlashLottery->find('first', $params);
 
+		if(!empty($flashLottery)){
+			$flashLottery['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$flashLottery['FlashLottery']['id'], 'buyer_user_id is not null')));
+		}
 
 		$this->FlashLottery->initiate_flash_lottery();
 		

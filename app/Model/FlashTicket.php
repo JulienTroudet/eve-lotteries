@@ -49,7 +49,7 @@ class FlashTicket extends AppModel
 
         //on vérifie si l'utilisateur possède assez d'argent
     	else if ($buyer['User']['tokens'] < 1) {
-    		$data = array('error' => 'Not enough Points.');
+    		$data = array('error' => 'You need one point to buy a Flash Ticket.');
     		return $data;
     	}
     	//on vérifie que la lotterie soit toujours en cours
@@ -58,7 +58,8 @@ class FlashTicket extends AppModel
     		return $data;
     	}
 
-        $existingTicket = $this->findByBuyerUserIdAndFlashLotteryId($choosenFlashTicket['FlashTicket']['buyer_user_id'], $choosenFlashTicket['FlashTicket']['flash_lottery_id']);
+        //verify if user already bought a ticket
+        $existingTicket = $this->findByBuyerUserIdAndFlashLotteryId($userId, $choosenFlashTicket['FlashTicket']['flash_lottery_id']);
         if (!empty($existingTicket)) {
             $data = array('error' => 'You have already bought a ticket for this Flash Lottery !');
             return $data;

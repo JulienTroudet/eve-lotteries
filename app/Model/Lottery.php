@@ -108,6 +108,10 @@ class Lottery extends AppModel {
 
 		$testedLottery = $this->findById($lotteryId);
 
+		if($testedLottery['Lottery']['lottery_status_id'] == 2){
+			return null;
+		}
+
 		$winnerPosition = $this->getWinnerTicketPosition($testedLottery);
 
 		if ($winnerPosition >= 0) {

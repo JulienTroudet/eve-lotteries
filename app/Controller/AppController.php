@@ -99,22 +99,6 @@ class AppController extends Controller {
 
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
-
-		
-
-		
-		
-		// if (!isset($userGlobal)) {
-		
-		// 	// $this->_setAntiForgeryToken();
-
-		// 	// $eveSSO_URL = $this->Config->findByName('eve_sso_url');
-		// 	// $this->set('eveSSO_URL', $eveSSO_URL['Config']['value']);
-		// 	// $appEveId = $this->Config->findByName('app_eve_id');
-		// 	// $this->set('appEveId', $appEveId['Config']['value']);
-		// 	// $appReturnUrl = $this->Config->findByName('app_return_url');
-		// 	// $this->set('appReturnUrl', $appReturnUrl['Config']['value']);
-		// }
 		
 		$params = array(
 			'conditions' => array('Lottery.lottery_status_id' => '1'),

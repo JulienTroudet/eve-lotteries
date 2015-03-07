@@ -12,7 +12,8 @@
 					<?php echo $flashLottery['FlashLottery']['number_items']?>x <?php echo $flashLottery['EveItem']['name']; ?> to win !
 				</p>
 				<h3>
-					<strong class="flash-countdown"></strong> , <?php echo $flashLottery['FlashLottery']['nb_bought']?> out of <?php echo $flashLottery['FlashLottery']['nb_tickets']?> tickets bought.
+					<strong class="flash-countdown"></strong>
+					<?php echo $flashLottery['FlashLottery']['nb_bought']?> out of <?php echo $flashLottery['FlashLottery']['nb_tickets']?> tickets bought.
 				</h3>
 			</div>
 		</div>

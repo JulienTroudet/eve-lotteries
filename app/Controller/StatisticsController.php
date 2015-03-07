@@ -33,7 +33,7 @@ public function beforeFilter() {
 
 		//vas chercher le total gagné
 		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'))),
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
 			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
 			);
 		$total = $this->Statistic->find('first', $params);

@@ -19,11 +19,11 @@
 		</a>
 	</div>
 <?php else: ?>
-	<?php if (!empty($superLottery)): ?>
+	<?php if (!empty($flashLottery)): ?>
 		<div id="last-flash-lottery">
 			<?php echo $this->element('FlashLotteries/FlashLotteryPanel', array("flashLottery" => $flashLottery, "userGlobal" => $userGlobal)); ?>
 		</div>
-	<?php elseif (!empty($flashLottery)): ?>
+	<?php elseif (!empty($superLottery)): ?>
 		<div id="last-super-lottery">
 			<?php echo $this->element('SuperLotteries/SuperLotteryPanel', array("superLottery" => $superLottery, "userGlobal" => $userGlobal)); ?>
 		</div>
@@ -39,20 +39,24 @@
 		updateFlashCountDown();
 	});
 
+
 	function updateFlashCountDown() {
+		<?php if (!empty($flashLottery)): ?>
 		countdown.setLabels(
 			'ms| sec| min| hr|| wk|| yr',
 			'ms| secs| mins| hrs|| wk|| yrs',
 			' and ');
 		exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
 
-		if(moment(exp_date).isAfter()){
-			$('.flash-countdown').html("End in "+moment(exp_date).countdown().toString());
+		if(moment.utc(exp_date).subtract(1, 'h').isAfter()){
+			$('.flash-countdown').html("End in "+moment.utc(exp_date).subtract(1, 'h').countdown().toString());
 		}
 		else{
 			$('.flash-countdown').html("Closed");
 		}
 		setTimeout(updateFlashCountDown, 10 );
+		<?php endif; ?>
+
 	}
 
 </script>

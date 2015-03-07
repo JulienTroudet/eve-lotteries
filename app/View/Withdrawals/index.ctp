@@ -3,9 +3,21 @@
 </div>
 <div>
 	<ul id="award-tabs" class="nav nav-tabs" role="tablist">
-		<li class="active"><a href="#lotteries-pane" role="tab" data-toggle="tab">My Lotteries</a></li>
-		<li><a href="#super-lotteries-pane" role="tab" data-toggle="tab">My Super Lotteries</a></li>
-		<li><a href="#flash-lotteries-pane" role="tab" data-toggle="tab">My Flash Lotteries</a></li>
+		<li class="active">
+			<a href="#lotteries-pane" role="tab" data-toggle="tab" id="lotteries-link">
+				My Lotteries <?php if($userGlobal['nb_new_won_lotteries']>0){echo '<span class="badge">'.$userGlobal['nb_new_won_lotteries'].'</span>';}?>
+			</a>
+		</li>
+		<li>
+			<a href="#super-lotteries-pane" role="tab" data-toggle="tab" id="super-lotteries-link">
+				My Super Lotteries <?php if($userGlobal['nb_new_won_super_lotteries']>0){echo '<span class="badge">'.$userGlobal['nb_new_won_super_lotteries'].'</span>';}?>
+			</a>
+		</li>
+		<li>
+			<a href="#flash-lotteries-pane" role="tab" data-toggle="tab" id="flash-lotteries-link">
+				My Flash Lotteries <?php if($userGlobal['nb_new_won_flash_lotteries']>0){echo '<span class="badge">'.$userGlobal['nb_new_won_flash_lotteries'].'</span>';}?>
+			</a>
+		</li>
 	</ul>
 	<!-- Tab panes -->
 	<div class="tab-content">
@@ -80,7 +92,7 @@
 			<div id="list-super-awards">
 				<h2>Won Super Lotteries</h2>
 				<?php foreach ($superWithdrawals as $superWithdrawal): ?>
-				<?php if (isset($superWithdrawal)){ echo $this->element('SuperLotteries/SuperLotteryWithdrawal', array("superLottery" => $superWithdrawal ));} ?>
+					<?php if (isset($superWithdrawal)){ echo $this->element('SuperLotteries/SuperLotteryWithdrawal', array("superLottery" => $superWithdrawal ));} ?>
 				<?php endforeach; ?>
 				
 			</div>
@@ -89,8 +101,9 @@
 			<div id="list-flash-awards">
 				<h2>Won Flash Lotteries</h2>
 				<?php foreach ($flashWithdrawals as $flashWithdrawal): ?>
-				<?php if (isset($flashWithdrawal)){ echo $this->element('FlashLotteries/FlashLotteryWithdrawal', array("flashLottery" => $flashWithdrawal ));} ?>
+					<?php if (isset($flashWithdrawal)){ echo $this->element('FlashLotteries/FlashLotteryWithdrawalPanel', array("flashLottery" => $flashWithdrawal ));} ?>
 				<?php endforeach; ?>
+
 				
 			</div>
 		</div>
@@ -130,12 +143,29 @@
 	function refreshListSuperLotteries(){
 		$.ajax({
 			type:"get",
-			url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'list_super_awards')); ?>",
+			url:"<?php echo $this->Html->url(array('controller' => 'super_lotteries', 'action' => 'list_super_awards')); ?>",
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 			},
 			success: function(response) {
 				$('#list-super-awards').html(response);
+				instanciateButtons();
+			},
+			error: function(e) {
+				alert("An error occurred: " + e.responseText);
+				console.log(e);
+			}
+		});
+	}
+	function refreshListFlashLotteries(){
+		$.ajax({
+			type:"get",
+			url:"<?php echo $this->Html->url(array('controller' => 'flash_lotteries', 'action' => 'list_flash_awards')); ?>",
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			},
+			success: function(response) {
+				$('#list-flash-awards').html(response);
 				instanciateButtons();
 			},
 			error: function(e) {
@@ -184,6 +214,14 @@
 						refreshListAwards();
 						refreshUserNavbar();
 						toastr.success('You have claim '+response.message+' !');
+
+						if(response.nb_new_won_lotteries>0){
+							$('#lotteries-link').html('My Lotteries <span class="badge">'+response.nb_new_won_lotteries+'</span>');
+						}
+						else{
+							$('#lotteries-link').html('My Lotteries');
+						}
+						
 					}
 				},
 				error: function(e) {
@@ -212,6 +250,46 @@
 						refreshListSuperLotteries();
 						refreshUserNavbar();
 						toastr.success(response.message);
+						if(response.nb_new_won_super_lotteries>0){
+							$('#super-lotteries-link').html('My Super Lotteries <span class="badge">'+response.nb_new_won_super_lotteries+'</span>');
+						}
+						else{
+							$('#super-lotteries-link').html('My Super Lotteries ');
+						}
+					}
+				},
+				error: function(e) {
+					alert("An error occurred: " + e.responseText);
+					console.log(e);
+				}
+			});
+		});
+		$('.btn-flash-claim').click(function(){
+			var idFlashLottery = $(this).data('flash-lottery-id');
+			$.ajax({
+				type:"get",
+				url:"<?php echo $this->Html->url(array('controller' => 'flash_lotteries', 'action' => 'claim','ext' => 'json')); ?>",
+				data:{
+					flash_lottery_id:idFlashLottery,
+				},
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+				},
+				success: function(response) {
+					if (response.error) {
+						toastr.warning(response.error);
+						console.log(response.error);
+					}
+					if (response.success) {
+						refreshListFlashLotteries();
+						refreshUserNavbar();
+						toastr.success(response.message);
+						if(response.nb_new_won_flash_lotteries>0){
+							$('#flash-lotteries-link').html('My Flash Lotteries <span class="badge">'+response.nb_new_won_flash_lotteries+'</span>');
+						}
+						else{
+							$('#flash-lotteries-link').html('My Flash Lotteries ');
+						}
 					}
 				},
 				error: function(e) {

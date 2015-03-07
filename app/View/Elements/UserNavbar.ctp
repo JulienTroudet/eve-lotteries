@@ -14,16 +14,8 @@
 			<div class="navbar-collapse collapse navbar-user">
 				<div class="nav navbar-nav hidden-xs hidden-sm">
 					<h2><?php echo $userGlobal['eve_name']; ?></h2>
-					<?php if(!isset($_SERVER['HTTP_EVE_TRUSTED']) || $_SERVER['HTTP_EVE_TRUSTED'] == ''): ?>
 						<p>Next API Check in <span class='api-countdown'></span></p>
-					<?php endif;?>
-					<?php if($_SERVER['HTTP_EVE_TRUSTED']=='Yes'): ?>
-						<p>Next API Check in <?php
-							$datetime1 = new DateTime();
-							$datetime2 = new DateTime($apiCheckTime);
-							$interval = $datetime1->diff($datetime2);
-							echo $interval->format('%i minutes %s seconds'); ?></p>
-						<?php endif;?>
+					
 					</div>
 					<div class="nav navbar-nav navbar-right navbar-user-info">
 						<div class="row">
@@ -193,7 +185,7 @@
 									exp_date = "<?php echo $apiCheckTime; ?>";
 
 									if(moment(exp_date).isAfter()){
-										$('.api-countdown').html(moment(exp_date).countdown().toString());
+										$('.api-countdown').html(moment.utc(exp_date).countdown().toString());
 									}
 									else{
 										$('.api-countdown').html("any minute");

@@ -13,7 +13,8 @@
 				data-item-id="<?php echo $eveItem['EveItem']['id']; ?>"
 				data-item-name="<?php echo $eveItem['EveItem']['name']; ?>"
 				data-item-nbt="<?php echo $eveItem['EveItem']['nb_tickets_default']; ?>"
-				data-item-price="<?php echo $eveItem['EveItem']['ticket_price']; ?>">Choose</button>			
+				data-ticket-price="<?php echo $eveItem['EveItem']['ticket_price']; ?>"
+				data-item-price="<?php echo $eveItem['EveItem']['eve_value']; ?>">Choose</button>			
 			</div>
 		</div>
 		<div class="row">

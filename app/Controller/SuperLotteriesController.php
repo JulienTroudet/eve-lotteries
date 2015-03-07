@@ -55,6 +55,23 @@ class SuperLotteriesController extends AppController {
 		$this->set('superLotteries', $superLotteries);
 	}
 
+	public function list_super_awards() {
+		$this->layout = false;
+
+		$userGlobal = $this->Auth->user();
+		$params = array(
+			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
+			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
+			'order' => array('SuperLottery.created' => 'desc'), 
+			);
+		$superWithdrawals = $this->SuperLottery->find('all', $params);
+		foreach ($superWithdrawals as $key => $superLottery) {
+			$superWithdrawals[$key]['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
+		}
+
+		$this->set('superWithdrawals', $superWithdrawals);
+	}
+
 	public function claim() {
 
 		$this->request->onlyAllow('ajax');
@@ -91,6 +108,7 @@ class SuperLotteriesController extends AppController {
 						$data = array (
 							'success' => true,
 							'message' => 'You have claim '.$superLottery['SuperLottery']['number_items'].' '.$superLottery['EveItem']['name'].' !',
+							'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
 							);
 
 						$this->log('SuperLottery claimed : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
@@ -111,6 +129,17 @@ class SuperLotteriesController extends AppController {
 	 * @return void
 	 */
 	public function admin_index() {
+		$this->loadModel('Withdrawal');
+		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
+		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
+
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$this->set('nbSuperClaimed', $nbSuperClaimed);
+
+		$this->loadModel('FlashLottery');
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$this->set('nbFlashClaimed', $nbFlashClaimed);
+
 		$this->SuperLottery->recursive = 0;
 		$params = array(
 			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
@@ -190,6 +219,17 @@ class SuperLotteriesController extends AppController {
 	 * @return void
 	 */
 	public function admin_add() {
+		$this->loadModel('Withdrawal');
+		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
+		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
+
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$this->set('nbSuperClaimed', $nbSuperClaimed);
+
+		$this->loadModel('FlashLottery');
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$this->set('nbFlashClaimed', $nbFlashClaimed);
+
 		$userId = $this->Auth->user('id');
 
 		if ($this->request->is('post')) {

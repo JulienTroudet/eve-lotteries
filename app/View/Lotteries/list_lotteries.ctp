@@ -16,13 +16,14 @@
 	"lottery" => $lottery ));}?>
 </div>
 <div class="row">
-	<div class="col-md-3 pull-right">
-		<?php echo $this->Html->link('See all Super lotteries', array('controller' => 'super_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
-		<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
+	<div class="col-md-12">
+		<?php echo $this->Html->link('See all Flash lotteries', array('controller' => 'flash_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-primary') ); ?>
+		<?php echo $this->Html->link('See all Super lotteries', array('controller' => 'super_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-primary') ); ?>
+		<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
 	</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
-	$("[data-toggle='tooltip']").tooltip();
-});
+		$("[data-toggle='tooltip']").tooltip();
+	});
 </script>

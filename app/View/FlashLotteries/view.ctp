@@ -26,8 +26,8 @@
 			' and ');
 		exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
 
-		if(moment(exp_date).isAfter()){
-			$('.flash-countdown').html("End in "+moment(exp_date).countdown().toString());
+		if(moment.utc(exp_date).subtract(1, 'h').isAfter()){
+			$('.flash-countdown').html("End in "+moment.utc(exp_date).subtract(1, 'h').countdown().toString());
 		}
 		else{
 			$('.flash-countdown').html("Lottery Closed");

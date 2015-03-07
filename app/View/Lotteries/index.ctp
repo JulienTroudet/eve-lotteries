@@ -72,9 +72,10 @@
 				"lottery" => $lottery ));}?>
 			</div>
 			<div class="row">
-				<div class="col-md-3 pull-right">
-					<?php echo $this->Html->link('See all Super lotteries', array('controller' => 'super_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
-					<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-block btn-primary') ); ?>
+				<div class="col-md-12">
+					<?php echo $this->Html->link('See all Flash lotteries', array('controller' => 'flash_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-primary') ); ?>
+					<?php echo $this->Html->link('See all Super lotteries', array('controller' => 'super_lotteries', 'action' => 'index'), array('class' => 'btn btn-lg btn-primary') ); ?>
+					<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
 				</div>
 			</div>
 		</div>
@@ -84,7 +85,8 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title" id="choose-ticket-modal-label"></h4>
+					<h3 class="modal-title" id="choose-ticket-modal-item-label"></h3>
+					<h5 id="choose-ticket-modal-ticket-label"></h5>
 					<h5>My Wallet : <span id="wallet-modal"><?php echo number_format($userGlobal['wallet'],2); ?></span> <i class="fa fa-money"></i> </h5>
 				</div>
 				<div class="modal-body">
@@ -150,7 +152,7 @@
 					instanciateButtons()
 				},
 				error: function(e) {
-					toastr.warning(e.responseText);
+					//toastr.warning(e.responseText);
 					console.log(e);
 				}
 			});
@@ -168,7 +170,7 @@
 					instanciateSuperButtons();
 				},
 				error: function(e) {
-					toastr.warning(e.responseText);
+					//toastr.warning(e.responseText);
 					console.log(e);
 				}
 			});
@@ -184,7 +186,7 @@
 					instanciateButtons()
 				},
 				error: function(e) {
-					toastr.warning(e.responseText);
+					//toastr.warning(e.responseText);
 					console.log(e);
 				}
 			});
@@ -201,7 +203,7 @@
 					$('#wallet-modal').html($('#wallet').html());
 				},
 				error: function(e) {
-					toastr.warning(e.responseText);
+					//toastr.warning(e.responseText);
 					console.log(e);
 				}
 			});
@@ -304,9 +306,11 @@
 					var itemId = $(this).data('item-id');
 					var itemName = $(this).data('item-name');
 					var itemNbTickets = $(this).data('item-nbt');
+					var ticketPrice = number_format($(this).data('ticket-price'), 0,'.',',');
 					var itemPrice = number_format($(this).data('item-price'), 0,'.',',');
 					$('#choose-ticket-modal').modal('show');
-					$('#choose-ticket-modal-label').html(itemName +'&nbsp;&nbsp;&nbsp;'+itemPrice+' <i class="fa fa-money"></i> for one <i class="fa fa-ticket"></i>');
+					$('#choose-ticket-modal-item-label').html(itemName +' : '+itemPrice+' <span class="badge">ISK</span>');
+					$('#choose-ticket-modal-ticket-label').html(ticketPrice+' <i class="fa fa-money"></i> for one <i class="fa fa-ticket"></i>');
 					var htmlTickets = "";
 					for (var i = 1; i <= itemNbTickets; i++) {
 						htmlTickets+= '<div class="col-md-6 col-sm-12"><button class="btn btn-block btn-primary ticket-modal" data-toggle="button" data-position="'+(i-1)+'">'+i+'. Buy this ticket</button></div>';

@@ -18,56 +18,63 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ($flashLotteries as $superLottery): ?>
-						<tr>
-							<td>
-								<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $superLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $superLottery['EveItem']['name']; ?></button>
-								<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $superLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
-							</td>
-							<td><?php echo h($superLottery['FlashLottery']['number_items']); ?>&nbsp;</td>
-							<td>
-								
-							</td>
-							<td><?php echo h($superLottery['FlashLottery']['nb_tickets']); ?>&nbsp;</td>
-							<td><?php echo h($superLottery['FlashLottery']['status']); ?>&nbsp;</td>
-							<td><?php echo CakeTime::niceShort(h($superLottery['FlashLottery']['start_date'])); ?>&nbsp;</td>
-							<td><?php echo CakeTime::niceShort(h($superLottery['FlashLottery']['expiration_date'])); ?>&nbsp;</td>
-							<td class="actions">
-								<?php if($superLottery['FlashLottery']['status'] == 'waiting'):?>
-									<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $superLottery['FlashLottery']['id']), array(), __('Are you sure you want to delete # %s?', $superLottery['FlashLottery']['id'])); ?>
-								<?php elseif($superLottery['FlashLottery']['status'] == 'claimed'):?>
-								<?php echo $this->Html->link(
-									'Complete this',
-									array('controller' => 'super_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $superLottery['FlashLottery']['id']),
-								array('class' => 'btn btn-block btn-danger btn-xs btn-complete') );?>
-								<?php endif;?>
-							</td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-				<div class="row">
-					<ul class="pager">
-						<li class="previous">
-							<?php
-							echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled'));
-							?>
-						</li>
-						<li>
-							<?php
-							echo $this->Paginator->counter(array(
-								'format' => __('Page {:page} of {:pages}, showing {:current} super lotteries out of {:count}, starting on super lottery {:start}, ending on {:end}')
-								));
-							?>
-						</li>
-						<li class="next">
-							<?php
-							echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
-							?>
-						</li>
-					</ul>
+						<?php foreach ($flashLotteries as $flashLottery): ?>
+							<tr>
+								<td>
+									<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $flashLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $flashLottery['EveItem']['name']; ?></button>
+									<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $flashLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
+								</td>
+								<td><?php echo h($flashLottery['FlashLottery']['number_items']); ?></td>
+								<td>
+									<?php if(isset($flashLottery['Winner']['id'])): ?>
+										<div>
+											<img src="https://image.eveonline.com/Character/<?php echo $flashLottery['Winner']['id']; ?>_32.jpg">
+										</div>
+										<div>
+											<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.showInfo(1377, <?php echo $flashLottery['Winner']['id']; ?>)"><?php echo $flashLottery['Winner']['eve_name']; ?></button>
+										</div>
+									<?php endif; ?>
+								</td>
+								<td><?php echo h($flashLottery['FlashLottery']['nb_tickets']); ?></td>
+								<td><?php echo h($flashLottery['FlashLottery']['status']); ?></td>
+								<td><?php echo CakeTime::niceShort(h($flashLottery['FlashLottery']['start_date'])); ?></td>
+								<td><?php echo CakeTime::niceShort(h($flashLottery['FlashLottery']['expiration_date'])); ?></td>
+								<td class="actions">
+									<?php if($flashLottery['FlashLottery']['status'] == 'waiting'):?>
+										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $flashLottery['FlashLottery']['id']), array(), __('Are you sure you want to delete # %s?', $flashLottery['FlashLottery']['id'])); ?>
+									<?php elseif($flashLottery['FlashLottery']['status'] == 'claimed'):?>
+										<?php echo $this->Html->link(
+											'Complete this',
+											array('controller' => 'flash_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $flashLottery['FlashLottery']['id']),
+											array('class' => 'btn btn-block btn-danger btn-xs btn-complete') );?>
+										<?php endif;?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+					<div class="row">
+						<ul class="pager">
+							<li class="previous">
+								<?php
+								echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled'));
+								?>
+							</li>
+							<li>
+								<?php
+								echo $this->Paginator->counter(array(
+									'format' => __('Page {:page} of {:pages}, showing {:current} flash lotteries out of {:count}, starting on flash lottery {:start}, ending on {:end}')
+									));
+									?>
+								</li>
+								<li class="next">
+									<?php
+									echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
+									?>
+								</li>
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</div>

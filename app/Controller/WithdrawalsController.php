@@ -176,25 +176,7 @@ class WithdrawalsController extends AppController {
 		$this->set('claimed_awards', $claimed_awards);
 	}
 
-	public function list_super_awards() {
-		$this->layout = false;
-
-		$this->loadModel('SuperLottery');
-
-		$userGlobal = $this->Auth->user();
-		$params = array(
-			'contain' => array('EveItem' => array('EveCategory'), 'SuperLotteryTicket', 'Winner'),
-			'conditions' => array('SuperLottery.winner_user_id' => $userGlobal['id']),
-			'order' => array('SuperLottery.created' => 'desc'), 
-			'limit' => 10, 
-			);
-		$superWithdrawals = $this->SuperLottery->find('all', $params);
-		foreach ($superWithdrawals as $key => $superLottery) {
-			$superWithdrawals[$key]['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
-		}
-
-		$this->set('superWithdrawals', $superWithdrawals);
-	}
+	
 
 	public function old_list() {
 		$userGlobal = $this->Auth->user();
@@ -279,6 +261,7 @@ class WithdrawalsController extends AppController {
 							$data = array (
 								'success' => true,
 								'message' => $claimedValue.' EVE-Lotteries Credits',
+								'nb_new_won_lotteries'=> $claimerUser['User']['nb_new_won_lotteries'],
 								);
 
 							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_credits', $withdrawalId, $claimedValue, $claimedAward['Ticket']['Lottery']['eve_item_id']);
@@ -303,7 +286,8 @@ class WithdrawalsController extends AppController {
 
 							$data = array (
 								'success' => true,
-								'message' => $claimedValue.' ISK',
+								'message' => number_format($claimedValue, 2).' ISK',
+								'nb_new_won_lotteries'=> $claimerUser['User']['nb_new_won_lotteries'],
 								);
 
 							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_isk', $withdrawalId, $claimedValue, $claimedAward['Ticket']['Lottery']['eve_item_id']);
@@ -330,6 +314,7 @@ class WithdrawalsController extends AppController {
 							$data = array (
 								'success' => true,
 								'message' => preg_replace('/(^| )a ([aeiouAEIOU])/', '$1an $2', 'a '.$claimedAward['Ticket']['Lottery']['name']),
+								'nb_new_won_lotteries'=> $claimerUser['User']['nb_new_won_lotteries'],
 								);
 
 							$this->Statistic->saveStat($claimerUser['User']['id'], 'withdrawal_item', $withdrawalId, $claimedISK, $claimedAward['Ticket']['Lottery']['eve_item_id']);
@@ -350,6 +335,17 @@ class WithdrawalsController extends AppController {
 	}
 
 	public function admin_index() {
+
+		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
+		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
+
+		$this->loadModel('SuperLottery');
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$this->set('nbSuperClaimed', $nbSuperClaimed);
+
+		$this->loadModel('FlashLottery');
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$this->set('nbFlashClaimed', $nbFlashClaimed);
 
 		$this->_organize_groups();
 

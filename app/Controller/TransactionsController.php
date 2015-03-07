@@ -34,6 +34,18 @@ class TransactionsController extends AppController {
 	 * @return void
 	 */
 	public function admin_index() {
+		$this->loadModel('Withdrawal');
+		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
+		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
+
+		$this->loadModel('SuperLottery');
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$this->set('nbSuperClaimed', $nbSuperClaimed);
+
+		$this->loadModel('FlashLottery');
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$this->set('nbFlashClaimed', $nbFlashClaimed);
+		
 		$this->Transaction->recursive = 0;
 		$paginateVar = array(
 			'contain' => array('User'),
@@ -55,6 +67,18 @@ class TransactionsController extends AppController {
 	 * @return void
 	 */
 	public function admin_add() {
+		$this->loadModel('Withdrawal');
+		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
+		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
+
+		$this->loadModel('SuperLottery');
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$this->set('nbSuperClaimed', $nbSuperClaimed);
+
+		$this->loadModel('FlashLottery');
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$this->set('nbFlashClaimed', $nbFlashClaimed);
+
 		$this->loadModel('User');
 		$userId = $this->Auth->user('id');
 

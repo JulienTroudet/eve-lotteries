@@ -14,7 +14,7 @@
 	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
-	<?php echo $this->Html->css('eve.lotteries'); ?>
+	<?php echo $this->Html->css('eve.lotteries2'); ?>
 
 	
 	<?php echo $this->fetch('css');?>
@@ -115,7 +115,7 @@
 	<div class="visible-md visible-sm" style="padding-bottom:5em;">
 	</div>
 
-	<div class="container" style="margin-top:5em;margin-bottom: 12em;">
+	<div class="container container-all" style="">
 
 		<?php echo $this->Session->flash(); ?>
 

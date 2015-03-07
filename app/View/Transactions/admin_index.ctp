@@ -18,7 +18,7 @@
 					<tbody>
 						<?php foreach ($transactions as $transaction): ?>
 							<tr>
-								<td><?php echo h($transaction['Transaction']['amount']); ?>&nbsp;</td>
+								<td><?php echo number_format($transaction['Transaction']['amount'], 2); ?>&nbsp;</td>
 								<td>
 									<?php echo $this->Html->link($transaction['User']['eve_name'], array('controller' => 'users', 'action' => 'view', $transaction['User']['id'])); ?>
 								</td>
