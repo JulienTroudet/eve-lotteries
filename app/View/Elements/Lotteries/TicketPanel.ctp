@@ -17,7 +17,7 @@
 			<span class="pull-left">
 				<img src="https://image.eveonline.com/Character/<?php echo $ticket['User']['id']; ?>_64.jpg" /> 
 			</span>
-			<span>
+			<span <?php if(strlen($ticket['User']['eve_name'])>25){echo 'style="font-size: 8px;"';} ?>>
 				<?php echo $ticket['User']['eve_name']; ?>
 			</span>
 		</div>

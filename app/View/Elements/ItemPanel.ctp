@@ -1,10 +1,15 @@
 
 
-<div class="col-md-2 col-sm-3 item-panel" data-item-category="<?php echo $eveItem['EveItem']['eve_category_id']; ?>" data-item-name="<?php echo $eveItem['EveItem']['name']; ?>">
+<div class="col-md-2 col-sm-3 item-panel" 
+data-item-category="<?php echo $eveItem['EveItem']['eve_category_id']; ?>" 
+data-item-name="<?php echo $eveItem['EveItem']['name']; ?>"
+data-item-price="<?php echo $eveItem['EveItem']['eve_value']; ?>"
+>
 	<div class="well item-well">
+		
 		<div class="row">
 			<div class="col-md-6 col-sm-6 col-item">
-				<img src="<?php echo $eveItem['EveCategory']['url_start'].$eveItem['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $eveItem['EveItem']['name']; ?>" data-toggle="tooltip" data-placement="top" title="In game value: <?php echo number_format($eveItem['EveItem']['eve_value'],0); ?> ISK">
+				<img src="<?php echo $eveItem['EveCategory']['url_start'].$eveItem['EveItem']['eve_id']; ?>_64.png" alt="<?php echo $eveItem['EveItem']['name']; ?>">
 			</div>
 			<div class="col-md-6 col-sm-6 col-item">
 				<button class="btn btn-xs btn-block btn-primary item-random-button" 
@@ -15,6 +20,11 @@
 				data-item-nbt="<?php echo $eveItem['EveItem']['nb_tickets_default']; ?>"
 				data-ticket-price="<?php echo $eveItem['EveItem']['ticket_price']; ?>"
 				data-item-price="<?php echo $eveItem['EveItem']['eve_value']; ?>">Choose</button>			
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-item">
+			<strong><?php echo number_format($eveItem['EveItem']['eve_value'], 0); ?> <span class="badge">ISK</span></strong>
 			</div>
 		</div>
 		<div class="row">

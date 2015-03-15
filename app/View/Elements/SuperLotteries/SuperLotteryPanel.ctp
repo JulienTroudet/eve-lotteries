@@ -87,5 +87,7 @@
 		</div>
 	</div>
 </div>
-<input type="hidden" id="timestamp-super-lotteries" value="<?php echo $timestamp_super_lotteries; ?>"/>
+	<?php if(isset($timestamp_super_lotteries)) :?>
+	<input type="hidden" id="timestamp-super-lotteries" value="<?php echo $timestamp_super_lotteries; ?>"/>
+	<?php endif; ?>
 <?php endif; ?>

@@ -14,7 +14,7 @@
 	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
-	<?php echo $this->Html->css('eve.lotteries2'); ?>
+	<?php echo $this->Html->css('eve.lotteries3'); ?>
 
 	
 	<?php echo $this->fetch('css');?>
@@ -26,6 +26,7 @@
 	<?php echo $this->Html->script('moment');?>
 	<?php echo $this->Html->script('countdown.min');?>
 	<?php echo $this->Html->script('moment-countdown.min'); ?>
+	<?php echo $this->Html->script('tinysort.min'); ?>
 	<?php echo $this->fetch('script'); ?>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
