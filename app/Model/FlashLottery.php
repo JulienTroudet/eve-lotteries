@@ -4,6 +4,7 @@ App::uses('User', 'Model');
 App::uses('FlashTicket', 'Model');
 App::uses('Statistic', 'Model');
 App::uses('Message', 'Model');
+App::uses('Config', 'Model');
 /**
  * FlashLottery Model
  *
@@ -26,6 +27,12 @@ class FlashLottery extends AppModel {
 	public function beforeValidate($options = array()) {
 		parent::beforeValidate($options);
 		unset($this->data['FlashLottery']['modified']);
+	}
+
+	public function afterSave($created, $options = array()) {
+		$config = new Config();
+		parent::afterSave($created, $options);
+		$config->changeFlashLotteries();
 	}
 
 	/**

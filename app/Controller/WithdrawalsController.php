@@ -38,18 +38,9 @@ class WithdrawalsController extends AppController {
 
 		$userGlobal = $this->Auth->user();
 
-		//maj of withdrawal number
-		$parameters = array(
-			'conditions' => array(
-				'Withdrawal.status' => 'new', 
-				'Withdrawal.user_id' => $userGlobal['id'], 
-				'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
-			);
-		$nbNewAw = $this->Withdrawal->find('count', $parameters);
+		
 
-		$userGlobal['nb_new_won_lotteries'] = $nbNewAw;
-
-		$this->User->save($userGlobal, true, array('id', 'nb_new_won_lotteries'));
+		$this->_recountAllWithdrawals($userGlobal);
 
 
 		//get unclaimed awards
@@ -573,5 +564,42 @@ class WithdrawalsController extends AppController {
 		}
 	}
 
+	private function _recountAllWithdrawals($user){
+
+		$this->loadModel('SuperLottery');
+		$this->loadModel('FlashLottery');
+
+		//maj of withdrawal number
+		$parameters = array(
+			'conditions' => array(
+				'Withdrawal.status' => 'new', 
+				'Withdrawal.user_id' => $user['id'], 
+				'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
+			);
+		$nbNewAw = $this->Withdrawal->find('count', $parameters);
+		$user['nb_new_won_lotteries'] = $nbNewAw;
+
+		//maj of super withdrawal number
+		$parameters = array(
+			'conditions' => array(
+				'SuperLottery.status' => 'unclaimed', 
+				'SuperLottery.winner_user_id' => $user['id'], 
+				)
+			);
+		$nbNewSuperAw = $this->SuperLottery->find('count', $parameters);
+		$user['nb_new_won_super_lotteries'] = $nbNewSuperAw;
+
+		//maj of flash withdrawal number
+		$parameters = array(
+			'conditions' => array(
+				'FlashLottery.status' => 'unclaimed', 
+				'FlashLottery.winner_user_id' => $user['id'], 
+				)
+			);
+		$nbNewFlashAw = $this->FlashLottery->find('count', $parameters);
+		$user['nb_new_won_flash_lotteries'] = $nbNewFlashAw;
+
+		$this->User->save($user, true, array('id', 'nb_new_won_lotteries', 'nb_new_won_super_lotteries', 'nb_new_won_flash_lotteries'));
+	}
 	
 }

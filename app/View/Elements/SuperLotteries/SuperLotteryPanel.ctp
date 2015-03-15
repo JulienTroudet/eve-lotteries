@@ -72,20 +72,20 @@
 					</div>
 
 				</div>
-			<?php else: ?>
-				<div class="media" >
-					<span class="pull-right">
-						<img src="https://image.eveonline.com/Character/<?php echo $superLottery['Winner']['id']; ?>_64.jpg" /> 
-					</span>
-					<span>
-						<p>Winner :</p>
-						<p class="pull-right"><strong><?php echo $superLottery['Winner']['eve_name']; ?></strong></p>
-					</span>
-				</div>
-			<?php endif; ?>
+				<?php else: ?>
+					<div class="media" >
+						<span class="pull-right">
+							<img src="https://image.eveonline.com/Character/<?php echo $superLottery['Winner']['id']; ?>_64.jpg" /> 
+						</span>
+						<span>
+							<p>Winner :</p>
+							<p class="pull-right"><strong><?php echo $superLottery['Winner']['eve_name']; ?></strong></p>
+						</span>
+					</div>
+				<?php endif; ?>
+			</div>
 		</div>
-
 	</div>
 </div>
-</div>
+<input type="hidden" id="timestamp-super-lotteries" value="<?php echo $timestamp_super_lotteries; ?>"/>
 <?php endif; ?>

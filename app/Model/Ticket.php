@@ -3,6 +3,7 @@ App::uses('AppModel', 'Model');
 App::uses('User', 'Model');
 App::uses('Lottery', 'Model');
 App::uses('Statistic', 'Model');
+App::uses('Config', 'Model');
 /**
  * Ticket Model
  *
@@ -20,6 +21,12 @@ class Ticket extends AppModel {
 
 	public $actsAs = array('Containable');
 
+
+	public function afterSave($created, $options = array()) {
+		$config = new Config();
+		parent::afterSave($created, $options);
+		$config->changeLotteries();
+	}
 
 
 	public function userBuyOneTicket($userId, $ticketId) {

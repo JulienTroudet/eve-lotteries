@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+App::uses('Config', 'Model');
 /**
  * SuperLotteryTicket Model
  *
@@ -16,6 +17,12 @@ class SuperLotteryTicket extends AppModel {
 	public $displayField = 'id';
 
 	public $actsAs = array('Containable');
+
+	public function afterSave($created, $options = array()) {
+		$config = new Config();
+		parent::afterSave($created, $options);
+		$config->changeSuperLotteries();
+	}
 
 /**
  * Validation rules

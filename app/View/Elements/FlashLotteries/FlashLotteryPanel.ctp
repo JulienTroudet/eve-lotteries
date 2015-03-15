@@ -80,4 +80,5 @@
 			</div>
 		</div>
 	</div>
+	<input type="hidden" id="timestamp-flash-lotteries" value="<?php echo $timestamp_flash_lotteries; ?>"/>
 <?php endif; ?>

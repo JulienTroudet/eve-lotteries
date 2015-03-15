@@ -22,6 +22,7 @@
 		<?php echo $this->Html->link('See more won lotteries', array('controller' => 'lotteries', 'action' => 'old_list'), array('class' => 'btn btn-lg btn-primary') ); ?>
 	</div>
 </div>
+<input type="hidden" id="timestamp-lotteries" value="<?php echo $timestamp_lotteries; ?>"/>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("[data-toggle='tooltip']").tooltip();

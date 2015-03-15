@@ -3,6 +3,7 @@ App::uses('AppModel', 'Model');
 App::uses('User', 'Model');
 App::uses('FlashLottery', 'Model');
 App::uses('Statistic', 'Model');
+App::uses('Config', 'Model');
 
 /**
  * Ticket Model
@@ -21,6 +22,13 @@ class FlashTicket extends AppModel
     public $displayField = 'id';
     
     public $actsAs = array('Containable');
+
+
+    public function afterSave($created, $options = array()) {
+        $config = new Config();
+        parent::afterSave($created, $options);
+        $config->changeFlashLotteries();
+    }
     
     public function userBuyOneTicket($userId, $flashTicketId) {
 

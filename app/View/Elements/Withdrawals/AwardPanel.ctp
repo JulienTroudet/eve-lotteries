@@ -13,7 +13,7 @@
 			<?php switch ($unclaimed_award['Withdrawal']['status']) {
 				case 'new':
 				?>
-				<button class="btn btn-block btn-lg btn-default btn-claim btn-claim-credits" data-toggle="tooltip" data-placement="top" title="5% bonus if you claim this awward as EVE-Lotteries Credits"
+				<button class="btn btn-block btn-lg btn-default btn-claim btn-claim-credits" data-toggle="tooltip" data-placement="top" title="5% bonus if you claim this award as EVE-Lotteries Credits"
 				data-award-id="<?php echo $unclaimed_award['Withdrawal']['id']; ?>"
 				data-claim-type="credit"
 				>Claim <?php echo number_format($unclaimed_award['Ticket']['Lottery']['value']*1.05, 2); ?> <i class="fa fa-money"></i></button>

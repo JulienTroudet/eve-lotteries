@@ -28,10 +28,30 @@ class FlashLotteriesController extends AppController
 	 * @return [type] [description]
 	 */
 	public function see_last() {
-		$this->layout = false;
-		//get the last flash lottery
-		$flashLottery = $this->_get_last_flash_lottery();
-		$this->set('flashLottery', $flashLottery);
+
+		$this->request->onlyAllow('ajax');
+
+		if ($this->request->is('ajax')) {
+			$this->loadModel('Config');
+			
+			$flashLotteriesTimestamp = $this->request->query('timestamp');
+
+			if($this->Config->hasFlashLotteriesChanged($flashLotteriesTimestamp)){
+
+
+				$this->layout = false;
+			//get the last flash lottery
+				$flashLottery = $this->_get_last_flash_lottery();
+				$this->set('flashLottery', $flashLottery);
+
+				$this->set('timestamp_flash_lotteries', $this->Config->getFlashLotteriesTimestamp());
+			}
+			else{
+				$this->autoRender = false;
+				return "";
+			}
+		}
+		
 	}
 
 
@@ -53,10 +73,9 @@ class FlashLotteriesController extends AppController
 
 		}
 		
-
-
-
 		$this->set('flashLotteries', $flashLotteries);
+
+
 	}
 
 	public function list_flash_awards() {
@@ -162,18 +181,18 @@ class FlashLotteriesController extends AppController
 			throw new NotFoundException(__('Invalid Flash Lottery'));
 		}
 
-		$superlottery = $this->FlashLottery->findById($id);
+		$flashlottery = $this->FlashLottery->findById($id);
 
-		$superlottery['FlashLottery']['status'] = 'completed';
-		unset($superlottery['FlashLottery']['modified']);
+		$flashlottery['FlashLottery']['status'] = 'completed';
+		unset($flashlottery['FlashLottery']['modified']);
 
-		if ($this->FlashLottery->save($superlottery, true, array('id', 'status'))) {
+		if ($this->FlashLottery->save($flashlottery, true, array('id', 'status'))) {
 
 			$this->Message->sendFlashLotteryMessage(
-				$superlottery['Winner']['id'], 
+				$flashlottery['Winner']['id'], 
 				'Flash Lottery Completed', 
 				'Your prize for a Flash Lottery has been delivered by our staff. Please check your wallet or your contracts in game.',
-				$superlottery['FlashLottery']['id']
+				$flashlottery['FlashLottery']['id']
 				);
 
 			$this->Session->setFlash(

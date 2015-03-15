@@ -24,30 +24,26 @@ class LotteriesController extends AppController {
 	* @return void
 	*/
 	public function index() {
+
+		//check if the items panel must be open
 		$create = $this->Session->read('Index.open');
 		if($create == "open"){
 			$this->set('openCreate', $create);
 			$this->Session->write('Index.open', "closed");
 		}
+
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
 		$this->loadModel('SuperLottery');
 		$this->loadModel('FlashLottery');
-		$this->loadModel('SuperLotteryTicket');
 		$this->loadModel('Statistic');
 		$this->loadModel('Article');
+
+
 		//vas chercher le total gagné
-		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
-			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
-			);
-		$total = $this->Statistic->find('first', $params);
-		if(isset($total[0])){
-			$this->set('totalWon', $total[0]['totalAmount']);
-		}
-		else{
-			$this->set('totalWon', 0);
-		}
+		//
+		$this->set('totalWon', $this->_get_total_won());
+		
 		//vas chercher les lotteries actuelles
 		$params = array(
 			'contain' => array(
@@ -69,6 +65,7 @@ class LotteriesController extends AppController {
 		}
 		$orderedLot = $this->_order_lotteries($lotteries);
 		$this->set('lotteries', $orderedLot);
+
 		//vas chercher les anciennes lotteries
 		$paginateVar = array(
 			'contain' => array(
@@ -118,6 +115,11 @@ class LotteriesController extends AppController {
 			);
 		$article = $this->Article->find('first', $params);
 		$this->set('article', $article);
+
+		$this->loadModel('Config');
+		$this->set('timestamp_lotteries', $this->Config->getLotteriesTimestamp());
+		$this->set('timestamp_super_lotteries', $this->Config->getSuperLotteriesTimestamp());
+		$this->set('timestamp_flash_lotteries', $this->Config->getFlashLotteriesTimestamp());
 	}
 	public function index_open() {
 		$this->Session->write('Index.open', "open");
@@ -129,50 +131,63 @@ class LotteriesController extends AppController {
 	* @return void
 	*/
 	public function list_lotteries() {
-		$this->loadModel('Statistic');
-		//vas chercher le total gagné
-		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
-			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
-			);
-		$total = $this->Statistic->find('first', $params);
-		if(isset($total[0])){
-			$this->set('totalWon', $total[0]['totalAmount']);
+
+		$this->request->onlyAllow('ajax');
+
+		if ($this->request->is('ajax')) {
+			$this->loadModel('Config');
+
+			$timestamp_lotteries = $this->request->query('timestamp');
+
+			//chek if the lotteries have changed
+			if($this->Config->hasLotteriesChanged($timestamp_lotteries)){
+				$this->loadModel('Statistic');
+				//vas chercher le total gagné
+				
+				$this->set('totalWon', $this->_get_total_won());
+
+				$this->layout = false;
+
+				$params = array(
+					'contain' => array(
+						'EveItem' => array('EveCategory'),
+						'Ticket' => array(
+							'User' => array('id', 'eve_name')
+							)
+						),
+					'conditions' => array('Lottery.lottery_status_id' => '1'),
+					'order' => array('Lottery.id desc'),
+					);
+
+				$lotteries = $this->Lottery->find('all', $params);
+				$orderedLot = $this->_order_lotteries($lotteries);
+				$this->set('lotteries', $orderedLot);
+				$paginateVar = array(
+					'contain' => array(
+						'EveItem' => array('EveCategory'),
+						'Ticket' => array(
+							'User' => array('id', 'eve_name')
+							)
+						),
+					'conditions' => array('Lottery.lottery_status_id' => '2'),
+					'order' => array(
+						'Lottery.modified' => 'desc'
+						),
+					'limit' => 6
+					);
+				$this->Paginator->settings = $paginateVar;
+				$oldLotteries = $this->Paginator->paginate('Lottery');
+				$this->set('old_lotteries', $oldLotteries);
+
+				$this->set('timestamp_lotteries', $this->Config->getLotteriesTimestamp());
+
+			}
+			else{
+				$this->autoRender = false;
+				return "";
+			}
 		}
-		else{
-			$this->set('totalWon', 0);
-		}
-		$this->layout = false;
-		$params = array(
-			'contain' => array(
-				'EveItem' => array('EveCategory'),
-				'Ticket' => array(
-					'User' => array('id', 'eve_name')
-					)
-				),
-			'conditions' => array('Lottery.lottery_status_id' => '1'),
-			'order' => array('Lottery.id desc'),
-			);
 		
-		$lotteries = $this->Lottery->find('all', $params);
-		$orderedLot = $this->_order_lotteries($lotteries);
-		$this->set('lotteries', $orderedLot);
-		$paginateVar = array(
-			'contain' => array(
-				'EveItem' => array('EveCategory'),
-				'Ticket' => array(
-					'User' => array('id', 'eve_name')
-					)
-				),
-			'conditions' => array('Lottery.lottery_status_id' => '2'),
-			'order' => array(
-				'Lottery.modified' => 'desc'
-				),
-			'limit' => 6
-			);
-		$this->Paginator->settings = $paginateVar;
-		$oldLotteries = $this->Paginator->paginate('Lottery');
-		$this->set('old_lotteries', $oldLotteries);
 	}
 
 	/**
@@ -192,10 +207,6 @@ class LotteriesController extends AppController {
 		$this->set('flashLottery', $flashLottery);
 		
 	}
-
-
-
-
 
 	/**
 	* index method
@@ -269,6 +280,7 @@ class LotteriesController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
+
 	protected function _order_lotteries($lotteries){
 		$lines = array('line1' => array(), 'line2' => array(), 'line3' => array(), 'line4' => array(), 'line5' => array(), 'line6' => array());
 		$linesPlaces = array('line1' => 0, 'line2' => 0, 'line3' => 0, 'line4' => 0, 'line5' => 0, 'line6' => 0);
@@ -299,6 +311,7 @@ class LotteriesController extends AppController {
 		
 		return array_merge($lines['line1'], $lines['line2'], $lines['line3'], $lines['line4'], $lines['line5'], $lines['line6']);
 	}
+
 	/**
 	* Gets the last super lottery in the database
 	* it is either the ongoing super or the las won super
@@ -325,6 +338,7 @@ class LotteriesController extends AppController {
 		}
 		return $superLottery;
 	}
+
 	/**
 	* Gets the last flash lottery in the database
 	* it is either the ongoing flash or the las won flash
@@ -356,5 +370,22 @@ class LotteriesController extends AppController {
 		$this->FlashLottery->end_flash_lottery();
 		
 		return $flashLottery;
+	}
+
+
+	protected function _get_total_won(){
+		
+		$params = array(
+			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
+			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+			);
+		$total = $this->Statistic->find('first', $params);
+		if(isset($total[0])){
+			return $total[0]['totalAmount'];
+		}
+		else{
+			return 0;
+		}
+		
 	}
 }

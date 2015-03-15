@@ -27,11 +27,31 @@ class SuperLotteriesController extends AppController {
 	 * @return [type] [description]
 	 */
 	public function see_last() {
-		$this->loadModel('SuperLotteryTicket');
-		$this->layout = false;
-		//get the last super lottery
-		$superLottery = $this->_get_last_super_lottery();
-		$this->set('superLottery', $superLottery);
+
+		$this->request->onlyAllow('ajax');
+
+		if ($this->request->is('ajax')) {
+			$this->loadModel('Config');
+			
+			$superLotteriesTimestamp = $this->request->query('timestamp');
+
+			if($this->Config->hasSuperLotteriesChanged($superLotteriesTimestamp)){
+
+				$this->loadModel('SuperLotteryTicket');
+				$this->loadModel('Config');
+				$this->layout = false;
+			//get the last super lottery
+				$superLottery = $this->_get_last_super_lottery();
+				$this->set('superLottery', $superLottery);
+
+				$this->set('timestamp_super_lotteries', $this->Config->getSuperLotteriesTimestamp());
+			}
+			else{
+				$this->autoRender = false;
+				return "";
+			}
+		}
+
 	}
 
 	/**
@@ -53,6 +73,8 @@ class SuperLotteriesController extends AppController {
 		}
 
 		$this->set('superLotteries', $superLotteries);
+
+
 	}
 
 	public function list_super_awards() {
@@ -172,11 +194,11 @@ class SuperLotteriesController extends AppController {
 			if ($this->SuperLottery->save($superlottery, true, array('id', 'status'))) {
 
 				$this->Message->sendSuperLotteryMessage(
-									$superlottery['Winner']['id'], 
-									'Super Lottery Completed', 
-									'Your prize for a super lottery has been delivered by our staff. Please check your wallet or your contracts in game.',
-									$superlottery['SuperLottery']['id']
-									);
+					$superlottery['Winner']['id'], 
+					'Super Lottery Completed', 
+					'Your prize for a super lottery has been delivered by our staff. Please check your wallet or your contracts in game.',
+					$superlottery['SuperLottery']['id']
+					);
 
 				$this->Session->setFlash(
 					'The super lottery has been completed.',
@@ -322,3 +344,4 @@ class SuperLotteriesController extends AppController {
 		return $superLottery;
 	}
 }
+

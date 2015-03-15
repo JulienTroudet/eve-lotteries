@@ -5,6 +5,7 @@ App::uses('Ticket', 'Model');
 App::uses('Statistic', 'Model');
 App::uses('Message', 'Model');
 App::uses('Withdrawal', 'Model');
+App::uses('Config', 'Model');
 /**
  * Lottery Model
  *
@@ -27,6 +28,12 @@ class Lottery extends AppModel {
 	public function beforeValidate($options = array()) {
 		parent::beforeValidate($options);
 		unset($this->data['Lottery']['modified']);
+	}
+
+	public function afterSave($created, $options = array()) {
+		$config = new Config();
+		parent::afterSave($created, $options);
+		$config->changeLotteries();
 	}
 
 	public function createNewLotteryForItemByUser($choosenItem, $buyer) {
