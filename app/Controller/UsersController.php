@@ -249,11 +249,14 @@ class UsersController extends AppController {
 							array('type' => 'success')
 							);
 
-						$this->log('Registration complete');
+						$this->log('Registration complete', 'EVE-Lotteries');
 
 						$this->redirect('/');
 					}
 					else{
+						$this->log('Registration ERROR', 'error');
+						$this->log($dataProxy, 'error');
+
 						$this->Session->setFlash(
 							'Error in account creation.',
 							'FlashMessage',

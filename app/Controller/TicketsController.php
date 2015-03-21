@@ -113,6 +113,15 @@ class TicketsController extends AppController {
 				$proceed = false;
 			}
 
+			$params = array(
+				'conditions' => array('Lottery.lottery_status_id' => '1', 'Lottery.nb_tickets' => '48'),
+				);
+			$nbFreeBigLotteries = 1 - $this->Lottery->find('count', $params);
+			if ($proceed && $nbFreeBigLotteries <= 0 && $choosenItem['EveItem']['nb_tickets_default'] == 48) {
+				$data = array('error' => 'There is already one giga lottery ! Please complete the ongoing giga lottery before starting a new one.');
+				$proceed = false;
+			}
+
 			if ($proceed){
 				
 				$buyer = $this->User->findById($userId, array('User.id', 'User.eve_name', 'User.wallet', 'User.tokens'));

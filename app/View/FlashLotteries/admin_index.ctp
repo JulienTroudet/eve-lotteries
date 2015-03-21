@@ -22,7 +22,7 @@
 							<tr>
 								<td>
 									<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $flashLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $flashLottery['EveItem']['name']; ?></button>
-									<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $flashLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
+									<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, [<?php echo $flashLottery['EveItem']['eve_id']; ?>])">Create Exchange Contract</button>
 								</td>
 								<td><?php echo h($flashLottery['FlashLottery']['number_items']); ?></td>
 								<td>

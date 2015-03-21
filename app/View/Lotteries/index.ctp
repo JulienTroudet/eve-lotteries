@@ -119,7 +119,6 @@
 
 			(function poll() {
 				setTimeout(function() {
-					console.log("refresh");
 					refreshListLotteries();
 					refreshListSpecialLotteries();
 					poll();
@@ -466,7 +465,6 @@
 			' : ',
 			'');
 
-		console.log('works');
 
 		$( ".lot-timer" ).each(function( index ) {
 			var start_date = $(this).data('start');

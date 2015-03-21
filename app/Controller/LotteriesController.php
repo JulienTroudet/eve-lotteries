@@ -224,7 +224,7 @@ class LotteriesController extends AppController {
 	* @param string $id
 	* @return void
 	*/
-	public function admin_view($id = null) {
+	public function admin_view() {
 		$this->Lottery->recursive = 1;
 		if (!$this->Lottery->exists($id)) {
 			throw new NotFoundException(__('Invalid lottery'));
@@ -248,6 +248,7 @@ class LotteriesController extends AppController {
 				),
 			'limit' => '10'
 			);
+
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');
 		$this->set('old_lotteries', $oldLotteries);
@@ -286,7 +287,17 @@ class LotteriesController extends AppController {
 		$linesPlaces = array('line1' => 0, 'line2' => 0, 'line3' => 0, 'line4' => 0, 'line5' => 0, 'line6' => 0);
 		foreach ($lotteries as $lottery) {
 			foreach ($lines as $key => $line) {
-				if($lottery['Lottery']['nb_tickets'] == 16){
+				if($lottery['Lottery']['nb_tickets'] == 48){
+					if($linesPlaces[$key]<=0){
+						array_push($lines[$key], $lottery);
+						$linesPlaces[$key] +=3;
+						break;
+					}
+					else{
+						continue;
+					}
+				}
+				else if($lottery['Lottery']['nb_tickets'] == 16){
 					if($linesPlaces[$key]<=1){
 						array_push($lines[$key], $lottery);
 						$linesPlaces[$key] +=2;

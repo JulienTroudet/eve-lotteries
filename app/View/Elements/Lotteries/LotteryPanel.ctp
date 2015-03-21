@@ -1,21 +1,22 @@
-<?php 
-$ticketsCount = $lottery['Lottery']['nb_tickets'];
-if ($ticketsCount == 8) {
-?>
+<?php if ($lottery['Lottery']['nb_tickets'] == 8) :?>
 <div class="col-md-4 col-sm-6">
-<?php
-}?>
+<?php endif; ?>
 
-<?php if ($ticketsCount == 16) {
-?>
+<?php if ($lottery['Lottery']['nb_tickets'] == 16) :?>
 <div class="col-md-8 col-sm-12">
-<?php
-}?>
+<?php endif; ?>
+
+<?php if ($lottery['Lottery']['nb_tickets'] == 48) :?>
+<div class="col-md-12 col-sm-12">
+<?php endif; ?>
 
 	<div class="panel panel-default">
 		<div class="media panel-heading panel-heading-lottery">
 			<p class="pull-left">
-				<img class="media-object" src="<?php echo $lottery['EveItem']['EveCategory']['url_start'].$lottery['EveItem']['eve_id'].$lottery['EveItem']['EveCategory']['url_big_end']; ?>" alt="<?php echo $lottery['EveItem']['name']; ?>">
+				<img 
+				class="media-object" 
+				src="<?php echo $lottery['EveItem']['EveCategory']['url_start'].$lottery['EveItem']['eve_id'].$lottery['EveItem']['EveCategory']['url_big_end']; ?>" 
+				alt="<?php echo $lottery['EveItem']['name']; ?>">
 			</p>
 			<div class="media-body">
 				<h3 class="media-heading"><?php echo $lottery['EveItem']['name']; ?></h3>
@@ -30,7 +31,7 @@ if ($ticketsCount == 8) {
 					echo $this->element('Lotteries/TicketPanel', array(
 						"ticket" => $ticket,
 						"eveItem" => $lottery['EveItem'],
-						"ticketsCount" => $ticketsCount
+						"ticketsCount" => $lottery['Lottery']['nb_tickets']
 						));
 					}?>
 				</div>

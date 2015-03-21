@@ -102,7 +102,7 @@ class Lottery extends AppModel {
 
 		//chargement des models (ne pas les oublier dans le App:uses)
 		$ticketModel = new Ticket();
-				
+
 
 
 		$this->contain(array(
@@ -207,12 +207,21 @@ class Lottery extends AppModel {
 			}
 		}	
 		if($lotteryNbTickets == $nbSell){
+			srand($this->make_seed());
+			
 			$winner = rand(0 , $lotteryNbTickets-1);	
+			
 
 			return $winner;
 		}
 
 		return -1;
+	}
+
+	public function make_seed()
+	{
+		list($usec, $sec) = explode(' ', microtime());
+		return (float) $sec + ((float) $usec * 100000);
 	}
 
 	public function areAllTicketBought($lottery) {
@@ -299,8 +308,8 @@ class Lottery extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 				),
 			'limitTickets' => array(
-				'rule'    => array('inList', array(8, 16)),
-				'message' => 'You can only propose 8 or 16 tickets.'
+				'rule'    => array('inList', array(8, 16, 48)),
+				'message' => 'You can only propose 8, 16 or 48 tickets.'
 				)
 			),
 		'lottery_status_id' => array(

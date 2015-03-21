@@ -165,14 +165,16 @@ class EveApiShell extends AppShell {
 			foreach ($awards as $key => $award) {
 
 				if(!in_array ($award['Award']['id'] , $user )){
-					$result = $db->fetchAll($award['Award']['request'], array($userId));
-					if(isset($result[0])){
-						$result = $result[0][0]['result'];
+					$query_result = $db->fetchAll($award['Award']['request'], array($userId));
+					if(isset($query_result[0])){
+						$result = $query_result[0][0]['result'];
+						$goal = $query_result[0][0]['goal'];
 					}
 					else{
-						$result = false;
+						$result = 0;
+						$goal = 1;
 					}
-					if($result){
+					if($result>=$goal){
 						$this->UserAward->create();
 						$newUserAward = array('UserAward'=>array('award_id'=>$award['Award']['id'], 'user_id'=>$userId, 'status'=>'unclaimed'));
 

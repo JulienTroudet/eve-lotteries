@@ -128,8 +128,8 @@ App::uses('AuthComponent', 'Controller/Component');
 				'message' => 'You must choose a login.',
 				),
 			'length' => array(
-				'rule'      => array('between', 3, 40),
-				'message'   => 'Your login must be between 6 and 40 characters.',
+				'rule'      => array('between', 3, 60),
+				'message'   => 'Your login must be between 3 and 40 characters.',
 				'on'        => 'create',  
 				),
 			'username_unique' => array(
@@ -147,6 +147,7 @@ App::uses('AuthComponent', 'Controller/Component');
 			'length' => array(
 				'rule'      => array('between', 8, 40),
 				'message'   => 'Your password must be between 8 and 40 characters.',
+				'on'        => 'create',  
 				),
 			),
 		'mail' => array(

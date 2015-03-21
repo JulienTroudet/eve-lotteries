@@ -52,30 +52,45 @@ class AwardsController extends AppController {
 		$userAwards = $this->UserAward->find('all', $params);
 		$userAwards = Set::combine($userAwards, '{n}.UserAward.award_id', '{n}');
 
+		//array to store the player progress for each award not yet won
+		$progress = array();
+
 		// à partir de là on vérifie si des awards ont été gagnés
 		$db = $this->UserAward->getDataSource();
 		//pour chaque award
 		foreach ($awards as $key => $award) {
 
+			//if there is no user_award for this award
 			if(!array_key_exists($award['Award']['id'] , $userAwards )){
-				$result = $db->fetchAll($award['Award']['request'], array($userGlobal['id']));
-				if(isset($result[0])){
-					$result = $result[0][0]['result'];
+				//go see if it is won
+				$query_result = $db->fetchAll($award['Award']['request'], array($userGlobal['id']));
+				if(isset($query_result[0])){
+					$result = $query_result[0][0]['result'];
+					$goal = $query_result[0][0]['goal'];
 				}
 				else{
-					$result = false;
+					$result = 0;
+					$goal = 1;
 				}
-				if($result){
+
+				//if it is won
+				if($result>=$goal){
+					//create and save a new user_award
 					$this->UserAward->create();
 					$newUserAward = array('UserAward'=>array('award_id'=>$award['Award']['id'], 'user_id'=>$userGlobal['id'], 'status'=>'unclaimed'));
-
 					$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));					
-
 					$this->log('Award Update : user_id['.$userGlobal['id'].'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
+				}
+				//else we display the progress
+				else{
+					$progress[$award['Award']['id']]['result'] = $result;
+					$progress[$award['Award']['id']]['goal'] = $goal;
 				}
 				
 			}
 		}
+
+		$this->set('userProgress', $progress);
 
 		$newAwardsCount = $this->UserAward->find('count', array(
 			'conditions' => array('UserAward.user_id =' => $userGlobal['id'], 'UserAward.status =' => 'unclaimed')

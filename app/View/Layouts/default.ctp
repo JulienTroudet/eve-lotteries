@@ -14,7 +14,7 @@
 	<?php echo $this->Html->css('magic-bootstrap'); ?>
 	<?php echo $this->Html->css('font-awesome.min'); ?>
 	<?php echo $this->Html->css('toastr.min'); ?>
-	<?php echo $this->Html->css('eve.lotteries3'); ?>
+	<?php echo $this->Html->css('eve.lotteries4'); ?>
 
 	
 	<?php echo $this->fetch('css');?>
@@ -90,7 +90,7 @@
 					</li>
 					<?php if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='No'): ?>
 						<li>
-						<a class="alert-link" href="javascript:CCPEVE.requestTrust('http://<?php echo $_SERVER['HTTP_HOST'];?>')">Add To Trusted Sites</a>
+							<a class="alert-link TrustModalButton" href="#">Join In Game Chat</a>
 						</li>
 					<?php elseif(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'): ?>
 						<li>
@@ -133,5 +133,37 @@
 	</div>
 
 
+	<div class="modal fade" id="TrustModal" tabindex="-1" role="dialog" aria-labelledby="TrustModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="TrustModalLabel">Please trust our website !</h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-danger" role="alert">
+						<h3>Please add this address as a <a class="alert-link" href="javascript:CCPEVE.requestTrust('http://<?php echo$_SERVER['HTTP_HOST'];?>')">trusted site</a></h3>
+						<p>Then <a class="alert-link" href="javascript:window.location.reload()">refresh</a> this page.</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 </body>
 </html>
+
+<script>
+	$(document).ready(function() {
+		$('.TrustModalButton').click(function(){
+			window.scrollTo(0,0);
+			CCPEVE.requestTrust('http://<?php echo$_SERVER['HTTP_HOST'];?>');
+			$('#TrustModal').modal('show');
+
+		});
+	});
+</script>

@@ -48,7 +48,7 @@
 						'error' => array('attributes' => array('wrap' => 'div', 'class' => 'alert alert-danger'))
 						));
 					echo $this->Form->input('nb_tickets_default', array(
-						'options' => array('8' => 8, '16' => 16),
+						'options' => array('8' => 8, '16' => 16, '48' => 48),
 						'div' => array(
 							'class' => 'form-group'
 							),

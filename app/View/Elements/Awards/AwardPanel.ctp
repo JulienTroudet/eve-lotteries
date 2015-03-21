@@ -1,4 +1,4 @@
-<div class="col-md-10 col-sm-12 col-md-offset-1 well">
+<div class="col-md-10 col-sm-12 col-md-offset-1 well award">
 	<div class="row">
 		<div class="col-md-1">
 			<?php if(isset($userAwards[$award['id']])): ?>
@@ -14,6 +14,13 @@
 
 		<div class="col-md-4">
 			<h3 class="title-award"><?php echo $award['name'];?></h3>
+			<?php if(array_key_exists($award['id'] , $userProgress )):?>
+				<div class="progress">
+					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="<?php echo $userProgress[$award['id']]['goal']; ?>" style="width: <?php echo number_format(($userProgress[$award['id']]['result']/$userProgress[$award['id']]['goal'])*100,0); ?>%;">
+						<?php echo $userProgress[$award['id']]['result']; ?>/<?php echo $userProgress[$award['id']]['goal']; ?>
+					</div>
+				</div>
+			<?php endif; ?>
 		</div>
 
 		<div class="col-md-4">

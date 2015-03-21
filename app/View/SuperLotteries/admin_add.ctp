@@ -82,7 +82,7 @@
 				console.log('activation');
 
 				var lotteryValue = $('#SuperLotteryEveItemId option:selected').data('price') * $('#SuperLotteryNumberItems').val();
-				lotteryValue = lotteryValue*1.2;
+				lotteryValue = lotteryValue*1.5;
 
 				var itemNumber = $('#SuperLotteryNbTickets').val();
 
