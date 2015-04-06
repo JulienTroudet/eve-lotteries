@@ -67,7 +67,6 @@ public function afterSave($created, $options = array()) {
 	 * @return [type]            [description]
 	 */
 	protected  function checkForWinner() {
-		$this->log('test');
 		$messageModel = new Message();
 		$userModel = new User();
 		$statisticModel = new Statistic();
@@ -77,7 +76,6 @@ public function afterSave($created, $options = array()) {
 
 		//is there a super to check ?
 		if(isset($superLottery['SuperLotteryTicket'])){
-			$this->log('test2');
 
 			$winner = rand(1, $superLottery['SuperLottery']['nb_ticket_bought']);
 			$currentCount = 0;

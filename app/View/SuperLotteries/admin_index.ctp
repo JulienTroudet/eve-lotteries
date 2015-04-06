@@ -11,8 +11,6 @@
 							<th><?php echo $this->Paginator->sort('number_items'); ?></th>
 							<th><?php echo $this->Paginator->sort('name'); ?></th>
 							<th><?php echo $this->Paginator->sort('winner_user_id'); ?></th>
-							<th><?php echo $this->Paginator->sort('nb_tickets'); ?></th>
-							<th><?php echo $this->Paginator->sort('ticket_value'); ?></th>
 							<th><?php echo $this->Paginator->sort('lottery_status_id'); ?></th>
 							<th class="actions"><?php echo __('Actions'); ?></th>
 						</tr>
@@ -21,11 +19,21 @@
 						<?php foreach ($superLotteries as $superLottery): ?>
 							<tr>
 								<td>
-									<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $superLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $superLottery['EveItem']['name']; ?></button>
-									<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $superLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
+									
+
+									<?php if($superLottery['SuperLottery']['status'] == 'claimed_isk'): ?> 
+										<p><?php echo $superLottery['EveItem']['name']; ?></p>
+										<p><?php echo $superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items'];?></p>
+
+										<p><?php echo number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items'], 0);?></p>
+
+									<?php elseif($superLottery['SuperLottery']['status'] == 'claimed_item'): ?>
+										<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $superLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $superLottery['EveItem']['name']; ?></button>
+										<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, <?php echo $superLottery['EveItem']['eve_id']; ?>)">Create Exchange Contract</button>
+									<?php endif;?>
 								</td>
-								<td><?php echo h($superLottery['SuperLottery']['number_items']); ?>&nbsp;</td>
-								<td><?php echo $this->Html->link($superLottery['SuperLottery']['name'], array('action' => 'view', $superLottery['SuperLottery']['id']));?>&nbsp;</td>
+								<td><strong><?php echo h($superLottery['SuperLottery']['number_items']); ?></strong></td>
+								<td><?php echo $this->Html->link($superLottery['SuperLottery']['name'], array('action' => 'view', 'admin' => false, $superLottery['SuperLottery']['id']));?>&nbsp;</td>
 								<td>
 									<?php if(isset($superLottery['Winner']['id'])): ?>
 										<div>
@@ -36,13 +44,13 @@
 										</div>
 									<?php endif; ?>
 								</td>
-								<td><?php echo h($superLottery['SuperLottery']['nb_tickets']); ?>&nbsp;</td>
-								<td><?php echo h($superLottery['SuperLottery']['ticket_value']); ?>&nbsp;</td>
 								<td><?php echo h($superLottery['SuperLottery']['status']); ?>&nbsp;</td>
 								<td class="actions">
+									
 									<?php if($superLottery['SuperLottery']['status'] == 'waiting'):?>
 										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $superLottery['SuperLottery']['id']), array(), __('Are you sure you want to delete # %s?', $superLottery['SuperLottery']['id'])); ?>
-									<?php elseif($superLottery['SuperLottery']['status'] == 'claimed'):?>
+									
+									<?php else:?>
 										<?php echo $this->Html->link(
 											'Complete this',
 											array('controller' => 'super_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $superLottery['SuperLottery']['id']),

@@ -1,5 +1,5 @@
 <?php if(isset($flashLottery['FlashLottery'])):?>
-	<div class="row flash-lot">
+	<div class="row flash-lot flash-withdrawal">
 		<div class="col-md-10 col-sm-12 col-md-offset-1 well well-sm <?php if($flashLottery['FlashLottery']['status']=='unclaimed'){echo 'well-unclaimed';}else if($flashLottery['FlashLottery']['status']=='claimed'){echo 'well-claimed';}else{echo 'well-finished';}?>">
 			<div class="row">
 				<div class="col-md-1">
@@ -36,11 +36,11 @@
 							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="item" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
 								Claim as Item(s)
 							</button>
-							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="credits" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
-								Claim as Credits
+							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="credit" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
+								Claim as <?php echo number_format($flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items']*1.05, 0);?> Credits
 							</button>
-							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="ISK" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
-								Claim as ISK
+							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="isk" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
+								Claim as <?php echo number_format($flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items'], 0);?> ISK
 							</button>
 						</div>
 					<?php elseif($flashLottery['FlashLottery']['status']=='claimed_item') : ?>
@@ -52,7 +52,7 @@
 					<?php elseif($flashLottery['FlashLottery']['status']=='completed_item') : ?>
 						<p>Flash Lottery Completed. The items have been contracted to you.</p>
 
-					<?php elseif($flashLottery['FlashLottery']['status']=='completed_credits') : ?>
+					<?php elseif($flashLottery['FlashLottery']['status']=='completed_credit') : ?>
 						<p>Flash Lottery Completed. Credits given.</p>
 
 					<?php elseif($flashLottery['FlashLottery']['status']=='completed_isk') : ?>

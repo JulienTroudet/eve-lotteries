@@ -21,8 +21,18 @@
 						<?php foreach ($flashLotteries as $flashLottery): ?>
 							<tr>
 								<td>
-									<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $flashLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $flashLottery['EveItem']['name']; ?></button>
-									<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, [<?php echo $flashLottery['EveItem']['eve_id']; ?>])">Create Exchange Contract</button>
+									
+
+									<?php if($flashLottery['FlashLottery']['status'] == 'claimed_isk'): ?> 
+										<p><?php echo $flashLottery['EveItem']['name']; ?></p>
+										<p><?php echo $flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items'];?></p>
+
+										<p><?php echo number_format($flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items'], 0);?></p>
+
+									<?php elseif($flashLottery['FlashLottery']['status'] == 'claimed_item'): ?>
+										<button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $flashLottery['EveItem']['eve_id']; ?>)">Buy <?php echo $flashLottery['EveItem']['name']; ?></button>
+										<button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.createContract(1, 60003760, [<?php echo $flashLottery['EveItem']['eve_id']; ?>])">Create Exchange Contract</button>
+									<?php endif;?>
 								</td>
 								<td><?php echo h($flashLottery['FlashLottery']['number_items']); ?></td>
 								<td>
@@ -42,7 +52,7 @@
 								<td class="actions">
 									<?php if($flashLottery['FlashLottery']['status'] == 'waiting'):?>
 										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $flashLottery['FlashLottery']['id']), array(), __('Are you sure you want to delete # %s?', $flashLottery['FlashLottery']['id'])); ?>
-									<?php elseif($flashLottery['FlashLottery']['status'] == 'claimed'):?>
+									<?php else:?>
 										<?php echo $this->Html->link(
 											'Complete this',
 											array('controller' => 'flash_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $flashLottery['FlashLottery']['id']),

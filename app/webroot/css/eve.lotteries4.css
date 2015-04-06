@@ -111,8 +111,8 @@
 .ticket-img{
 	display: block;
 	margin-left: auto;
-    margin-right: auto;
-    width: 64px
+	margin-right: auto;
+	width: 64px
 }
 
 .ticket-old-col{
@@ -365,6 +365,7 @@ body {
 @media (min-width: 768px) {
 	.super-lot {margin-right: 0px; margin-left: 0px;}
 	.super-lot .well{height: 85px;}
+	.super-withdrawal .well{height: 100%;}
 }
 .super-lot h5{
 	margin-top: 0px;
@@ -423,6 +424,9 @@ body {
 }
 .super-lot .col-btn-super-lot .btn{
 	width: 3em;
+}
+.btn-super-claim{
+	white-space: pre-line;
 }
 
 .super-lot .well-finished, .super-lott .well-finished{
@@ -510,6 +514,7 @@ body {
 	.flash-legend { width: 40%; }
 	.flash-lot {margin-right: 0px; margin-left: 0px;}
 	.flash-lot .well{height: 85px;}
+	.flash-withdrawal .well{height: 100%;}
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -598,6 +603,10 @@ body {
 	margin-top: 0;
 	margin-bottom: 3px;
 	font-size: 18px;
+}
+
+.btn-flash-claim{
+	white-space: pre-line;
 }
 
 /* [END] FLASH LOTTERY PANEL */

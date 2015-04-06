@@ -1,5 +1,5 @@
 <?php if(isset($superLottery['SuperLottery'])):?>
-	<div class="row super-lot">
+	<div class="row super-lot super-withdrawal">
 		<div class="col-md-10 col-sm-12 col-md-offset-1 well well-sm <?php if($superLottery['SuperLottery']['status']=='unclaimed'){echo 'well-unclaimed';}else if($superLottery['SuperLottery']['status']=='claimed'){echo 'well-claimed';}else{echo 'well-finished';}?>">
 			<div class="row">
 				<div class="col-md-1">
@@ -37,11 +37,11 @@
 							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="item" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
 								Claim as Item(s)
 							</button>
-							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="credits" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
-								Claim as Credits
+							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="credit" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
+								Claim as <?php echo number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items']*1.05, 0);?> Credits (5% bonus)
 							</button>
-							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="ISK" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
-								Claim as ISK
+							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="isk" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
+								Claim as <?php echo number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items'], 0);?> ISK
 							</button>
 						</div>
 					<?php elseif($superLottery['SuperLottery']['status']=='claimed_item') : ?>
@@ -53,7 +53,7 @@
 					<?php elseif($superLottery['SuperLottery']['status']=='completed_item') : ?>
 						<p>Super Lottery Completed. The items have been contracted to you.</p>
 
-					<?php elseif($superLottery['SuperLottery']['status']=='completed_credits') : ?>
+					<?php elseif($superLottery['SuperLottery']['status']=='completed_credit') : ?>
 						<p>Super Lottery Completed. Credits given.</p>
 
 					<?php elseif($superLottery['SuperLottery']['status']=='completed_isk') : ?>

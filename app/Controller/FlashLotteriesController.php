@@ -110,6 +110,14 @@ class FlashLotteriesController extends AppController
 			$this->loadModel('User');
 
 			$idFlashLottery = $this->request->query('flash_lottery_id');
+			$claimType = $this->request->query('flash_lottery_claim_type');
+
+			if (!in_array( $claimType , array('credit', 'isk', 'item')) ){
+				$data = array('error' => 'Invalid Lottery claim.' );
+				$this->set(compact('data')); 
+				$this->set('_serialize', 'data');
+				return $data;
+			}
 
 			if (!$this->FlashLottery->exists($idFlashLottery)) {
 				$data = array('error' => 'Invalid Flash Lottery.' );
@@ -128,20 +136,16 @@ class FlashLotteriesController extends AppController
 					$data = array('error' => 'Flash Lottery already claimed.');
 				}
 				else{
-					$flashLottery['FlashLottery']['status'] = 'claimed';
-					$claimerUser['User']['nb_new_won_flash_lotteries']--;
-
-					if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_flash_lotteries')) && $this->FlashLottery->save($flashLottery, true, array('id', 'status'))){
-						$data = array (
-							'success' => true,
-							'message' => 'You have claim '.$flashLottery['FlashLottery']['number_items'].' '.$flashLottery['EveItem']['name'].' !',
-							'nb_new_won_flash_lotteries'=> $claimerUser['User']['nb_new_won_flash_lotteries'],
-							);
-
-						$this->log('FlashLottery claimed : user_id['.$claimerUser['User']['id'].'], flash_lottery_id['.$flashLottery['FlashLottery']['id'].']', 'eve-lotteries');
-					}
-					else{
-						$data = array('error' => 'Flash Lottery could not be claimed.');
+					switch ($claimType) {
+						case 'credit':
+							$data = $this->_claim_as_credit($flashLottery, $claimerUser);
+						break;
+						case 'isk':
+							$data = $this->_claim_as_isk($flashLottery, $claimerUser);
+						break;
+						case 'item':
+							$data = $this->_claim_as_item($flashLottery, $claimerUser);
+						break;
 					}
 				}
 			}
@@ -193,7 +197,13 @@ class FlashLotteriesController extends AppController
 
 		$flashlottery = $this->FlashLottery->findById($id);
 
-		$flashlottery['FlashLottery']['status'] = 'completed';
+		if($flashlottery['FlashLottery']['status']=='claimed_isk'){
+			$flashlottery['FlashLottery']['status'] = 'completed_isk';
+		}
+		else if($flashlottery['FlashLottery']['status']=='claimed_item'){
+			$flashlottery['FlashLottery']['status'] = 'completed_item';
+		}
+		
 		unset($flashlottery['FlashLottery']['modified']);
 
 		if ($this->FlashLottery->save($flashlottery, true, array('id', 'status'))) {
@@ -261,14 +271,14 @@ class FlashLotteriesController extends AppController
 		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
 
 		$this->loadModel('SuperLottery');
-		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbSuperClaimed', $nbSuperClaimed);
 
-		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbFlashClaimed', $nbFlashClaimed);
 
 		$this->FlashLottery->recursive = 0;
-		$params = array('contain' => array('EveItem', 'Winner', 'FlashTicket' => array('Buyer')), 'conditions' => array('FlashLottery.status !=' => 'completed'), 'order' => array('FlashLottery.created' => 'desc'),);
+		$params = array('contain' => array('EveItem', 'Winner', 'FlashTicket' => array('Buyer')), 'conditions' => array('FlashLottery.status' => array('claimed_isk','claimed_item')), 'order' => array('FlashLottery.created' => 'desc'),);
 		$this->Paginator->settings = $params;
 		$this->set('flashLotteries', $this->Paginator->paginate());
 	}
@@ -424,5 +434,82 @@ class FlashLotteriesController extends AppController
 		
 	}
 
-	
+	/**
+	 * Claim a flash ottery as an item
+	 * @param  [type] $flashLottery [description]
+	 * @param  [type] $claimerUser  [description]
+	 * @return [type]               [description]
+	 */
+	protected function _claim_as_item($flashLottery, $claimerUser){
+		$flashLottery['FlashLottery']['status'] = 'claimed_item';
+		$claimerUser['User']['nb_new_won_flash_lotteries']--;
+
+		if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_flash_lotteries')) && $this->FlashLottery->save($flashLottery, true, array('id', 'status'))){
+			$data = array (
+				'success' => true,
+				'message' => 'You have claim '.$flashLottery['FlashLottery']['number_items'].' '.$flashLottery['EveItem']['name'].' !',
+				'nb_new_won_flash_lotteries'=> $claimerUser['User']['nb_new_won_flash_lotteries'],
+				);
+
+			$this->log('FlashLottery claimed as item : user_id['.$claimerUser['User']['id'].'], flash_lottery_id['.$flashLottery['FlashLottery']['id'].']', 'eve-lotteries');
+		}
+		else{
+			$data = array('error' => 'Flash Lottery could not be claimed.');
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Claim a flash lottery as credits
+	 * @param  [type] $flashLottery [description]
+	 * @param  [type] $claimerUser  [description]
+	 * @return [type]               [description]
+	 */
+	protected function _claim_as_credit($flashLottery, $claimerUser){
+		$flashLottery['FlashLottery']['status'] = 'completed_credit';
+		$claimerUser['User']['nb_new_won_flash_lotteries']--;
+		$claimerUser['User']['wallet']+= $flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items']*1.05;
+
+		if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_flash_lotteries', 'wallet')) && $this->FlashLottery->save($flashLottery, true, array('id', 'status'))){
+			$data = array (
+				'success' => true,
+				'message' => 'You have claim '.number_format($flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items']*1.05,0).' EVE-Lotteries Credits!',
+				'nb_new_won_flash_lotteries'=> $claimerUser['User']['nb_new_won_flash_lotteries'],
+				);
+
+			$this->log('FlashLottery claimed as credit : user_id['.$claimerUser['User']['id'].'], flash_lottery_id['.$flashLottery['FlashLottery']['id'].']', 'eve-lotteries');
+		}
+		else{
+			$data = array('error' => 'Flash Lottery could not be claimed.');
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Claim a flash lottery as ISK
+	 * @param  [type] $flashLottery [description]
+	 * @param  [type] $claimerUser  [description]
+	 * @return [type]               [description]
+	 */
+	protected function _claim_as_isk($flashLottery, $claimerUser){
+		$flashLottery['FlashLottery']['status'] = 'claimed_isk';
+		$claimerUser['User']['nb_new_won_flash_lotteries']--;
+
+		if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_flash_lotteries')) && $this->FlashLottery->save($flashLottery, true, array('id', 'status'))){
+			$data = array (
+				'success' => true,
+				'message' => 'You have claim '.number_format($flashLottery['EveItem']['eve_value']*$flashLottery['FlashLottery']['number_items'],0).' ISK!',
+				'nb_new_won_flash_lotteries'=> $claimerUser['User']['nb_new_won_flash_lotteries'],
+				);
+
+			$this->log('FlashLottery claimed as isk : user_id['.$claimerUser['User']['id'].'], flash_lottery_id['.$flashLottery['FlashLottery']['id'].']', 'eve-lotteries');
+		}
+		else{
+			$data = array('error' => 'Flash Lottery could not be claimed.');
+		}
+
+		return $data;
+	}
 }

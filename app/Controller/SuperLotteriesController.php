@@ -178,6 +178,14 @@ class SuperLotteriesController extends AppController {
 			$this->loadModel('User');
 
 			$idSuperLottery = $this->request->query('super_lottery_id');
+			$claimType = $this->request->query('super_lottery_claim_type');
+
+			if (!in_array( $claimType , array('credit', 'isk', 'item')) ){
+				$data = array('error' => 'Invalid Lottery claim.' );
+				$this->set(compact('data')); 
+				$this->set('_serialize', 'data');
+				return $data;
+			}
 
 			if (!$this->SuperLottery->exists($idSuperLottery)) {
 				$data = array('error' => 'Invalid Super Lottery.' );
@@ -196,20 +204,16 @@ class SuperLotteriesController extends AppController {
 					$data = array('error' => 'Super Lottery already claimed.');
 				}
 				else{
-					$superLottery['SuperLottery']['status'] = 'claimed';
-					$claimerUser['User']['nb_new_won_super_lotteries']--;
-
-					if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_super_lotteries')) && $this->SuperLottery->save($superLottery, true, array('id', 'status'))){
-						$data = array (
-							'success' => true,
-							'message' => 'You have claim '.$superLottery['SuperLottery']['number_items'].' '.$superLottery['EveItem']['name'].' !',
-							'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
-							);
-
-						$this->log('SuperLottery claimed : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
-					}
-					else{
-						$data = array('error' => 'Super Lottery could not be claimed.');
+					switch ($claimType) {
+						case 'credit':
+						$data = $this->_claim_as_credit($superLottery, $claimerUser);
+						break;
+						case 'isk':
+						$data = $this->_claim_as_isk($superLottery, $claimerUser);
+						break;
+						case 'item':
+						$data = $this->_claim_as_item($superLottery, $claimerUser);
+						break;
 					}
 				}
 			}
@@ -228,17 +232,17 @@ class SuperLotteriesController extends AppController {
 		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
 		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
 
-		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbSuperClaimed', $nbSuperClaimed);
 
 		$this->loadModel('FlashLottery');
-		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbFlashClaimed', $nbFlashClaimed);
 
 		$this->SuperLottery->recursive = 0;
 		$params = array(
 			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
-			'conditions' => array('SuperLottery.status !=' => 'completed'),
+			'conditions' => array('SuperLottery.status' => array('claimed_isk','claimed_item')),
 			'order' => array('SuperLottery.created' => 'desc'), 
 			);
 		$this->Paginator->settings = $params;
@@ -261,7 +265,13 @@ class SuperLotteriesController extends AppController {
 
 		$superlottery = $this->SuperLottery->findById($id);
 
-		$superlottery['SuperLottery']['status'] = 'completed';
+		if($superlottery['SuperLottery']['status']=='claimed_isk'){
+			$superlottery['SuperLottery']['status'] = 'completed_isk';
+		}
+		else if($superlottery['SuperLottery']['status']=='claimed_item'){
+			$superlottery['SuperLottery']['status'] = 'completed_item';
+		}
+		
 		unset($superlottery['SuperLottery']['modified']);
 
 		if ($this->SuperLottery->save($superlottery, true, array('id', 'status'))) {
@@ -333,8 +343,8 @@ class SuperLotteriesController extends AppController {
 			$testOther = $this->SuperLottery->find('all', $params);
 
 			if (!empty($testOther)) {
-				$this->Session->setFlash('Can\'t create simultaneous Flash Lotteries.', 'FlashMessage', array('type' => 'error'));
-				return $this->redirect(array('controller' => 'flash_lotteries', 'action' => 'admin_index', 'admin' => true));
+				$this->Session->setFlash('Can\'t create simultaneous Super Lotteries.', 'FlashMessage', array('type' => 'error'));
+				return $this->redirect(array('controller' => 'super_lotteries', 'action' => 'admin_index', 'admin' => true));
 			}
 
 			if ($this->SuperLottery->save($newSuperLottery, true, array('eve_item_id', 'number_items', 'name', 'start_date', 'expiration_date', 'creator_user_id', 'nb_tickets', 'ticket_value', 'status'))) {
@@ -426,6 +436,86 @@ class SuperLotteriesController extends AppController {
 
 		return $newTime;
 		
+	}
+
+
+	/**
+	 * Claim a super lottery as an item
+	 * @param  [type] $superLottery [description]
+	 * @param  [type] $claimerUser  [description]
+	 * @return [type]               [description]
+	 */
+	protected function _claim_as_item($superLottery, $claimerUser){
+		$superLottery['SuperLottery']['status'] = 'claimed_item';
+		$claimerUser['User']['nb_new_won_super_lotteries']--;
+
+		if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_super_lotteries')) && $this->SuperLottery->save($superLottery, true, array('id', 'status'))){
+			$data = array (
+				'success' => true,
+				'message' => 'You have claim '.$superLottery['SuperLottery']['number_items'].' '.$superLottery['EveItem']['name'].' !',
+				'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
+				);
+
+			$this->log('SuperLottery claimed : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
+		}
+		else{
+			$data = array('error' => 'Super Lottery could not be claimed.');
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Claim a super lottery as credits
+	 * @param  [type] $superLottery [description]
+	 * @param  [type] $claimerUser  [description]
+	 * @return [type]               [description]
+	 */
+	protected function _claim_as_credit($superLottery, $claimerUser){
+		$superLottery['SuperLottery']['status'] = 'completed_credit';
+		$claimerUser['User']['nb_new_won_super_lotteries']--;
+		$claimerUser['User']['wallet']+= $superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items']*1.05;
+
+		if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_super_lotteries', 'wallet')) && $this->SuperLottery->save($superLottery, true, array('id', 'status'))){
+			$data = array (
+				'success' => true,
+				'message' => 'You have claim '.number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items']*1.05,0).' EVE-Lotteries Credits!',
+				'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
+				);
+
+			$this->log('SuperLottery claimed as credit : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
+		}
+		else{
+			$data = array('error' => 'Super Lottery could not be claimed.');
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Claim a super lottery as ISK
+	 * @param  [type] $superLottery [description]
+	 * @param  [type] $claimerUser  [description]
+	 * @return [type]               [description]
+	 */
+	protected function _claim_as_isk($superLottery, $claimerUser){
+		$superLottery['SuperLottery']['status'] = 'claimed_isk';
+		$claimerUser['User']['nb_new_won_super_lotteries']--;
+
+		if($this->User->save($claimerUser['User'], true, array('id', 'nb_new_won_super_lotteries')) && $this->SuperLottery->save($superLottery, true, array('id', 'status'))){
+			$data = array (
+				'success' => true,
+				'message' => 'You have claim '.number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items'],0).' ISK!',
+				'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
+				);
+
+			$this->log('SuperLottery claimed as isk : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
+		}
+		else{
+			$data = array('error' => 'Super Lottery could not be claimed.');
+		}
+
+		return $data;
 	}
 }
 

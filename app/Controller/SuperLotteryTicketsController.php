@@ -94,7 +94,7 @@ class SuperLotteryTicketsController extends AppController {
 					return $data;
 				}
 
-				else if($buyer['User']['tokens'] < ($superLottery['SuperLottery']['ticket_value']*$nbTicketsBuy)){
+				else if($buyer['User']['tokens'] < ($nbTicketsBuy)){
 
 					$data = array('error' => 'Not enough Points.' );
 					$this->set(compact('data')); // Pass $data to the view

@@ -92,8 +92,12 @@ class AwardsController extends AppController {
 
 		$this->set('userProgress', $progress);
 
+		$this->_delete_duplicates($userGlobal);
+		
+
+
 		$newAwardsCount = $this->UserAward->find('count', array(
-			'conditions' => array('UserAward.user_id =' => $userGlobal['id'], 'UserAward.status =' => 'unclaimed')
+			'conditions' => array('AND' => array('UserAward.user_id =' => $userGlobal['id'], 'UserAward.status' => 'unclaimed'))
 			));
 		$userGlobal['nb_new_awards'] = $newAwardsCount;
 		
@@ -228,5 +232,18 @@ class AwardsController extends AppController {
 				);
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => true));
+	}
+
+	protected function _delete_duplicates($user){
+		$result = $this->UserAward->find('all', array(
+                'group' => array('UserAward.award_id HAVING COUNT(*) > 1'),
+                'conditions' => array('AND' => array('UserAward.user_id =' => $user['id']))
+                ));
+
+		foreach ($result as $key => $value) {
+			if($value['UserAward']['status'] == 'unclaimed'){
+				$this->UserAward->delete($value['UserAward']['id']);
+			}
+		}
 	}
 }
