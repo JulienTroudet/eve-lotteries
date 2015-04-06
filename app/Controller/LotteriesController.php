@@ -83,16 +83,23 @@ class LotteriesController extends AppController {
 		$this->Paginator->settings = $paginateVar;
 		$oldLotteries = $this->Paginator->paginate('Lottery');
 		$this->set('old_lotteries', $oldLotteries);
+		
+
 		//vas chercher la liste des catégories d'item
 		$params = array(
+			'cache' => 'eveCategories', 
+			'cacheConfig' => 'short',
 			'conditions' => array('EveCategory.status' => '1'),
 			'order' => array('EveCategory.name ASC'),
 			'fields' => array('EveCategory.id', 'EveCategory.name'),
 			);
 		$eveCategories = $this->EveCategory->find('list', $params);
 		$this->set('eveCategories', $eveCategories);
+
 		//vas chercher la liste des items
 		$params = array(
+			'cache' => 'eveItems', 
+			'cacheConfig' => 'short',
 			'contain' => 'EveCategory',
 			'conditions' => array('EveItem.status' => '1', 'EveCategory.status' => '1'),
 			'order' => array('EveItem.name ASC'),
@@ -102,6 +109,8 @@ class LotteriesController extends AppController {
 			$eveItems[$key]['EveItem']['ticket_price'] = $this->EveItem->getTicketPrice($value);
 		}
 		$this->set('eveItems', $eveItems);
+
+
 		//get the last super lottery
 		$superLottery = $this->_get_last_super_lottery();
 		$this->set('superLottery', $superLottery);
@@ -335,7 +344,7 @@ class LotteriesController extends AppController {
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
-						'SuperLottery.modified BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
+						'SuperLottery.expiration_date BETWEEN NOW() -INTERVAL 1 DAY AND NOW()',
 						'SuperLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'SuperLottery.status'=>'ongoing')),
@@ -345,8 +354,15 @@ class LotteriesController extends AppController {
 		
 		if(isset($superLottery['SuperLottery'])){
 			$superLottery['SuperLotteryTicket'] = Hash::combine($superLottery['SuperLotteryTicket'], '{n}.buyer_user_id', '{n}');
-			$superLottery['percentage'] = ($superLottery['SuperLottery']['nb_ticket_bought']*100)/$superLottery['SuperLottery']['nb_tickets'];
+			
+			$superLottery['SuperLottery']['start_date'] = $this->_dateToUTC($superLottery['SuperLottery']['start_date']);
+			$superLottery['SuperLottery']['expiration_date'] = $this->_dateToUTC($superLottery['SuperLottery']['expiration_date']);
 		}
+		
+		$this->SuperLottery->initiate_super_lottery();
+		
+		$this->SuperLottery->end_super_lottery();
+
 		return $superLottery;
 	}
 
@@ -364,7 +380,7 @@ class LotteriesController extends AppController {
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
-						'FlashLottery.modified BETWEEN NOW() -INTERVAL 2 HOUR AND NOW()',
+						'FlashLottery.expiration_date BETWEEN NOW() -INTERVAL 2 HOUR AND NOW()',
 						'FlashLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'FlashLottery.status'=>'ongoing')),
@@ -372,8 +388,12 @@ class LotteriesController extends AppController {
 			);
 		$flashLottery = $this->FlashLottery->find('first', $params);
 
+		//organise the list of ticket bought so it is easily readable with the player ID
 		if(!empty($flashLottery)){
 			$flashLottery['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$flashLottery['FlashLottery']['id'], 'buyer_user_id is not null')));
+			
+			$flashLottery['FlashLottery']['start_date'] = $this->_dateToUTC($flashLottery['FlashLottery']['start_date']);
+			$flashLottery['FlashLottery']['expiration_date'] = $this->_dateToUTC($flashLottery['FlashLottery']['expiration_date']);
 		}
 
 		$this->FlashLottery->initiate_flash_lottery();
@@ -397,6 +417,17 @@ class LotteriesController extends AppController {
 		else{
 			return 0;
 		}
+		
+	}
+
+	protected function _dateToUTC($dateT){
+		
+		$server_tz = 'Europe/Paris';
+		$schedule_date = new DateTime($dateT, new DateTimeZone($server_tz) );
+		$schedule_date->setTimeZone(new DateTimeZone('UTC'));
+		$newTime =  $schedule_date->format('c');
+
+		return $newTime;
 		
 	}
 }

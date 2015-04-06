@@ -25,9 +25,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
-		echo $this->Html->meta('icon');
-
-		echo $this->Html->css('cake.generic');
+		echo $this->Html->css('magic-bootstrap');
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
@@ -35,23 +33,30 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	?>
 </head>
 <body>
-	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="<?php echo $this->webroot; ?>">EVE-Lotteries</a>
+			</div>
+			
+			
+			<div class="navbar-collapse collapse navbar-site">
+			
+			</div><!--/.navbar-collapse -->
 		</div>
-		<div id="content">
-
+	</div>
+	
+	<div class="container container-all" style="">
+			<br/>
+			<br/>
+			<br/>
+			<br/>
 			<?php echo $this->Session->flash(); ?>
 
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
-			?>
+			
 		</div>
 	</div>
 	<?php echo $this->element('sql_dump'); ?>

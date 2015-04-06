@@ -33,10 +33,31 @@
 				<div class="col-md-3">
 					<?php if($flashLottery['FlashLottery']['status']=='unclaimed'): ?>
 						<div class="form">
-							<button class="btn btn-block btn-default btn-flash-claim" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">Claim this flash Lottery</button>
+							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="item" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
+								Claim as Item(s)
+							</button>
+							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="credits" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
+								Claim as Credits
+							</button>
+							<button class="btn btn-block btn-default btn-flash-claim" data-flash-claim-type="ISK" data-flash-lottery-id="<?php echo $flashLottery['FlashLottery']['id']; ?>">
+								Claim as ISK
+							</button>
 						</div>
-					<?php elseif($flashLottery['FlashLottery']['status']=='claimed') : ?>
-						<button class="btn btn-block btn-default btn-claim btn-claim-credits" disabled>Flash Lottery Claimed</button>
+					<?php elseif($flashLottery['FlashLottery']['status']=='claimed_item') : ?>
+						<button class="btn btn-block btn-default btn-claim btn-claim-credits" disabled>Item(s) Claimed</button>
+					<?php elseif($flashLottery['FlashLottery']['status']=='claimed_isk') : ?>
+						<button class="btn btn-block btn-default btn-claim btn-claim-credits" disabled>ISK Claimed</button>
+
+
+					<?php elseif($flashLottery['FlashLottery']['status']=='completed_item') : ?>
+						<p>Flash Lottery Completed. The items have been contracted to you.</p>
+
+					<?php elseif($flashLottery['FlashLottery']['status']=='completed_credits') : ?>
+						<p>Flash Lottery Completed. Credits given.</p>
+
+					<?php elseif($flashLottery['FlashLottery']['status']=='completed_isk') : ?>
+						<p>Flash Lottery Completed. ISK have been sent to you</p>
+
 					<?php else: ?>
 						<p>Flash Lottery Completed. The items have been contracted to you.</p>
 					<?php endif; ?>

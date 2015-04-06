@@ -363,7 +363,8 @@ body {
 
 /* [START] SUPER LOTTERY PANEL */
 @media (min-width: 768px) {
-	.super-lot {margin-right: 0px; margin-left: 0px}
+	.super-lot {margin-right: 0px; margin-left: 0px;}
+	.super-lot .well{height: 85px;}
 }
 .super-lot h5{
 	margin-top: 0px;
@@ -373,6 +374,7 @@ body {
 .super-lot h3{
 	margin-top: 0px;
 	margin-bottom: 0px;
+	font-size: 18px;
 }
 .super-lot .btn-group-vertical > .form-control:not(:first-child):not(:last-child) {
 	border-top-right-radius: 4px;
@@ -404,11 +406,14 @@ body {
 	margin-bottom: 0px;
 }
 
-.super-lot p {
+.super-lot p, .super-lott p {
 	margin: 0 0 0px;
 }
 
 .super-lot .row-super-lot{
+	padding-right: 15px;
+}
+.super-lott .row-super-lot{
 	padding-right: 15px;
 }
 .super-lot .col-btn-super-lot{
@@ -420,25 +425,37 @@ body {
 	width: 3em;
 }
 
-.super-lot .well-finished{
+.super-lot .well-finished, .super-lott .well-finished{
 	background-color: rgba(122, 95, 57, 0.2);
 	border: 1px solid rgba(122, 95, 57, 0.8);
 }
 
-.super-lot .well-ongoing{
+.super-lot .well-ongoing, .super-lott .well-ongoing{
 	background-color: rgba(80, 128, 80, 0.2);
 	border: 1px solid rgba(80, 128, 80, 0.8);
 }
 
-.super-lot .well-unclaimed{
-	background-color: rgba(24, 47, 66, 0.2);;
+.super-lot .well-unclaimed, .super-lott .well-unclaimed{
+	background-color: rgba(24, 47, 66, 0.2);
 	border: 1px solid rgba(24, 47, 66, 0.8);
 }
 
-.super-lot .well-claimed{
-	background-color: rgba(255, 255, 255, 0.2);;
+.super-lot .well-claimed, .super-lott .well-claimed{
+	background-color: rgba(255, 255, 255, 0.2);
 	border: 1px solid rgba(255, 255, 255, 0.8);
 }
+.col-super-panel{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.super-buyer p{
+	margin: 0px 0 1px;
+}
+
+.super-winner {
+	background-color: #304930;
+}
+
 /* [END] SUPER LOTTERY PANEL */
 
 /* [START] FLASH LOTTERY PANEL */
@@ -447,7 +464,10 @@ body {
 	background-color: rgba(122, 95, 57, 0.2);
 	border: 1px solid rgba(122, 95, 57, 0.8);
 }
-
+.flash-lott .well-ongoing{
+	background-color: rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.8);
+}
 .flash-lot .well-ongoing{
 	background-color: rgba(255, 255, 255, 0.2);
 	border: 1px solid rgba(255, 255, 255, 0.8);
@@ -488,7 +508,8 @@ body {
 	}
 	.flash-image { width: 20%; }
 	.flash-legend { width: 40%; }
-	.flash-lot {margin-right: 0px; margin-left: 0px}
+	.flash-lot {margin-right: 0px; margin-left: 0px;}
+	.flash-lot .well{height: 85px;}
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -569,11 +590,15 @@ body {
 	background: #4aa929;
 }
 
-.flash-lot h3, .flash-lot h4, .flash-lot p{
+.flash-lot h4, .flash-lot p{
 	margin-top: 0;
 	margin-bottom: 3px;
 }
-
+.flash-lot h3{
+	margin-top: 0;
+	margin-bottom: 3px;
+	font-size: 18px;
+}
 
 /* [END] FLASH LOTTERY PANEL */
 .account-well{

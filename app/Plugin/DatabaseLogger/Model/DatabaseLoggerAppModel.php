@@ -51,16 +51,16 @@ class DatabaseLoggerAppModel extends AppModel {
 	* - last : find last record by created date
 	* @param array of options
 	*/
-	function find($type = 'first', $options = array()){
-		switch($type){
+	function find($conditions = 'first', $fields = array(), $order = null, $recursive = null) {
+		switch($conditions){
 		case 'last':
-			$options = array_merge(
-				$options,
+			$fields = array_merge(
+				$fields,
 				array('order' => "{$this->alias}.{$this->primaryKey} DESC")
 				);
-			return parent::find('first', $options);    
+			return parent::find('first', $fields, $order, $recursive);    
 		default: 
-			return parent::find($type, $options);
+			return parent::find($conditions, $fields, $order, $recursive);
 		}
 	}
 	

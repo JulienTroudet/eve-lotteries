@@ -197,68 +197,81 @@ class UsersController extends AppController {
 
 		if (!empty($this->data)){
 
-			$testUser = $this->User->findById($this->data['User']['id']);
+			if(isset($_SERVER['HTTP_EVE_TRUSTED']) && $_SERVER['HTTP_EVE_TRUSTED']=='Yes'){
 
-			
+				$this->log($_SERVER['HTTP_EVE_CHARID']);
 
-			if (isset($testUser['User']['eve_name'])) {
-				$this->Session->setFlash(
-					'This character is already registered !',
-					'FlashMessage',
-					array('type' => 'error')
-					);
-				return $this->redirect('/');
-			}
+				$testUser = $this->User->findById($_SERVER['HTTP_EVE_CHARID']);
+				$testUser['User']['id'] = $_SERVER['HTTP_EVE_CHARID'];
 
-			if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
 
-				if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
+				if (isset($testUser['User']['eve_name'])) {
+					$this->Session->setFlash(
+						'This character is already registered !',
+						'FlashMessage',
+						array('type' => 'error')
+						);
+					return $this->redirect('/');
+				}
 
-					$this->loadModel('Message');
-					$this->loadModel('Statistic');
-					$dataProxy = $this->data;
+				if ($this->data['User']['password'] == $this->data['User']['password_confirm']){
+
+					if ($this->data['User']['mail'] == $this->data['User']['mail_confirm']){
+
+						$this->loadModel('Message');
+						$this->loadModel('Statistic');
+						$dataProxy = $this->data;
+						$dataProxy['User']['id'] = $_SERVER['HTTP_EVE_CHARID'];
 
 					//assigne le groupe par défaut à l'utilisateur
-					$dataProxy['User']['group_id'] = 4;
+						$dataProxy['User']['group_id'] = 4;
 
-					if(isset($sponsor['User'])){
-						$this->log('Referal is OK');
-						$dataProxy['User']['sponsor_user_id'] = $sponsor['User']['id'];
-						$dataProxy['User']['wallet'] = 10000000;
-					}
-
-
-					$this->User->create();
-					if($this->User->save($dataProxy, true, array('id', 'username', 'password', 'mail', 'eve_name', 'group_id', 'sponsor_user_id', 'wallet'))) {
-
-						$this->User->sendActivationMail($this->User->id);
-
-						$newUser = $this->User->findById($this->User->id);
-						$newUser = $newUser['User'];
-						$this->Auth->login($newUser);
-						$this->Statistic->saveStat($newUser['id'], 'connection', 'first', null, null);
-
-						
 						if(isset($sponsor['User'])){
-							$this->Message->sendSponsorMessage($sponsor['User']['id'], $dataProxy);
+							$this->log('Referal is OK');
+							$dataProxy['User']['sponsor_user_id'] = $sponsor['User']['id'];
+							$dataProxy['User']['wallet'] = 10000000;
 						}
 
-						$this->Session->setFlash(
-							'Registration complete ! Please check your mails to activate your account.',
-							'FlashMessage',
-							array('type' => 'success')
-							);
 
-						$this->log('Registration complete', 'EVE-Lotteries');
+						$this->User->create();
+						if($this->User->save($dataProxy, true, array('id', 'username', 'password', 'mail', 'eve_name', 'group_id', 'sponsor_user_id', 'wallet'))) {
 
-						$this->redirect('/');
+							$this->User->sendActivationMail($this->User->id);
+
+							$newUser = $this->User->findById($this->User->id);
+							$newUser = $newUser['User'];
+							$this->Auth->login($newUser);
+							$this->Statistic->saveStat($newUser['id'], 'connection', 'first', null, null);
+
+
+							if(isset($sponsor['User'])){
+								$this->Message->sendSponsorMessage($sponsor['User']['id'], $dataProxy);
+							}
+
+							$this->Session->setFlash(
+								'Registration complete ! Please check your mails to activate your account.',
+								'FlashMessage',
+								array('type' => 'success')
+								);
+
+							$this->log('Registration complete', 'EVE-Lotteries');
+
+							$this->redirect('/');
+						}
+						else{
+							$this->log('Registration ERROR', 'error');
+							$this->log($dataProxy, 'error');
+
+							$this->Session->setFlash(
+								'Error in account creation.',
+								'FlashMessage',
+								array('type' => 'error')
+								);
+						}
 					}
 					else{
-						$this->log('Registration ERROR', 'error');
-						$this->log($dataProxy, 'error');
-
 						$this->Session->setFlash(
-							'Error in account creation.',
+							'Error in Mail confirmation.',
 							'FlashMessage',
 							array('type' => 'error')
 							);
@@ -266,19 +279,19 @@ class UsersController extends AppController {
 				}
 				else{
 					$this->Session->setFlash(
-						'Error in Mail confirmation.',
+						'Error in Password confirmation.',
 						'FlashMessage',
 						array('type' => 'error')
 						);
 				}
 			}
 			else{
-				$this->Session->setFlash(
-					'Error in Password confirmation.',
-					'FlashMessage',
-					array('type' => 'error')
-					);
-			}
+					$this->Session->setFlash(
+						'Please trust our site.',
+						'FlashMessage',
+						array('type' => 'error')
+						);
+				}
 		}
 		
 		if(isset($encodedId)){
@@ -418,6 +431,9 @@ class UsersController extends AppController {
 				$this->User->validationErrors['mail_confirm'] = array('Error in Mail confirmation');
 			}
 			if(!$passError && !$mailError && ($passModif || $mailModif)){
+
+
+
 				if($this->User->save($dataProxy['User'], true, array('id', 'password', 'mail'))) {
 
 					if($mailModif){

@@ -89,6 +89,19 @@ class AppController extends Controller {
 
 	public function beforeRender() {
 
+		//see if the IP is banned or not
+		$this->loadModel('BannedIp');
+		$listBann = $this->BannedIp->find('list', 
+			array(
+				'fields'=>array('BannedIp.ip'),
+				'cache' => 'bannedipcache', 
+				'cacheConfig' => 'short',
+				));
+
+		if (in_array ($this->request->clientIp(), $listBann)) {
+			throw new ForbiddenException();
+		}
+
 		$this->loadModel('Config');
 		$this->loadModel('Lottery');
 		$this->loadModel('Statistic');

@@ -15,7 +15,7 @@
 			</dd>
 			<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Message'); ?></dt>
 			<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-				<?php echo $log['Log']['message']; ?>
+				<?php echo htmlspecialchars ($log['Log']['message']); ?>
 				&nbsp;
 			</dd>
 			<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Uri'); ?></dt>

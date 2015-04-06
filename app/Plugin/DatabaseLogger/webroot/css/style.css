@@ -92,7 +92,6 @@ div.database_logger_plugin dl {
 	width: 60%;
 }
 div.database_logger_plugin dl .altrow {
-	background: #f4f4f4;
 }
 div.database_logger_plugin dt {
 	font-weight: bold;
@@ -101,7 +100,6 @@ div.database_logger_plugin dt {
 }
 div.database_logger_plugin dd {
 	margin-left: 10em;
-	margin-top: -2em;
 	vertical-align: top;
 }
 

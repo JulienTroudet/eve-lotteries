@@ -30,6 +30,7 @@
 	<?php endif; ?>
 <?php endif; ?>
 
+
 <script>
 	$(document).ready(function() {
 		$('.carousel').carousel({
@@ -37,6 +38,7 @@
 		});
 
 		updateFlashCountDown();
+		updateSuperCountDown();
 	});
 
 
@@ -46,16 +48,35 @@
 			'ms| sec| min| hr|| wk|| yr',
 			'ms| secs| mins| hrs|| wk|| yrs',
 			' and ');
-		exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
+		var exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date'] ?>";
 
-		if(moment.utc(exp_date).subtract(1, 'h').isAfter()){
-			$('.flash-countdown').html("End in "+moment.utc(exp_date).subtract(1, 'h').countdown().toString());
+		if(moment.utc(exp_date).isAfter()){
+			$('.flash-countdown').html("Ends in "+moment.utc(exp_date).countdown().toString());
 		}
 		else{
 			$('.flash-countdown').html("Closed");
 		}
 		setTimeout(updateFlashCountDown, 10 );
-		<?php endif; ?>
+	<?php endif; ?>
+
+	}
+
+	function updateSuperCountDown() {
+		<?php if (!empty($superLottery)): ?>
+		countdown.setLabels(
+			'ms| sec| min| hr|| wk|| yr',
+			'ms| secs| mins| hrs|| wk|| yrs',
+			' and ');
+		var exp_date = "<?php echo $superLottery['SuperLottery']['expiration_date'] ?>";
+
+		if(moment.utc(exp_date).isAfter()){
+			$('.super-countdown').html("Ends in "+moment.utc(exp_date).countdown().toString());
+		}
+		else{
+			$('.super-countdown').html("Closed");
+		}
+		setTimeout(updateSuperCountDown, 10 );
+	<?php endif; ?>
 
 	}
 

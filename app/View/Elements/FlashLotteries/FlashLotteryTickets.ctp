@@ -1,4 +1,4 @@
-<div class="flash-lot">
+<div class="flash-lott">
 	<div class="well well-sm <?php if($flashLottery['FlashLottery']['status']=='ongoing'){echo 'well-ongoing';}else{echo 'well-finished';}?>">
 		<div class="row">
 			<div class="col-md-2 col-sm-3">

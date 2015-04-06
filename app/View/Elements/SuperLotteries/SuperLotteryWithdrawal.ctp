@@ -20,19 +20,13 @@
 						<div class="col-md-5">
 							
 							<p>Prize : <strong><?php echo $superLottery['EveItem']['name']; ?> X <?php echo $superLottery['SuperLottery']['number_items']; ?></strong></p>
-							<h5>Ticket value : <?php echo number_format($superLottery['SuperLottery']['ticket_value'], 0); ?> <span class="badge">Points</span></h5>
 						</div>
 
 						<div class="col-md-7">
 
 							<?php if(isset($userGlobal['id'])):?>
-								<h5>You have win this super lottery with <?php if(isset($superLottery['SuperLotteryTicket'][$userGlobal['id']])){echo number_format($superLottery['SuperLotteryTicket'][$userGlobal['id']]['nb_tickets'], 0);} else{echo '0';} ?> tickets.</h5>
+								<h5>You have won this Super Lottery with <?php if(isset($superLottery['SuperLotteryTicket'][$userGlobal['id']])){echo number_format($superLottery['SuperLotteryTicket'][$userGlobal['id']]['nb_tickets'], 0);} else{echo '0';} ?> tickets bought out of <?php echo $superLottery['SuperLottery']['nb_ticket_bought']?>.</h5>
 							<?php endif; ?>
-							<div class="progress">
-								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="<?php echo $superLottery['SuperLottery']['nb_tickets']; ?>" style="width: 100%;">
-									<?php echo $superLottery['SuperLottery']['nb_ticket_bought']; ?>/<?php echo $superLottery['SuperLottery']['nb_tickets']; ?> Tickets bought
-								</div>
-							</div>
 						</div>
 
 					</div>
@@ -40,10 +34,31 @@
 				<div class="col-md-3">
 					<?php if($superLottery['SuperLottery']['status']=='unclaimed'): ?>
 						<div class="form">
-							<button class="btn btn-block btn-default btn-super-claim" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">Claim this super Lottery</button>
+							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="item" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
+								Claim as Item(s)
+							</button>
+							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="credits" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
+								Claim as Credits
+							</button>
+							<button class="btn btn-block btn-default btn-super-claim" data-super-claim-type="ISK" data-super-lottery-id="<?php echo $superLottery['SuperLottery']['id']; ?>">
+								Claim as ISK
+							</button>
 						</div>
-					<?php elseif($superLottery['SuperLottery']['status']=='claimed') : ?>
-						<button class="btn btn-block btn-default btn-claim btn-claim-credits" disabled>Super Lottery Claimed</button>
+					<?php elseif($superLottery['SuperLottery']['status']=='claimed_item') : ?>
+						<button class="btn btn-block btn-default btn-claim btn-claim-credits" disabled>Item(s) Claimed</button>
+					<?php elseif($superLottery['SuperLottery']['status']=='claimed_isk') : ?>
+						<button class="btn btn-block btn-default btn-claim btn-claim-credits" disabled>ISK Claimed</button>
+
+
+					<?php elseif($superLottery['SuperLottery']['status']=='completed_item') : ?>
+						<p>Super Lottery Completed. The items have been contracted to you.</p>
+
+					<?php elseif($superLottery['SuperLottery']['status']=='completed_credits') : ?>
+						<p>Super Lottery Completed. Credits given.</p>
+
+					<?php elseif($superLottery['SuperLottery']['status']=='completed_isk') : ?>
+						<p>Super Lottery Completed. ISK have been sent to you</p>
+
 					<?php else: ?>
 						<p>Super Lottery Completed. The items have been contracted to you.</p>
 					<?php endif; ?>

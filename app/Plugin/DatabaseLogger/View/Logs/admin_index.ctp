@@ -21,7 +21,7 @@
 		<tr<?php echo $class;?>>
 			<td><?php echo $this->Time->niceShort($log['Log']['created']); ?>&nbsp;</td>
 			<td><?php echo $log['Log']['type']; ?>&nbsp;</td>
-			<td><?php echo $log['Log']['message']; ?>&nbsp;</td>
+			<td><?php echo htmlspecialchars ($log['Log']['message']); ?>&nbsp;</td>
 			<td class="actions">
 				<?php echo $this->Html->link(__('View Details'), array('action' => 'view', $log['Log']['id'])); ?>
 				<?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $log['Log']['id']), null, sprintf(__('Are you sure you want to delete this log # %s?'), $log['Log']['id'])); ?>

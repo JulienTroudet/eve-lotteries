@@ -7,7 +7,7 @@
 			<div class="flashLotteries form">
 				<?php echo $this->Form->create('FlashLottery'); ?>
 				<fieldset>
-					<legend><?php echo __('Admin Add Super Lottery'); ?></legend>
+					<legend><?php echo __('Admin Add Flash Lottery'); ?></legend>
 					<div class="form-group required">
 						<label for="FlashLotteryEveItemId">Eve Item</label>
 						<select name="data[FlashLottery][eve_item_id]" class="form-control" id="FlashLotteryEveItemId" required="required">

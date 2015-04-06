@@ -7,6 +7,8 @@
 		<?php echo $this->element('FlashLotteries/FlashLotteryTickets', array('flashLottery' => $flashLottery)); ?>
 	</div>
 </div>
+
+
 <script>
 	var $container = $('#flash-tickets-container');
 	$(document).ready(function() {
@@ -26,8 +28,8 @@
 			' and ');
 		exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
 
-		if(moment.utc(exp_date).subtract(1, 'h').isAfter()){
-			$('.flash-countdown').html("End in "+moment.utc(exp_date).subtract(1, 'h').countdown().toString());
+		if(moment.utc(exp_date).isAfter()){
+			$('.flash-countdown').html("Ends in "+moment.utc(exp_date).countdown().toString());
 		}
 		else{
 			$('.flash-countdown').html("Lottery Closed");

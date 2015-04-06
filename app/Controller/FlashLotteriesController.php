@@ -70,7 +70,8 @@ class FlashLotteriesController extends AppController
 		foreach ($flashLotteries as $key => $flot) {
 
 			$flashLotteries[$key]['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$flot['FlashLottery']['id'], 'buyer_user_id is not null')));
-
+			$flashLotteries[$key]['FlashLottery']['start_date'] = $this->_dateToUTC($flot['FlashLottery']['start_date']);
+			$flashLotteries[$key]['FlashLottery']['expiration_date'] = $this->_dateToUTC($flot['FlashLottery']['expiration_date']);
 		}
 		
 		$this->set('flashLotteries', $flashLotteries);
@@ -88,6 +89,12 @@ class FlashLotteriesController extends AppController
 			'order' => array('FlashLottery.created' => 'desc'), 
 			);
 		$flashWithdrawals = $this->FlashLottery->find('all', $params);
+
+		foreach ($flashWithdrawals as $key => $flot) {
+
+			$flashWithdrawals[$key]['FlashLottery']['start_date'] = $this->_dateToUTC($flot['FlashLottery']['start_date']);
+			$flashWithdrawals[$key]['FlashLottery']['expiration_date'] = $this->_dateToUTC($flot['FlashLottery']['expiration_date']);
+		}
 
 		$this->set('flashWithdrawals', $flashWithdrawals);
 	}
@@ -165,6 +172,9 @@ class FlashLotteriesController extends AppController
 		$flot = $this->FlashLottery->find('first', $params);
 
 		$flot['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$id, 'buyer_user_id is not null')));
+
+		$flot['FlashLottery']['start_date'] = $this->_dateToUTC($flot['FlashLottery']['start_date']);
+		$flot['FlashLottery']['expiration_date'] = $this->_dateToUTC($flot['FlashLottery']['expiration_date']);
 
 		$this->set('flashLottery', $flot);
 	}
@@ -393,12 +403,25 @@ class FlashLotteriesController extends AppController
 
 		if(!empty($flashLottery)){
 			$flashLottery['FlashLottery']['nb_bought'] = $this->FlashTicket->find('count', array('conditions'=>array('flash_lottery_id'=>$flashLottery['FlashLottery']['id'], 'buyer_user_id is not null')));
+			$flashLottery['FlashLottery']['start_date'] = $this->_dateToUTC($flashLottery['FlashLottery']['start_date']);
+			$flashLottery['FlashLottery']['expiration_date'] = $this->_dateToUTC($flashLottery['FlashLottery']['expiration_date']);
 		}
 		$this->FlashLottery->initiate_flash_lottery();
 		
 		$this->FlashLottery->end_flash_lottery();
 
 		return $flashLottery;
+	}
+
+	protected function _dateToUTC($dateT){
+		
+		$server_tz = 'Europe/Paris';
+		$schedule_date = new DateTime($dateT, new DateTimeZone($server_tz) );
+		$schedule_date->setTimeZone(new DateTimeZone('UTC'));
+		$newTime =  $schedule_date->format('c');
+
+		return $newTime;
+		
 	}
 
 	

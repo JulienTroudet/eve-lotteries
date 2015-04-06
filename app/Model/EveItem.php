@@ -27,9 +27,8 @@ class EveItem extends AppModel {
 
 		$newPrice = $evePrice + ($evePrice*($profit/100));
 
-		if($evePrice<=30000000){
+		if($evePrice<=40000000){
 			$ticketPrice = (int) round(($newPrice/$nbTickets), -5, PHP_ROUND_HALF_UP);
-			$ticketPrice = (int) round(($ticketPrice+500000), -6, PHP_ROUND_HALF_UP);
 		}
 		else{
 			$ticketPrice = (int) round(($newPrice/$nbTickets), -6, PHP_ROUND_HALF_UP);

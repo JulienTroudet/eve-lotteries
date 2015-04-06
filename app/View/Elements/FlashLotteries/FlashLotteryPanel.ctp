@@ -8,7 +8,7 @@
 
 				<div class="col-md-8 col-sm-6">
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-12  col-flash-panel">
 							<h3><?php echo $this->Html->link(
 								' Flash Lottery ! <strong class="flash-countdown"></strong>', 
 								array('controller' => 'flash_lotteries', 'action' => 'view', 'admin'=>false, 'plugin' => false, $flashLottery['FlashLottery']['id']),

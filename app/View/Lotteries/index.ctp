@@ -34,7 +34,7 @@
 												'id' => 'item-filter',
 												'label' => 'Item Category',
 												'placeholder' => 'Item Category',
-												 'style'=> 'margin-left:5px;',
+												'style'=> 'margin-left:5px;',
 												)
 											);
 											?>
@@ -108,7 +108,27 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="inactive-modal" tabindex="-1" role="dialog" aria-labelledby="inactive-modal-label" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="inactive-modal-item-label">EVE-Lotteries is sleeping !</h3>
+				</div>
+				<div class="modal-body">
+					EVE-Lotteries is sleeping !
+				</div>
+				<div class="modal-footer">
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script>
+
+		var userIsActive = true;
+		var idleTime = 0;
+
 		$(document).ready(function() {
 			$("[data-toggle='tooltip']").tooltip();
 			instanciateButtons();
@@ -117,14 +137,53 @@
 			instanciateItemsButtons();
 			updateLotteriesCountDown();
 
+			//Increment the idle time counter every minute.
+    		var idleInterval = setInterval(timerIncrement, 60000);
+
+			//fonction thas auto refresh the lotteries unless the user is AFK
 			(function poll() {
 				setTimeout(function() {
-					refreshListLotteries();
-					refreshListSpecialLotteries();
+					if(userIsActive){
+						console.log('refresh');
+						refreshListLotteries();
+						refreshListSpecialLotteries();
+					}
 					poll();
-				}, 10000);
+				}, 20000);
 			})();
+
+			$(this).mousemove(function (e) {
+				wakeUp();
+			});
+			$(this).keypress(function (e) {
+				wakeUp();
+			});
+
 		});
+
+		function timerIncrement() {
+			idleTime = idleTime + 1;
+			if (idleTime > 4) { 
+				putToSleep();
+			}
+		}
+
+		function putToSleep() {
+			userIsActive = false;
+			window.scrollTo(0,0);
+			$('#inactive-modal').modal('show')
+		}
+
+		function wakeUp() {
+			if(!userIsActive){
+				console.log('refresh');
+				refreshListLotteries();
+				refreshListSpecialLotteries();
+			}
+			userIsActive = true;
+			idleTime = 0;
+			$('#inactive-modal').modal('hide')
+		}
 
 		function filterItems(){
 			lastValue = $("#item-search").val();
@@ -330,46 +389,46 @@
 			$('.item-choice-button').click(function(){
 				<?php if(isset($_SERVER['HTTP_EVE_TRUSTED'])): ?>
 				window.scrollTo(0,0);
-				<?php endif; ?>
+			<?php endif; ?>
 
-				var itemId = $(this).data('item-id');
-				var itemName = $(this).data('item-name');
-				var itemNbTickets = $(this).data('item-nbt');
-				var ticketPrice = $(this).data('ticket-price');
-				var ticketFPrice = number_format(ticketPrice, 0,'.',',');
+			var itemId = $(this).data('item-id');
+			var itemName = $(this).data('item-name');
+			var itemNbTickets = $(this).data('item-nbt');
+			var ticketPrice = $(this).data('ticket-price');
+			var ticketFPrice = number_format(ticketPrice, 0,'.',',');
 
-				var itemPrice = number_format($(this).data('item-price'), 0,'.',',');
-				$('#choose-ticket-modal').modal('show');
-				$('#choose-ticket-modal-item-label').html(itemName +' : '+itemPrice+' <span class="badge">ISK</span>');
-				$('#choose-ticket-modal-ticket-label').html(ticketFPrice+' <i class="fa fa-money"></i> for one <i class="fa fa-ticket"></i> <span class="modal-total-buy"></span>');
-				var htmlTickets = "";
-				for (var i = 1; i <= itemNbTickets; i++) {
-					htmlTickets+= '<div class="col-md-6 col-sm-12"><button class="btn btn-block btn-primary ticket-modal" data-value="'+ticketPrice+'" data-position="'+(i-1)+'">'+i+'. Buy this ticket</button></div>';
-				};
-				$('#button-buy-list').data('item-id', itemId);
-				$('#choose-ticket-modal-body').html(htmlTickets);
+			var itemPrice = number_format($(this).data('item-price'), 0,'.',',');
+			$('#choose-ticket-modal').modal('show');
+			$('#choose-ticket-modal-item-label').html(itemName +' : '+itemPrice+' <span class="badge">ISK</span>');
+			$('#choose-ticket-modal-ticket-label').html(ticketFPrice+' <i class="fa fa-money"></i> for one <i class="fa fa-ticket"></i> <span class="modal-total-buy"></span>');
+			var htmlTickets = "";
+			for (var i = 1; i <= itemNbTickets; i++) {
+				htmlTickets+= '<div class="col-md-6 col-sm-12"><button class="btn btn-block btn-primary ticket-modal" data-value="'+ticketPrice+'" data-position="'+(i-1)+'">'+i+'. Buy this ticket</button></div>';
+			};
+			$('#button-buy-list').data('item-id', itemId);
+			$('#choose-ticket-modal-body').html(htmlTickets);
 
-				instanciateChoiceButtons();
-			});
+			instanciateChoiceButtons();
+		});
 
-			$('#button-buy-list').click(function(){
-				var itemId = $(this).data('item-id');
-				var choosenTickets = $('.ticket-modal.active');
-				var listPos = [];
-				for (var i = 0; i < choosenTickets.length; i++) {
-					listPos.push($(choosenTickets[i]).data('position'));
-				};
-				buyListTickets(itemId, listPos)
-				$('#choose-ticket-modal').modal('hide');
-				});
+$('#button-buy-list').click(function(){
+	var itemId = $(this).data('item-id');
+	var choosenTickets = $('.ticket-modal.active');
+	var listPos = [];
+	for (var i = 0; i < choosenTickets.length; i++) {
+		listPos.push($(choosenTickets[i]).data('position'));
+	};
+	buyListTickets(itemId, listPos)
+	$('#choose-ticket-modal').modal('hide');
+});
 
-			$("#item-search").on('change keyup paste mouseup', function() {
-					filterItems();
-				});
+$("#item-search").on('change keyup paste mouseup', function() {
+	filterItems();
+});
 
-			$("#item-filter").on('change', function() {
-					filterItems();
-			});
+$("#item-filter").on('change', function() {
+	filterItems();
+});
 
 			//orders the item by value when the button is clicked
 			$("#sort-value").on('click', function() {
@@ -399,79 +458,79 @@
 			});
 		}
 
-	function instanciateChoiceButtons(){
-		$('.ticket-modal').click(function(){
+		function instanciateChoiceButtons(){
+			$('.ticket-modal').click(function(){
 
-			if($(this).hasClass('active')) {
-				$(this).removeClass('active');
-			}
-			else {
-				$(this).addClass('active');
-			}
-
-			var ticketPrice = $(this).data('value');
-			var nbtickets = $('.ticket-modal.active').length;
-
-			if(nbtickets>0){
-				$('.modal-total-buy').html('('+number_format(ticketPrice*nbtickets, 0,'.',',')+')');
-			}
-			else{
-				$('.modal-total-buy').html('');
-			}
-			
-			
-		});
-	}
-
-	function instanciateSuperButtons(){
-		$('.buy-super-ticket').click(function(){
-			var idSuper = $(this).data('id-super');
-			var nbTickets = $(this).data('nb-ticket');
-			$.ajax({
-				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'super_lottery_tickets', 'action' => 'buy', 'ext' => 'json')); ?>",
-				data:{
-					id_super:idSuper,
-					nb_tickets:nbTickets
-				},
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				},
-				success: function(response) {
-					if (response.error) {
-						toastr.warning(response.error);
-						console.log(response.error);
-					}
-					if (response.success) {
-						refreshUserNavbar();
-						refreshListSpecialLotteries();
-						toastr.success('You have bought '+nbTickets+' ticket for the Super Lottery !');
-					}
-				},
-				error: function(e) {
-					toastr.warning(e.responseText);
-					console.log(e);
+				if($(this).hasClass('active')) {
+					$(this).removeClass('active');
 				}
+				else {
+					$(this).addClass('active');
+				}
+
+				var ticketPrice = $(this).data('value');
+				var nbtickets = $('.ticket-modal.active').length;
+
+				if(nbtickets>0){
+					$('.modal-total-buy').html('('+number_format(ticketPrice*nbtickets, 0,'.',',')+')');
+				}
+				else{
+					$('.modal-total-buy').html('');
+				}
+
+
 			});
-		});
-	}
+		}
 
-	function updateLotteriesCountDown() {
+		function instanciateSuperButtons(){
+			$('.buy-super-ticket').click(function(){
+				var idSuper = $(this).data('id-super');
+				var nbTickets = $(this).data('nb-ticket');
+				$.ajax({
+					type:"get",
+					url:"<?php echo $this->Html->url(array('controller' => 'super_lottery_tickets', 'action' => 'buy', 'ext' => 'json')); ?>",
+					data:{
+						id_super:idSuper,
+						nb_tickets:nbTickets
+					},
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+					},
+					success: function(response) {
+						if (response.error) {
+							toastr.warning(response.error);
+							console.log(response.error);
+						}
+						if (response.success) {
+							refreshUserNavbar();
+							refreshListSpecialLotteries();
+							toastr.success('You have bought '+nbTickets+' ticket for the Super Lottery !');
+						}
+					},
+					error: function(e) {
+						toastr.warning(e.responseText);
+						console.log(e);
+					}
+				});
+			});
+		}
 
-		countdown.setLabels(
-			'm|s|m|h|d|w|m| year| decade| century| millennium',
-			'm|s|m|h|d|w|m| years| decades| centuries| millennia',
-			' : ',
-			' : ',
-			'');
+		function updateLotteriesCountDown() {
+
+			countdown.setLabels(
+				'm|s|m|h|d|w|m| year| decade| century| millennium',
+				'm|s|m|h|d|w|m| years| decades| centuries| millennia',
+				' : ',
+				' : ',
+				'');
 
 
-		$( ".lot-timer" ).each(function( index ) {
-			var start_date = $(this).data('start');
+			$( ".lot-timer" ).each(function( index ) {
+				var start_date = $(this).data('start');
 
-			$(this).html('Started since '+moment.utc(start_date).subtract(1, 'h').countdown().toString());
-		});	
+				$(this).html('Started since '+moment.utc(start_date).countdown().toString());
+			});	
 
-		setTimeout( updateLotteriesCountDown, 1000 );
-	}
-</script>
+			setTimeout( updateLotteriesCountDown, 1000 );
+		}
+	</script>

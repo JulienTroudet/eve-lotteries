@@ -107,7 +107,7 @@
 				</div>
 				<?php
 			echo $this->Form->input(
-				'id',
+				'display-id',
 				array(
 					'type' => 'text',
 					'readonly' => 'readonly',

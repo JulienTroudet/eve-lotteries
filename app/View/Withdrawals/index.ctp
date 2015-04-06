@@ -232,11 +232,13 @@
 		});
 		$('.btn-super-claim').click(function(){
 			var idSuperLottery = $(this).data('super-lottery-id');
+			var claimTypeSuperLottery = $(this).data('super-claim-type');
 			$.ajax({
 				type:"get",
 				url:"<?php echo $this->Html->url(array('controller' => 'super_lotteries', 'action' => 'claim','ext' => 'json')); ?>",
 				data:{
 					super_lottery_id:idSuperLottery,
+					super_lottery_claim_type:claimTypeSuperLottery,
 				},
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -266,11 +268,13 @@
 		});
 		$('.btn-flash-claim').click(function(){
 			var idFlashLottery = $(this).data('flash-lottery-id');
+			var claimTypeFlashLottery = $(this).data('flash-claim-type');
 			$.ajax({
 				type:"get",
 				url:"<?php echo $this->Html->url(array('controller' => 'flash_lotteries', 'action' => 'claim','ext' => 'json')); ?>",
 				data:{
 					flash_lottery_id:idFlashLottery,
+					flash_lottery_claim_type:claimTypeFlashLottery,
 				},
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

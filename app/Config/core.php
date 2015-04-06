@@ -155,7 +155,7 @@ Configure::write('Routing.prefixes', array('admin'));
  * Turn off all caching application-wide.
  *
  */
-	Configure::write('Cache.disable', true);
+	//Configure::write('Cache.disable', true);
 
 /**
  * Enable cache checking.
@@ -166,7 +166,7 @@ Configure::write('Routing.prefixes', array('admin'));
  * or in each action using $this->cacheAction = true.
  *
  */
-	//Configure::write('Cache.check', true);
+	Configure::write('Cache.check', true);
 
 /**
  * Enable cache view prefixes.
@@ -384,4 +384,11 @@ Cache::config('_cake_model_', array(
 	'path' => CACHE . 'models' . DS,
 	'serialize' => ($engine === 'File'),
 	'duration' => $duration
+));
+
+Cache::config('short', array(
+    'engine' => 'File',
+    'duration' => '+1 hours',
+    'path' => CACHE,
+    'prefix' => 'cake_short_'
 ));

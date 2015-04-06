@@ -19,6 +19,8 @@
 		<li class="divider"></li>
 		<li><?php echo $this->Html->link(__('List Users'), array('controller' => 'users', 'action' => 'index', 'admin' => true)); ?> </li>
 		<li class="divider"></li>
+		<li><?php echo $this->Html->link(__('See Banned Ip\'s'), array('controller' => 'banned_ips', 'action' => 'index', 'admin' => true)); ?> </li>
+		<li class="divider"></li>
 		<li><?php echo $this->Html->link(__('See Logs'), array('controller' => 'database_logger', 'action' => 'logs', 'admin' => true)); ?> </li>
 
 	</ul>
