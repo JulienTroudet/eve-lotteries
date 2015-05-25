@@ -30,8 +30,9 @@
 									<h5>You have bought <?php if(isset($superLottery['SuperLotteryTicket'][$userGlobal['id']])){echo number_format($superLottery['SuperLotteryTicket'][$userGlobal['id']]['nb_tickets'], 0);} else{echo '0';} ?> out of <?php echo number_format($superLottery['SuperLottery']['nb_ticket_bought'], 0); ?> tickets.</h5>
 								<?php endif; ?>
 							</p>
-							<p><?php echo CakeTime::niceShort(h($superLottery['SuperLottery']['start_date'])); ?> - <?php echo CakeTime::niceShort(h($superLottery['SuperLottery']['expiration_date'])); ?></p>
-							
+							<p>
+							<?php echo CakeTime::niceShort($superLottery['SuperLottery']['start_date']); ?> - <?php echo CakeTime::niceShort($superLottery['SuperLottery']['expiration_date']); ?>
+							</p>							
 						</div>
 
 					</div>

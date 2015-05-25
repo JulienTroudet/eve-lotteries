@@ -1547,13 +1547,13 @@ table th[class*="col-"] {
 .table > thead > tr.warning > th,
 .table > tbody > tr.warning > th,
 .table > tfoot > tr.warning > th {
-	background-color: #fcf8e3;
+	background-color: #7A5F39;
 }
 .table-hover > tbody > tr > td.warning:hover,
 .table-hover > tbody > tr > th.warning:hover,
 .table-hover > tbody > tr.warning:hover > td,
 .table-hover > tbody > tr.warning:hover > th {
-	background-color: #faf2cc;
+	background-color: #C79D61;
 }
 .table > thead > tr > td.danger,
 .table > tbody > tr > td.danger,
@@ -1567,13 +1567,13 @@ table th[class*="col-"] {
 .table > thead > tr.danger > th,
 .table > tbody > tr.danger > th,
 .table > tfoot > tr.danger > th {
-	background-color: #f2dede;
+	background-color: #612C2B;
 }
 .table-hover > tbody > tr > td.danger:hover,
 .table-hover > tbody > tr > th.danger:hover,
 .table-hover > tbody > tr.danger:hover > td,
 .table-hover > tbody > tr.danger:hover > th {
-	background-color: #ebcccc;
+	background-color: #A0514E;
 }
 @media (max-width: 767px) {
 	.table-responsive {
@@ -4585,7 +4585,7 @@ a.thumbnail.active {
 	display: block;
 }
 .media-heading {
-	margin: 0 0 5px;
+	margin: 0 0 0px;
 }
 .media > .pull-left {
 	margin-right: 10px;

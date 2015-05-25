@@ -9,6 +9,7 @@
 					<div class="media-body">
 						<h3 class="media-heading"><?php echo $lottery['EveItem']['name']; ?></h3>
 						<p class="media-heading"><?php echo number_format($lottery['Lottery']['value']); ?> <i class="fa fa-money"></i></p>	
+						<p class="media-heading">Ended <?php echo CakeTime::niceShort(h($lottery['Lottery']['modified'])); ?></p>	
 					</div>
 				</div>
 			</div>

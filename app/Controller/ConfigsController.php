@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::uses('ShellDispatcher', 'Console');
 App::Import('ConnectionManager');
 /**
  * Configs Controller
@@ -22,7 +23,19 @@ class ConfigsController extends AppController {
 	private $pheal = null;
 
 	public function beforeFilter() {
-		
+		parent::beforeFilter();
+		$this->Auth->allow('api_check_for_admin');
+	}
+
+	public function api_check_for_admin() {
+		$command = '-app '.APP.' EveApi';
+		$args = explode(' ', $command);
+
+		$this->log('Manual CRON: '.$command, 'CRON eve-lotteries');
+
+		$dispatcher = new ShellDispatcher($args, false);
+		$dispatcher->dispatch();
+		return $this->redirect('/');
 	}
 
 

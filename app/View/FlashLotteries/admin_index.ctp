@@ -52,7 +52,7 @@
 								<td class="actions">
 									<?php if($flashLottery['FlashLottery']['status'] == 'waiting'):?>
 										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $flashLottery['FlashLottery']['id']), array(), __('Are you sure you want to delete # %s?', $flashLottery['FlashLottery']['id'])); ?>
-									<?php else:?>
+									<?php elseif($flashLottery['FlashLottery']['status'] != 'waiting' && $flashLottery['FlashLottery']['status'] != 'ongoing'):?>
 										<?php echo $this->Html->link(
 											'Complete this',
 											array('controller' => 'flash_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $flashLottery['FlashLottery']['id']),

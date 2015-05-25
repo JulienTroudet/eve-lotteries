@@ -36,9 +36,6 @@
 		<li>
 			<?php echo $this->Html->link(__('See transactions'), array('controller' => 'transactions', 'action' => 'index', 'admin' => true)); ?>
 		</li>
-		<li>
-			<?php echo $this->Html->link(__('Add a transaction'), array('controller' => 'transactions', 'action' => 'add', 'admin' => true)); ?>
-		</li>
 	</ul>
 </div>
 

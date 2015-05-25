@@ -204,7 +204,6 @@ class UsersController extends AppController {
 				$testUser = $this->User->findById($_SERVER['HTTP_EVE_CHARID']);
 				$testUser['User']['id'] = $_SERVER['HTTP_EVE_CHARID'];
 
-
 				if (isset($testUser['User']['eve_name'])) {
 					$this->Session->setFlash(
 						'This character is already registered !',

@@ -5,6 +5,7 @@
 	<?php echo $this->element('UserNavbar', array("userGlobal" => $userGlobal)); ?>
 </div>
 <div class="lotteries index">
+	
 	<div class="row">
 		<div class="col-md-12 col-sm-12">
 			<div class="panel panel-default">
@@ -317,7 +318,9 @@
 					}
 				},
 				error: function(e) {
-					toastr.warning(e.responseText);
+					if(e.status == 403){
+						toastr.warning("You must log in to play !");
+					}
 					console.log(e);
 				}
 			});
@@ -380,7 +383,9 @@
 						}
 					},
 					error: function(e) {
-						toastr.warning(e.responseText);
+						if(e.status == 403){
+							toastr.warning("You must log in to play !");
+						}
 						console.log(e);
 					}
 				});

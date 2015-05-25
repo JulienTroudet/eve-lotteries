@@ -247,7 +247,15 @@ class WithdrawalsController extends AppController {
 						$claimedAward['Withdrawal']['type'] = 'award_credit';
 						$claimedAward['Withdrawal']['value'] = $claimedValue;
 
-						if ($this->User->save($claimerUser, true, array('id', 'wallet', 'nb_new_won_lotteries')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
+						$dataSource = $this->Withdrawal->getDataSource();
+						$dataSource->begin();
+
+
+						if (
+							$this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))
+							&&
+							$this->User->save($claimerUser, true, array('id', 'wallet', 'nb_new_won_lotteries')) 
+							) {
 
 							$data = array (
 								'success' => true,
@@ -259,7 +267,13 @@ class WithdrawalsController extends AppController {
 
 							$this->log('Lottery claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
+							$dataSource->commit();
 
+						}
+						else{
+							$dataSource->rollback();
+							$data = array('error' => 'Error while processing.');
+							return $data;
 						}
 						break;
 
@@ -273,7 +287,14 @@ class WithdrawalsController extends AppController {
 
 						$claimerUser['User']['nb_new_won_lotteries']--;
 
-						if ($this->User->save($claimerUser, true, array('id', 'nb_new_won_lotteries')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
+						$dataSource = $this->Withdrawal->getDataSource();
+						$dataSource->begin();
+
+						if (
+							$this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))
+							&&
+							$this->User->save($claimerUser, true, array('id', 'nb_new_won_lotteries'))
+							) {
 
 							$data = array (
 								'success' => true,
@@ -285,7 +306,13 @@ class WithdrawalsController extends AppController {
 
 							$this->log('Lottery claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
+							$dataSource->commit();
 
+						}
+						else{
+							$dataSource->rollback();
+							$data = array('error' => 'Error while processing.');
+							return $data;
 						}
 						break;
 						case 'item':
@@ -300,7 +327,14 @@ class WithdrawalsController extends AppController {
 
 						$claimerUser['User']['nb_new_won_lotteries']--;
 
-						if ($this->User->save($claimerUser, true, array('id', 'nb_new_won_lotteries')) && $this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))) {
+						$dataSource = $this->Withdrawal->getDataSource();
+						$dataSource->begin();
+
+						if (
+							$this->Withdrawal->save($claimedAward, true, array('id', 'group_id', 'status', 'type', 'value'))
+							&&
+							$this->User->save($claimerUser, true, array('id', 'nb_new_won_lotteries'))
+							) {
 
 							$data = array (
 								'success' => true,
@@ -312,12 +346,18 @@ class WithdrawalsController extends AppController {
 
 							$this->log('Lottery claimed : type['.$claimType.'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$withdrawalId.'], value['.$claimedValue.']', 'eve-lotteries');
 
+							$dataSource->commit();
 
+						}
+						else{
+							$dataSource->rollback();
+							$data = array('error' => 'Error while processing.');
+							return $data;
 						}
 						break;
 					}
 
-					
+
 				}
 			}
 			$this->set(compact('data')); // Pass $data to the view
@@ -331,11 +371,12 @@ class WithdrawalsController extends AppController {
 		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
 
 		$this->loadModel('SuperLottery');
-		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$this->loadModel('FlashLottery');
+
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbSuperClaimed', $nbSuperClaimed);
 
-		$this->loadModel('FlashLottery');
-		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbFlashClaimed', $nbFlashClaimed);
 
 		$this->_organize_groups();

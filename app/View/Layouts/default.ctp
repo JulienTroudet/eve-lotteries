@@ -129,6 +129,7 @@
 			<p class="text-muted">
 				<i>EVE Online</i> and the EVE logo are the registered trademarks of <i>CCP hf.</i> All rights are reserved worldwide. All other trademarks are the property of their respective owners. <i>EVE Online</i>, the EVE logo, EVE and all associated logos and designs are the intellectual property of <i>CCP hf</i>. All artworks, screenshots, characters, vehicles, storylines, world facts or other recognizable features of the intellectual property relating to these trademarks are likewise the intellectual property of <i>CCP hf</i>. <i>CCP hf.</i> has granted permission to <i>EVE-Lotteries</i> to use <i>EVE Online</i> and all associated logos and designs for promotional and information purposes on its website but does not endorse, and is not in any way affiliated with, <i>EVE-Lotteries</i>. <i>CCP</i> is in no way responsible for the content on or functioning of this website, nor can it be liable for any damage arising from the use of this website.
 			</p>
+			<?php echo $this->element('sql_dump');?>
 		</div>
 	</div>
 

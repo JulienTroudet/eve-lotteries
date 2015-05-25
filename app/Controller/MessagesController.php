@@ -55,10 +55,23 @@ class MessagesController extends AppController {
 	 * @return void
 	 */
 	public function delete($id = null) {
+		$userGlobal = $this->Auth->user();
 		$this->Message->id = $id;
 		if (!$this->Message->exists()) {
 			throw new NotFoundException(__('Invalid Message'));
 		}
+
+		$message = $this->Message->findById($id);
+
+		if($message['Message']['user_id'] != $userGlobal['id']){
+			$this->Session->setFlash(
+				'This is not one of your messages.',
+				'FlashMessage',
+				array('type' => 'error')
+				);
+			return $this->redirect(array('action' => 'index', 'admin' => false));
+		}
+
 		$this->request->allowMethod('get', 'delete');
 		if ($this->Message->delete()) {
 			$this->Session->setFlash(

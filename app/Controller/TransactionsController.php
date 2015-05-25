@@ -14,7 +14,7 @@ class TransactionsController extends AppController {
 	 *
 	 * @var array
 	 */
-	public $components = array('Paginator', 'Session', 'RequestHandler');
+	public $components = array('Paginator', 'Session', 'RequestHandler', 'WalletParser');
 	public $helpers = array('Js');
 
 	public function beforeFilter() {
@@ -49,7 +49,6 @@ class TransactionsController extends AppController {
 		$this->Transaction->recursive = 0;
 		$paginateVar = array(
 			'contain' => array('User'),
-			'conditions' => array('Transaction.refid' => 'waiting'),
 			'order' => array(
 				'Transaction.created' => 'desc'
 				),
@@ -67,45 +66,105 @@ class TransactionsController extends AppController {
 	 * @return void
 	 */
 	public function admin_add() {
-		$this->loadModel('Withdrawal');
-		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
-		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
-
-		$this->loadModel('SuperLottery');
-		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
-		$this->set('nbSuperClaimed', $nbSuperClaimed);
-
-		$this->loadModel('FlashLottery');
-		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
-		$this->set('nbFlashClaimed', $nbFlashClaimed);
-
-		$this->loadModel('User');
-		$userId = $this->Auth->user('id');
-
-		$this->set('listUsers',$this->User->find('list', array('fields'=>array('id', 'eve_name'))));
 
 		if ($this->request->is('post')) {
 
 			$this->Transaction->create();
 			$dataProxy = $this->request->data;
-			$dataProxy['Transaction']['refid'] = "waiting";
 
-			$this->User->updateWallet($dataProxy['Transaction']['user_id'], $dataProxy['Transaction']['amount']);
+			$deposit = $this->WalletParser->parseOneDeposit($dataProxy['Transaction']['walletLine']);
 
-			if ($this->Transaction->save($dataProxy)) {
-				$this->Session->setFlash(
-					'The transaction has been saved.',
-					'FlashMessage',
-					array('type' => 'success')
-					);
-				return $this->redirect(array('action' => 'index', 'admin' => true));
-			} else {
+			if(!$deposit) {
+
 				$this->Session->setFlash(
 					'The transaction could not be saved. Please, try again.',
 					'FlashMessage',
 					array('type' => 'error')
 					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
 			}
+
+			//request the transaction to see if is it not already added
+			$params = array(
+				'contain' => array(
+					'User' => array (
+						'conditions' => array('User.eve_name' => $deposit['userName'])
+						)
+					),
+				'conditions' => array(
+					'Transaction.amount' => $deposit['amount'], 
+					'Transaction.eve_date' => $deposit['date']
+					),
+				'limit' => 1
+				);
+			$existingTransaction = $this->Transaction->find('first', $params);
+
+			if(empty($existingTransaction)){
+
+				//gets the user
+				$this->loadModel('User');
+				$donatorUser = $this->User->findByEveName($deposit['userName']);
+
+				if(!is_float ($deposit['amount'])){
+					$this->Session->setFlash(
+						'You must provide Decimal values !',
+						'FlashMessage',
+						array('type' => 'error')
+						);
+					return $this->redirect(array('action' => 'index', 'admin' => true));
+				}
+				if(empty($donatorUser)){
+					$this->Session->setFlash(
+						'This user does not exists',
+						'FlashMessage',
+						array('type' => 'error')
+						);
+					return $this->redirect(array('action' => 'index', 'admin' => true));
+				}
+
+				//new object transaction
+				$newTransaction=array();
+				$newTransaction['Transaction']['refid'] = 'waiting';
+				$newTransaction['Transaction']['amount'] = $deposit['amount'];
+				$newTransaction['Transaction']['user_id'] = $donatorUser['User']['id'];
+				$newTransaction['Transaction']['eve_date'] = $deposit['date'];
+
+				
+				//try to save the transaction
+				if ($this->Transaction->save($newTransaction)) {
+
+					//adds ISK if the transaction is saved
+					$this->User->updateWallet($newTransaction['Transaction']['user_id'], $newTransaction['Transaction']['amount']);
+
+					$this->Session->setFlash(
+						'The transaction has been saved.',
+						'FlashMessage',
+						array('type' => 'success')
+						);
+
+					return $this->redirect(array('action' => 'index', 'admin' => true));
+
+				} else {
+
+					$this->Session->setFlash(
+						'The transaction could not be saved. Please, try again.',
+						'FlashMessage',
+						array('type' => 'error')
+						);
+					return $this->redirect(array('action' => 'index', 'admin' => true));
+				}
+			}
+			else{
+				$this->Session->setFlash(
+					'The transaction already exists.',
+					'FlashMessage',
+					array('type' => 'error')
+					);
+				return $this->redirect(array('action' => 'index', 'admin' => true));
+			}
+
+			return $this->redirect(array('action' => 'index', 'admin' => true));
+			
 		}
 	}
 
@@ -236,7 +295,7 @@ class TransactionsController extends AppController {
 		$this->set('totalPlayed', $total);
 
 		//vas chercher tous les isk réclamés par le joueur
-		$totalIskClaimed = $db->fetchAll('SELECT SUM(isk_value) as amount from statistics where user_id = ? AND (type = "withdrawal_isk" OR type = "withdrawal_item") GROUP BY user_id', array($userGlobal['id']));
+		$totalIskClaimed = $db->fetchAll('SELECT SUM(isk_value) as amount from statistics where user_id = ? AND (type = "withdrawal_isk" OR type = "withdrawal_item" OR type = "super_withdrawal_isk" OR type = "super_withdrawal_item") GROUP BY user_id', array($userGlobal['id']));
 		$total = 0;
 		if (isset($totalIskClaimed[0][0]['amount'])) {
 			$total = $totalIskClaimed[0][0]['amount'];
@@ -244,7 +303,7 @@ class TransactionsController extends AppController {
 		$this->set('totalClaimedIsk', $total);
 
 		//vas chercher tous les crédits réclamés par le joueur
-		$totalCreditsClaimed = $db->fetchAll('SELECT SUM(isk_value) as amount from statistics where user_id = ? AND (type = "withdrawal_credits") GROUP BY user_id', array($userGlobal['id']));
+		$totalCreditsClaimed = $db->fetchAll('SELECT SUM(isk_value) as amount from statistics where user_id = ? AND (type = "withdrawal_credits" OR type = "super_withdrawal_credit") GROUP BY user_id', array($userGlobal['id']));
 		$total = 0;
 		if (isset($totalCreditsClaimed[0][0]['amount'])) {
 			$total = $totalCreditsClaimed[0][0]['amount'];
@@ -275,7 +334,7 @@ class TransactionsController extends AppController {
 		}
 		$this->set('totalSuperLotteriesPlayed', $total);
 
-		//vas chercher le nombre de lotteries gagnées par le joueur
+		//vas chercher le nombre de super lotteries gagnées par le joueur
 		$totalSuperLotteriesWon = $db->fetchAll('SELECT COUNT(*) as nb_lot_win FROM statistics where user_id = ? AND type = "win_super_lottery"', array($userGlobal['id']));
 		$total = 0;
 		if (isset($totalSuperLotteriesWon[0][0]['nb_lot_win'])) {

@@ -8,6 +8,8 @@ class EveApiShell extends AppShell {
 
 	public function main() {
 
+		$this->log('STARTING CRON', 'CRON eve-lotteries');
+
 		$corpoKeyID = $this->Config->findByName("corpoKeyID");
 		$corpoKeyIDValue = $corpoKeyID['Config']['value'];
 		$corpoVCode = $this->Config->findByName("corpoVCode");
@@ -134,16 +136,19 @@ class EveApiShell extends AppShell {
 			$this->log($transactions.' transactions imported', 'eve-lotteries');
 
 		} catch (\Pheal\Exceptions\PhealException $e) {
-			$this->out( sprintf(
-				"an exception was caught! Type: %s Message: %s",
-				get_class($e),
-				$e->getMessage()
-				));
+
+			$this->log($e->getMessage(), 'CRON error');
+
+			// $this->out( sprintf(
+			// 	"an exception was caught! Type: %s Message: %s",
+			// 	get_class($e),
+			// 	$e->getMessage()
+			// 	));
 		}
 
 		
 		//debug($response);
-		$this->out($response->cached_until);
+		//$this->out($response->cached_until);
 		//die($response->cached_until);
 		
 		$db = $this->UserAward->getDataSource();
@@ -180,7 +185,7 @@ class EveApiShell extends AppShell {
 
 						$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));
 
-						$this->log('Award Update : user_id['.$userId.'], award_idid['.$award['Award']['id'].']', 'eve-lotteries');
+						$this->log('Award Update : user_id['.$userId.'], award_idid['.$award['Award']['id'].']', 'CRON eve-lotteries');
 
 					}
 				}
@@ -193,6 +198,7 @@ class EveApiShell extends AppShell {
 			$this->User->updateNbNewAwards($userId, $newAwardsCount);
 		}
 
-		$this->out('Update complete');
+		//$this->out('Update complete');
+		$this->log('ENDING CRON', 'CRON eve-lotteries');
 	}
 }

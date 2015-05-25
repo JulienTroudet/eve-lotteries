@@ -119,20 +119,38 @@ public function beforeFilter() {
 		$totalInPlay = $db->fetchAll("SELECT SUM(lotteries.value) as total FROM lotteries WHERE lotteries.lottery_status_id='1'");
 		$this->set('totalInPlay', $totalInPlay[0][0]['total']);
 
-		$totalInPlaySuper = $db->fetchAll("SELECT (eve_items.eve_value*super_lotteries.number_items) as total FROM super_lotteries INNER JOIN eve_items ON eve_items.id = super_lotteries.eve_item_id WHERE super_lotteries.status='ongoing'");
+		$totalInPlaySuper = $db->fetchAll("SELECT SUM(eve_items.eve_value*super_lotteries.number_items) as total FROM super_lotteries INNER JOIN eve_items ON eve_items.id = super_lotteries.eve_item_id WHERE super_lotteries.status='ongoing'");
 		if(isset($totalInPlaySuper[0][0]['total'])){
 			$this->set('totalInPlaySuper', $totalInPlaySuper[0][0]['total']);
 		}
 		else{
 			$this->set('totalInPlaySuper', '0');
 		}
-		// debug($totalDeposited);
-		// die();
-		// $usersLotWon = $db->fetchAll("SELECT users.id, users.eve_name, stat.totalWon FROM users INNER JOIN ( SELECT COUNT(*) AS totalWon, user_id FROM statistics  WHERE type = 'win_lottery' GROUP BY user_id) stat ON stat.user_id = id ORDER BY totalWon DESC LIMIT 10");
-		// $this->set('usersLotWon', $usersLotWon);
 
-		// $popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, stat.totalItems FROM eve_items INNER JOIN ( SELECT COUNT(*) AS totalItems, eve_item_id FROM statistics  WHERE type = 'win_lottery' GROUP BY eve_item_id) stat ON stat.eve_item_id = id ORDER BY totalItems DESC LIMIT 10");
-		// $this->set('popularsItems', $popularsItems);
+		$totalInPlayFlash = $db->fetchAll("SELECT SUM(eve_items.eve_value) as total FROM flash_lotteries INNER JOIN eve_items ON eve_items.id = flash_lotteries.eve_item_id WHERE flash_lotteries.status='ongoing'");
+		if(isset($totalInPlayFlash[0][0]['total'])){
+			$this->set('totalInPlayFlash', $totalInPlayFlash[0][0]['total']);
+		}
+		else{
+			$this->set('totalInPlayFlash', '0');
+		}
+
+		$unclaimedSuper = $db->fetchAll("SELECT SUM(eve_items.eve_value*super_lotteries.number_items) as total FROM super_lotteries INNER JOIN eve_items ON eve_items.id = super_lotteries.eve_item_id WHERE super_lotteries.status='unclaimed'");
+		if(isset($unclaimedSuper[0][0]['total'])){
+			$this->set('unclaimedSuper', $unclaimedSuper[0][0]['total']);
+		}
+		else{
+			$this->set('unclaimedSuper', '0');
+		}
+
+		$unclaimedFlash = $db->fetchAll("SELECT SUM(eve_items.eve_value) as total FROM flash_lotteries INNER JOIN eve_items ON eve_items.id = flash_lotteries.eve_item_id WHERE flash_lotteries.status='unclaimed'");
+		if(isset($unclaimedFlash[0][0]['total'])){
+			$this->set('unclaimedFlash', $unclaimedFlash[0][0]['total']);
+		}
+		else{
+			$this->set('unclaimedFlash', '0');
+		}
+		
 	}
 
 	public function admin_thanks_player($id_player) {

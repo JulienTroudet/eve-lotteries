@@ -27,6 +27,7 @@
 						<td>Total In unclaimed Lotteries</td>
 						<td><?php echo number_format($totalUnclaimed, 2) ; ?> ISK</td>
 					</tr>
+					
 					<tr>
 						<td>Total In claimed not completed Lotteries</td>
 						<td><?php echo number_format($totalClaimed, 2) ; ?> ISK</td>
@@ -40,8 +41,20 @@
 						<td><?php echo number_format($totalInPlaySuper, 2) ; ?> ISK</td>
 					</tr>
 					<tr>
+						<td>Total In Play (Flash Lotteries)</td>
+						<td><?php echo number_format($totalInPlayFlash, 2) ; ?> ISK</td>
+					</tr>
+					<tr>
+						<td>Total In unclaimed Super Lotteries</td>
+						<td><?php echo number_format($unclaimedSuper, 2) ; ?> ISK</td>
+					</tr>
+					<tr>
+						<td>Total In unclaimed Flash Lotteries</td>
+						<td><?php echo number_format($unclaimedFlash, 2) ; ?> ISK</td>
+					</tr>
+					<tr>
 						<td><strong>Should stay in Wallet Corpo</strong></td>
-						<td><?php echo number_format($totalInPlaySuper+$totalInPlay+$totalClaimed+$totalUnclaimed+$totalWallets, 2) ; ?> ISK</td>
+						<td><?php echo number_format($totalInPlaySuper+$totalInPlayFlash+$totalInPlay+$totalClaimed+$totalUnclaimed+$totalWallets+$unclaimedSuper+$unclaimedFlash, 2) ; ?> ISK</td>
 					</tr>
 				</tbody>
 			</table>

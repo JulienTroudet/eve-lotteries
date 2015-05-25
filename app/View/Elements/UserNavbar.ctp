@@ -29,7 +29,7 @@
 									<p><span id="points"><?php echo number_format(floor($userGlobal['tokens'])); ?></span> <span class="badge">Points</span></p>
 								</div>
 							</div>
-							<div class="col-md-3 col-sm-3 col-user-navbar">
+							<div class="col-md-4 col-sm-4 col-user-navbar">
 								<div class="btn-group-vertical btn-block">
 									<?php $label = 'My Wallet';
 									echo $this->Html->link(
@@ -48,7 +48,7 @@
 											?>
 										</div>
 									</div>
-									<div class="col-md-3 col-sm-3 col-user-navbar">
+									<div class="col-md-4 col-sm-4 col-user-navbar">
 										<div class="btn-group-vertical btn-block">
 											<?php $label = 'My Lotteries';
 											$nbWon = $userGlobal['nb_new_won_lotteries']+$userGlobal['nb_new_won_super_lotteries']+$userGlobal['nb_new_won_flash_lotteries'];
@@ -77,33 +77,7 @@
 													?>
 												</div>
 											</div>
-											<div class="col-md-2 col-sm-2 col-user-navbar">
-												<?php $label = 'New lottery';
-												if($nbFreeLotteries>0){
-													$label= $label.'<br/> <span class="badge">'.$nbFreeLotteries.' Available';
-												}
-												if($this->params['controller'] == 'lotteries' && $this->params['action'] == 'index'){
-													echo $this->Html->link(
-														$label,
-														'#collapse-item',
-														array(
-															'class' => 'btn btn-block btn-success new-lot-collapse btn-new-lot',
-															'data-toggle' => 'collapse',
-															'escape' => false,
-															)
-														);
-												}
-												else{
-													echo $this->Html->link(
-														$label,
-														array('controller' => 'lotteries', 'action' => 'index_open'),
-														array(
-															'class' => 'btn btn-block btn-success new-lot-redirect btn-new-lot',
-															'escape' => false,)
-														);
-												}
-												?>
-											</div>
+											
 										</div>
 									</div>
 								</div>
@@ -140,6 +114,37 @@
 									</div>
 								</div>
 							<?php endif; ?>
+
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<?php $label = '<strong>Create a New Lottery </strong>';
+			if($nbFreeLotteries>0){
+				$label= $label.'<span class="badge">'.$nbFreeLotteries.' Available';
+			}
+			if($this->params['controller'] == 'lotteries' && $this->params['action'] == 'index'){
+				echo $this->Html->link(
+					$label,
+					'#collapse-item',
+					array(
+						'class' => 'btn btn-block btn-success new-lot-collapse btn-new-lot',
+						'data-toggle' => 'collapse',
+						'escape' => false,
+						)
+					);
+			}
+			else{
+				echo $this->Html->link(
+					$label,
+					array('controller' => 'lotteries', 'action' => 'index_open'),
+					array(
+						'class' => 'btn btn-block btn-success new-lot-redirect btn-new-lot',
+						'escape' => false,)
+					);
+			}
+			?>
+		</div>
+	</div>
+
 							<div class="modal fade" id="deposit-modal" tabindex="-1" role="dialog" aria-labelledby="deposit-modal-label" aria-hidden="true">
 								<div class="modal-dialog">
 									<div class="modal-content">

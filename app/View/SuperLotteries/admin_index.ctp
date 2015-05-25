@@ -50,7 +50,7 @@
 									<?php if($superLottery['SuperLottery']['status'] == 'waiting'):?>
 										<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', 'admin' => true, $superLottery['SuperLottery']['id']), array(), __('Are you sure you want to delete # %s?', $superLottery['SuperLottery']['id'])); ?>
 									
-									<?php else:?>
+									<?php elseif($superLottery['SuperLottery']['status'] != 'waiting' && $superLottery['SuperLottery']['status'] != 'ongoing'):?>
 										<?php echo $this->Html->link(
 											'Complete this',
 											array('controller' => 'super_lotteries', 'action' => 'complete', 'admin'=>true, 'plugin' => false, $superLottery['SuperLottery']['id']),

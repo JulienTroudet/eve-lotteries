@@ -177,6 +177,7 @@ class SuperLotteriesController extends AppController {
 			$this->disableCache();
 			$this->loadModel('User');
 
+			//find the POST parameters
 			$idSuperLottery = $this->request->query('super_lottery_id');
 			$claimType = $this->request->query('super_lottery_claim_type');
 
@@ -242,7 +243,7 @@ class SuperLotteriesController extends AppController {
 		$this->SuperLottery->recursive = 0;
 		$params = array(
 			'contain' => array('EveItem', 'SuperLotteryTicket', 'Winner'),
-			'conditions' => array('SuperLottery.status' => array('claimed_isk','claimed_item')),
+			'conditions' => array('SuperLottery.status' => array('claimed_isk','claimed_item', 'waiting', 'ongoing')),
 			'order' => array('SuperLottery.created' => 'desc'), 
 			);
 		$this->Paginator->settings = $params;
@@ -314,11 +315,11 @@ class SuperLotteriesController extends AppController {
 		$nbWithdrawalClaimed = $this->Withdrawal->find('count', array('conditions'=>array('Withdrawal.status'=>'claimed')));
 		$this->set('nbWithdrawalClaimed', $nbWithdrawalClaimed);
 
-		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>'claimed')));
+		$nbSuperClaimed = $this->SuperLottery->find('count', array('conditions'=>array('SuperLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbSuperClaimed', $nbSuperClaimed);
 
 		$this->loadModel('FlashLottery');
-		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>'claimed')));
+		$nbFlashClaimed = $this->FlashLottery->find('count', array('conditions'=>array('FlashLottery.status'=>array('claimed_isk','claimed_item'))));
 		$this->set('nbFlashClaimed', $nbFlashClaimed);
 
 		$userId = $this->Auth->user('id');
@@ -446,6 +447,7 @@ class SuperLotteriesController extends AppController {
 	 * @return [type]               [description]
 	 */
 	protected function _claim_as_item($superLottery, $claimerUser){
+		$this->loadModel("Statistic");
 		$superLottery['SuperLottery']['status'] = 'claimed_item';
 		$claimerUser['User']['nb_new_won_super_lotteries']--;
 
@@ -455,6 +457,8 @@ class SuperLotteriesController extends AppController {
 				'message' => 'You have claim '.$superLottery['SuperLottery']['number_items'].' '.$superLottery['EveItem']['name'].' !',
 				'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
 				);
+
+			$this->Statistic->saveStat($claimerUser['User']['id'], 'super_withdrawal_item', $superLottery['SuperLottery']['id'], $superLottery['EveItem']['eve_value'], $superLottery['EveItem']['id']);
 
 			$this->log('SuperLottery claimed : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
 		}
@@ -472,6 +476,7 @@ class SuperLotteriesController extends AppController {
 	 * @return [type]               [description]
 	 */
 	protected function _claim_as_credit($superLottery, $claimerUser){
+		$this->loadModel("Statistic");
 		$superLottery['SuperLottery']['status'] = 'completed_credit';
 		$claimerUser['User']['nb_new_won_super_lotteries']--;
 		$claimerUser['User']['wallet']+= $superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items']*1.05;
@@ -482,6 +487,8 @@ class SuperLotteriesController extends AppController {
 				'message' => 'You have claim '.number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items']*1.05,0).' EVE-Lotteries Credits!',
 				'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
 				);
+
+			$this->Statistic->saveStat($claimerUser['User']['id'], 'super_withdrawal_credit', $superLottery['SuperLottery']['id'], $superLottery['EveItem']['eve_value'], $superLottery['EveItem']['id']);
 
 			$this->log('SuperLottery claimed as credit : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
 		}
@@ -499,6 +506,7 @@ class SuperLotteriesController extends AppController {
 	 * @return [type]               [description]
 	 */
 	protected function _claim_as_isk($superLottery, $claimerUser){
+		$this->loadModel("Statistic");
 		$superLottery['SuperLottery']['status'] = 'claimed_isk';
 		$claimerUser['User']['nb_new_won_super_lotteries']--;
 
@@ -508,6 +516,8 @@ class SuperLotteriesController extends AppController {
 				'message' => 'You have claim '.number_format($superLottery['EveItem']['eve_value']*$superLottery['SuperLottery']['number_items'],0).' ISK!',
 				'nb_new_won_super_lotteries'=> $claimerUser['User']['nb_new_won_super_lotteries'],
 				);
+
+			$this->Statistic->saveStat($claimerUser['User']['id'], 'super_withdrawal_isk', $superLottery['SuperLottery']['id'], $superLottery['EveItem']['eve_value'], $superLottery['EveItem']['id']);
 
 			$this->log('SuperLottery claimed as isk : user_id['.$claimerUser['User']['id'].'], super_lottery_id['.$superLottery['SuperLottery']['id'].']', 'eve-lotteries');
 		}
