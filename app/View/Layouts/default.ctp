@@ -113,7 +113,7 @@
 		</div>
 	</div>
 
-	<div class="visible-md visible-sm" style="padding-bottom:5em;">
+	<div class="visible-md visible-sm visible-xs" style="padding-bottom:5em;">
 	</div>
 
 	<div class="container container-all" style="">
