@@ -58,7 +58,11 @@ class Ticket extends AppModel {
 
 		//on modifie le wallet et le nombre de tokens du joueur
 		$buyer['User']['wallet'] -= $choosenTicket['Ticket']['value'];
-		$buyer['User']['tokens'] += $choosenTicket['Ticket']['value']/10000000;
+
+		$pointBonus = $choosenTicket['Ticket']['value']/10000000;
+		$buyer['User']['tokens'] += $pointBonus;
+
+
 
 		//on ajoute au ticket l'ID de son acheteur
 		$choosenTicket['Ticket']['buyer_user_id'] = $buyer['User']['id'];
@@ -68,7 +72,15 @@ class Ticket extends AppModel {
 		$dataSource->begin();
 
 		//si la sauvegarde de user et save se passe bien
-		if ($userModel->save($buyer, true, array('id', 'wallet', 'tokens')) && $this->save($choosenTicket)) {
+		if ($this->save($choosenTicket)) {
+
+			//update du wallet et des points si le ticket est sauvé
+			$userModel->updateAll(
+				array(
+					'User.wallet' => 'User.wallet-'.$choosenTicket['Ticket']['value'],
+					'User.tokens' => 'User.tokens+'.$pointBonus),
+				array('User.id' => $buyer['User']['id'])
+				);
 
 			//ajout de la stat d'achat du ticket
 			$statisticModel->saveStat($buyer['User']['id'], 'buy_ticket', $ticketId, $choosenTicket['Ticket']['value'], $choosenLottery['Lottery']['eve_item_id']);
