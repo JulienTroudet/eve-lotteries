@@ -34,8 +34,8 @@ class LotteriesController extends AppController {
 
 		$this->loadModel('EveItem');
 		$this->loadModel('EveCategory');
+        $this->loadModel('FlashLottery');
 		$this->loadModel('SuperLottery');
-		$this->loadModel('FlashLottery');
 		$this->loadModel('Statistic');
 		$this->loadModel('Article');
 

@@ -103,24 +103,27 @@ class TicketsController extends AppController {
 			$this->EveItem->contain(array('EveCategory'));	
 			$choosenItem = $this->EveItem->findById($itemId);
 
+
+
+
 			//vérification du nombre de grosses lotteries
 			$params = array(
 				'conditions' => array('Lottery.lottery_status_id' => '1', 'Lottery.nb_tickets' => '16'),
 				);
 			$nbFreeBigLotteries = 3 - $this->Lottery->find('count', $params);
 			if ($proceed && $nbFreeBigLotteries <= 0 && $choosenItem['EveItem']['nb_tickets_default'] == 16) {
-				$data = array('error' => 'There is already 3 big lotteries ! Please complete a big lottery before starting a new one.');
+				$data = array('error' => 'There is already 2 big lotteries ! Please complete a big lottery before starting a new one.');
 				$proceed = false;
 			}
 
-			$params = array(
-				'conditions' => array('Lottery.lottery_status_id' => '1', 'Lottery.nb_tickets' => '48'),
-				);
-			$nbFreeBigLotteries = 1 - $this->Lottery->find('count', $params);
-			if ($proceed && $nbFreeBigLotteries <= 0 && $choosenItem['EveItem']['nb_tickets_default'] == 48) {
-				$data = array('error' => 'There is already one giga lottery ! Please complete the ongoing giga lottery before starting a new one.');
-				$proceed = false;
-			}
+            $params = array(
+                'conditions' => array('Lottery.lottery_status_id' => '1', 'Lottery.nb_tickets' => '48'),
+            );
+            $nbFreeGigaLotteries = 1 - $this->Lottery->find('count', $params);
+            if ($proceed && $nbFreeGigaLotteries <= 0 && $choosenItem['EveItem']['nb_tickets_default'] == 48) {
+                $data = array('error' => 'There is already one giga lottery ! Please complete the ongoing giga lottery before starting a new one.');
+                $proceed = false;
+            }
 
 			if ($proceed){
 				

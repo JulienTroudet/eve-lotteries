@@ -209,8 +209,7 @@ class Lottery extends AppModel {
 		if($lotteryNbTickets == $nbSell){
 			srand($this->make_seed());
 			
-			$winner = rand(0 , $lotteryNbTickets-1);	
-			
+			$winner = rand(0 , $lotteryNbTickets-1);
 
 			return $winner;
 		}

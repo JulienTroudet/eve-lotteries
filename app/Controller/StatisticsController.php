@@ -52,7 +52,7 @@ public function beforeFilter() {
 		$usersLotWon = $db->fetchAll("SELECT users.id, users.eve_name, stat.totalWon FROM users INNER JOIN ( SELECT COUNT(*) AS totalWon, user_id FROM statistics  WHERE type = 'win_lottery' GROUP BY user_id) stat ON stat.user_id = id ORDER BY totalWon DESC LIMIT 10");
 		$this->set('usersLotWon', $usersLotWon);
 
-		$popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, eve_categories.url_start, stat.totalItems 
+		$popularsItems = $db->fetchAll("SELECT eve_items.eve_id, eve_items.name, eve_categories.url_start, stat.totalItems
 										FROM eve_items 
 										INNER JOIN eve_categories ON eve_categories.id = eve_items.eve_category_id 
 										INNER JOIN ( SELECT COUNT(*) AS totalItems, eve_item_id FROM statistics  WHERE type = 'win_lottery' GROUP BY eve_item_id) stat ON stat.eve_item_id = eve_items.id ORDER BY totalItems DESC LIMIT 10");

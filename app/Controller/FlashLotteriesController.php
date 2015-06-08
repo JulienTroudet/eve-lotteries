@@ -403,7 +403,7 @@ class FlashLotteriesController extends AppController
 			'conditions' => array(
 				'OR'=>array(
 					'AND'=>array(
-						'FlashLottery.modified BETWEEN NOW() -INTERVAL 2 HOUR AND NOW()',
+						'FlashLottery.modified BETWEEN NOW() -INTERVAL 30 MINUTE AND NOW()',
 						'FlashLottery.status'=>array('completed', 'claimed', 'unclaimed')
 						),
 					'FlashLottery.status'=>'ongoing')),

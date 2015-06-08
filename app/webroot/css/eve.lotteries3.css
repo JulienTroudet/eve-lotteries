@@ -1,0 +1,590 @@
+@media (min-width: 768px) {
+	.container-all{
+		margin-top:1em;
+		margin-bottom: 12em;
+	}
+}
+@media (min-width: 992px) {
+	.container-all{
+		margin-top:1em;
+		margin-bottom: 12em;
+	}
+}
+@media (min-width: 1200px) {
+	.container-all{
+		margin-top:5em;
+		margin-bottom: 12em;
+	}
+}
+
+
+/* [START] USER NAVBAR */
+.navbar-user-info{
+	margin: 0.7em;
+	height: 64px;
+}
+.brand{
+	margin-top:0.7em;
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { .navbar-user-info { width: 60%; }}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) { .navbar-user-info{ width: 60%; } }
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { .navbar-user-info { width: 60%; } }
+
+.navbar-user p {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-size: 1.1em;
+}
+
+.navbar-user h2 {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.navbar-user .well {
+	min-height: 62px;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+
+.navbar-user-info>h1{
+	margin-top: 12px;
+}
+
+.navbar-user-info .btn{
+	padding: 5px 12px;
+}
+
+.col-user-navbar{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.navbar-user .btn-new-lot{
+	height: 63px;
+}
+
+/* [END] USER NAVBAR */
+
+/* [START] PANEL LOTTERY */
+
+.panel-default > .panel-heading-lottery {
+	height:10.5em;
+}
+/* [END] PANEL LOTTERY */
+
+/* [START] TICKETS */
+
+.ticket-slot{
+	margin-bottom: 0.3em;
+	padding-right: 5px;
+	padding-left: 5px;
+	min-height: 3em;
+}
+.ticket-slot .media>.pull-left {
+	margin-right: 5px;
+}
+.ticket-slot .well-sm {
+	padding: 2px;
+	border-radius: 3px;
+	margin: 0px;
+	height: 4.9em;
+}
+.ticket-slot span {
+	vertical-align: -webkit-baseline-middle;
+}
+.ticket-slot .btn {
+	white-space: normal;
+	height: 4.9em;
+}
+
+.ticket-slot .winner-ticket {
+	background-color: rgba(92, 184, 92, 0.4);
+}
+
+.ticket-img{
+	display: block;
+	margin-left: auto;
+    margin-right: auto;
+    width: 64px
+}
+
+.ticket-old-col{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.ticket-old{
+	border-bottom: 1px solid #2c2c2c;
+	margin: 0 0 0.5em 0;
+	padding: 0 0.5em 0 0.5em;
+	height:2em;
+	border-radius: 3px;
+}
+.ticket-old>span{
+	vertical-align:middle;
+	display:inline-block;
+	line-height:normal;
+	text-align:left;
+}
+.row-old-lot{
+	padding: 0.5em 15px 0em 0.5em;
+}
+
+.panel-lot{
+	padding: 7px 15px 1px 15px;
+}
+
+
+/* [END] TICKETS */
+
+/* [START] ADMIN MENU */
+
+#wrapper {
+	padding-left: 0;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+	padding-left: 250px;
+}
+
+#sidebar-wrapper {
+	z-index: 1000;
+	position: fixed;
+	left: 250px;
+	width: 0;
+	height: 650px;
+	margin-top: -10px;
+	margin-left: -250px;
+	overflow-y: auto;
+	background: #222;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+	width: 250px;
+}
+
+#page-content-wrapper {
+	width: 100%;
+	padding: 15px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+	position: absolute;
+	margin-right: -250px;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+	position: absolute;
+	top: 0;
+	width: 250px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.sidebar-nav li {
+	text-indent: 20px;
+	line-height: 25px;
+}
+
+.sidebar-nav .divider {
+	margin:10px 20px 0 20px;
+	line-height: 10px;
+	border-bottom: 1px solid rgb(68, 68, 68);
+}
+
+.sidebar-nav li a {
+	display: block;
+	text-decoration: none;
+}
+
+.sidebar-nav li a:hover {
+	text-decoration: underline;
+	background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+	text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+	height: 65px;
+	font-size: 18px;
+	line-height: 60px;
+	color: #999999;
+}
+
+#wrapper {
+	padding-left: 250px;
+}
+
+#wrapper.toggled {
+	padding-left: 0;
+}
+
+#sidebar-wrapper {
+	width: 250px;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+	width: 0;
+}
+
+#page-content-wrapper {
+	padding: 20px;
+}
+
+#wrapper.toggled #page-content-wrapper {
+	position: relative;
+	margin-right: 0;
+}
+
+/* [END] ADMIN MENU */
+
+/* [START] FOOTER */
+html {
+	position: relative;
+	min-height: 100%;
+}
+body {
+	margin-bottom: 10em;
+}
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 10em;
+	background-color: #2c2c2c;
+	margin-top: 1em;
+}
+
+.container .text-muted {
+	margin: 20px 0;
+}
+
+.footer > .container {
+	padding-right: 15px;
+	padding-left: 15px;
+}
+/* [END] FOOTER */
+
+/* [START] ITEM PANEL */
+#collapse-item>.panel-body>.row{
+	margin-bottom:1em;
+}
+
+.item-panel{
+	margin-bottom:0.5em;
+	padding: 0 5px;
+}
+
+.item-panel .row{
+	margin-bottom:0.1em;
+}
+.ticket-modal{
+	margin-bottom:0.5em;
+}
+
+.item-well{
+	min-height: 11.5em;
+	margin-bottom: 0px;
+	padding: 0.5em 1.5em 0.5em 1.5em;
+}
+
+.item-panel p{
+	margin-bottom:0em;
+}
+
+.item-panel h3{
+	white-space: initial; 
+	margin-top:3px; 
+	margin-bottom:0px; 
+	font-size:1.23em;
+	text-align: center;
+}
+.col-item{
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+
+/* [END] ITEM PANEL */
+
+/* [START] WON-LOT PANEL */
+
+.panel-body-won-lot{
+	min-height: 13em;
+}
+
+.panel-body-won-lot>.well{
+	margin-bottom: 0.5em;
+	margin-top: 0.5em;
+}
+
+
+/* [END] WON-LOT PANEL */
+
+
+
+/* [START] AWARD PANEL */
+.title-award{
+	margin-top: 9px;
+	margin-bottom: 0px;
+}
+
+.award-value {
+	margin: 0 0 0px;
+}
+
+/* [END] AWARD PANEL */
+
+/* [START] SUPER LOTTERY PANEL */
+@media (min-width: 768px) {
+	.super-lot {margin-right: 0px; margin-left: 0px}
+}
+.super-lot h5{
+	margin-top: 0px;
+	margin-bottom: 0px;
+
+}
+.super-lot h3{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.super-lot .btn-group-vertical > .form-control:not(:first-child):not(:last-child) {
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.super-lot .btn-group-vertical > .form-control + .btn {
+	margin-top: -1px;
+	margin-left: 0;
+}
+
+.super-lot .btn{
+	line-height: 1.3;
+}
+.super-lot .form-control{
+	height: 32px;
+	border-color: #3F607C;
+	background-color: #2B4357;
+	text-align: center;
+}
+
+.super-lot .btn-group{
+	float: right;
+}
+.super-lot .progress{
+	background-color: #2c2c2c;
+	height: 19px;
+	margin-bottom: 0px;
+}
+
+.super-lot p {
+	margin: 0 0 0px;
+}
+
+.super-lot .row-super-lot{
+	padding-right: 15px;
+}
+.super-lot .col-btn-super-lot{
+	margin-top: 8px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.super-lot .col-btn-super-lot .btn{
+	width: 3em;
+}
+
+.super-lot .well-finished{
+	background-color: rgba(122, 95, 57, 0.2);
+	border: 1px solid rgba(122, 95, 57, 0.8);
+}
+
+.super-lot .well-ongoing{
+	background-color: rgba(80, 128, 80, 0.2);
+	border: 1px solid rgba(80, 128, 80, 0.8);
+}
+
+.super-lot .well-unclaimed{
+	background-color: rgba(24, 47, 66, 0.2);;
+	border: 1px solid rgba(24, 47, 66, 0.8);
+}
+
+.super-lot .well-claimed{
+	background-color: rgba(255, 255, 255, 0.2);;
+	border: 1px solid rgba(255, 255, 255, 0.8);
+}
+/* [END] SUPER LOTTERY PANEL */
+
+/* [START] FLASH LOTTERY PANEL */
+
+.flash-lot .well-finished{
+	background-color: rgba(122, 95, 57, 0.2);
+	border: 1px solid rgba(122, 95, 57, 0.8);
+}
+
+.flash-lot .well-ongoing{
+	background-color: rgba(255, 255, 255, 0.2);
+	border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.flash-lot .well-unclaimed{
+	background-color: rgba(24, 47, 66, 0.2);;
+	border: 1px solid rgba(24, 47, 66, 0.8);
+}
+
+.flash-lot .well-claimed{
+	background-color: rgba(255, 255, 255, 0.2);;
+	border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.col-flash-panel{
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+@media(max-width:992px) {
+	.flash-countdown {
+		font-size: 15px
+	}
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+	.flash-ticket { 
+		width: 10%;
+		margin-bottom: 12px;
+		padding: 6px;
+
+		height:64px; 
+		width:64px; 
+		text-align:center;
+		vertical-align:text-top; 
+	}
+	.flash-image { width: 20%; }
+	.flash-legend { width: 40%; }
+	.flash-lot {margin-right: 0px; margin-left: 0px}
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+	.flash-ticket { 
+		width: 6%;
+		margin-bottom: 12px;
+		padding: 6px;
+
+		height:64px; 
+		width:64px; 
+		text-align:center;
+		vertical-align:text-top;
+	}
+	.flash-image { width: 10%; }
+	.flash-legend { width: 20%; }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+	.flash-ticket { 
+		width: 6%;
+		margin-bottom: 12px;
+		padding: 6px;
+		height:64px; 
+		width:64px; 
+		text-align:center;
+		vertical-align:text-top;
+		cursor: pointer;
+	}
+	.flash-image { width: 10%; }
+	.flash-legend { width: 20%; }
+}
+
+.flash-ticket .fa{
+	color: #FA9E0E;
+	margin-top: 5px;
+	margin-left: 5px;
+}
+
+.flash-number{
+	pointer-events: none;
+	font-size: 0.5em;
+	margin-top: .3em !important;
+	color: #1F1F1F !important;
+	-ms-transform: rotate(-45deg); /* IE 9 */
+	-webkit-transform: rotate(-45deg); /* Chrome, Safari, Opera */
+	transform: rotate(-45deg);
+}
+
+
+
+#flash-tickets-container .flash-ticket {
+	margin-bottom: 10px;
+	height: 70px;
+}
+
+.flash-ticket .fa:hover{
+	color: #ffffff;
+}
+
+.flash-ticket-user{
+	border: solid #3F607C 1px;
+}
+.flash-ticket-winner{
+	border: solid #508050 3px;
+	box-shadow: 0px 0px 20px 12px rgba(48, 73, 48, 1);
+}
+.flash-ticket-winner:before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	top: 50px;
+	left: 50px;
+	right: 50px;
+	bottom: 50px;
+	border: 50px solid #ffea00;
+	background: #4aa929;
+}
+
+.flash-lot h3, .flash-lot h4, .flash-lot p{
+	margin-top: 0;
+	margin-bottom: 3px;
+}
+
+
+/* [END] FLASH LOTTERY PANEL */
+.account-well{
+	background-color: #2c2c2c;
+}
+
+img{
+	border-radius: 4px;
+}
+
+.navbar a>img{
+	outline: 0px;
+}
+.navbar-site ul{
+	padding: 0;
+}
+.panel-news{
+	border: 1px solid rgba(68, 68, 68, 1);
+}
+

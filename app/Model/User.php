@@ -145,7 +145,7 @@ App::uses('AuthComponent', 'Controller/Component');
 				'on'        => 'create',  
 				),
 			'length' => array(
-				'rule'      => array('between', 8, 40),
+				'rule'      => array('between', 4, 40),
 				'message'   => 'Your password must be between 8 and 40 characters.',
 				'on'        => 'create',  
 				),
