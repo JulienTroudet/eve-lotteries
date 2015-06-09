@@ -40,7 +40,7 @@
 
 
 
-	<script src="/js/jquery.min.js"></script>
+	<?php echo $this->Html->script('jquery.min');?>
 
 	<?php echo $this->Html->script('bootstrap.min');?>
 
@@ -226,14 +226,9 @@
 
 	</div>
 
-<<<<<<< HEAD
-
 
 	<div class="visible-md visible-sm visible-xs" style="padding-bottom:5em;">
-
-=======
-	<div class="visible-md visible-sm visible-xs" style="padding-bottom:5em;">
->>>>>>> 93c923d53b41ab7395e5f1067bbf09f889704508
+	
 	</div>
 
 
