@@ -1,4 +1,4 @@
-<div class="flash-ticket flash-isotope">
+<div class="flash-ticket">
 <?php if(isset($flashTicket['Buyer']['id'])): ?>
 	<img src="https://image.eveonline.com/Character/<?php echo $flashTicket['Buyer']['id']; ?>_64.jpg"
 	data-toggle="tooltip"

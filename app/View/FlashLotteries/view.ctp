@@ -1,4 +1,3 @@
-<?php echo $this->Html->script('isotope.pkgd.min'); ?>
 <div id="user-navbar">
 	<?php echo $this->element('UserNavbar'); ?>
 </div>
@@ -14,8 +13,8 @@
 	$(document).ready(function() {
 		$('[data-toggle="tooltip"]').tooltip()
 
-		
-		organizeFlashTickets();
+
+
 		instanciateFlashButtons();
 		updateFlashCountDown();
 		
@@ -37,15 +36,7 @@
 		setTimeout(updateFlashCountDown, 10 );
 	}
 
-	function organizeFlashTickets(){
-		$container.isotope({
-			itemSelector: '.flash-isotope',
-			layoutMode: 'masonry',
-			masonry: {
-				columnWidth: 80,
-			}
-		});
-	}
+	
 	function refreshUserNavbar(){
 		$.ajax({
 			type:"get",

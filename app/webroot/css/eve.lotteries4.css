@@ -576,6 +576,11 @@ body {
 	color: #ffffff;
 }
 
+.flash-ticket{
+	float: left;
+	margin-right: 14px;
+}
+
 .flash-ticket-user{
 	border: solid #3F607C 1px;
 }
@@ -626,5 +631,14 @@ img{
 }
 .panel-news{
 	border: 1px solid rgba(68, 68, 68, 1);
+}
+
+/* LOGO */
+.main-navbar .navbar-brand img {
+	height: 100%;
+}
+
+.main-navbar .navbar-brand {
+  padding: 0px 15px;
 }
 

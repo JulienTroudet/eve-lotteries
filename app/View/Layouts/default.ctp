@@ -110,7 +110,7 @@
 
 <body>
 
-	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="navbar navbar-default navbar-fixed-top main-navbar" role="navigation">
 
 		<div class="container">
 
@@ -128,7 +128,7 @@
 
 				</button>
 
-				<a class="navbar-brand" href="<?php echo $this->webroot; ?>">EVE-Lotteries</a>
+				<a class="navbar-brand" href="<?php echo $this->webroot; ?>"><?php echo $this->Html->image('front-logo.png', array('alt' => 'logo'));?></a>
 
 			</div>
 
