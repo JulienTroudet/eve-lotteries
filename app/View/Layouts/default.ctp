@@ -226,10 +226,14 @@
 
 	</div>
 
+<<<<<<< HEAD
 
 
 	<div class="visible-md visible-sm visible-xs" style="padding-bottom:5em;">
 
+=======
+	<div class="visible-md visible-sm visible-xs" style="padding-bottom:5em;">
+>>>>>>> 93c923d53b41ab7395e5f1067bbf09f889704508
 	</div>
 
 
