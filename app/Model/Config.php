@@ -17,7 +17,6 @@ class Config extends AppModel {
 	/**
 	 * every time a ticket or a lottery is changed this function is called (in afterSave)
 	 * it update the timestamp
-	 * @return [type] [description]
 	 */
 	public function changeLotteries() {
 		$this->updateAll(
@@ -29,7 +28,6 @@ class Config extends AppModel {
 	/**
 	 * every time a super ticket or a super lottery is changed this function is called (in afterSave)
 	 * it update the timestamp
-	 * @return [type] [description]
 	 */
 	public function changeSuperLotteries() {
 		$this->updateAll(
@@ -41,7 +39,6 @@ class Config extends AppModel {
 	/**
 	 * every time a flash ticket or a flash lottery is changed this function is called (in afterSave)
 	 * it update the timestamp
-	 * @return [type] [description]
 	 */
 	public function changeFlashLotteries() {
 		$this->updateAll(
@@ -125,6 +122,25 @@ class Config extends AppModel {
 		return $conf['Config']['value'];
 	}
 
+    /**
+     * Get the total of ISK won
+     * @return [type] [description]
+     */
+    public function getTotalWon() {
+        $conf = $this->findByName('total_won');
+        return $conf['Config']['value'];
+    }
+
+    /**
+     * Update total of ISK won
+     * @param total_won
+     */
+    public function updateTotalWon($total_won) {
+        $this->updateAll(
+            array('Config.value' => $total_won),
+            array('Config.name' => 'total_won')
+        );
+    }
 	
 
 

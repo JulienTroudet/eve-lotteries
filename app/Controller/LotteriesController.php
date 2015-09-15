@@ -38,11 +38,12 @@ class LotteriesController extends AppController {
 		$this->loadModel('SuperLottery');
 		$this->loadModel('Statistic');
 		$this->loadModel('Article');
+        $this->loadModel('Config');
 
 
 		//vas chercher le total gagné
 		//
-		$this->set('totalWon', $this->_get_total_won());
+		$this->set('totalWon', $this->Config->getTotalWon());
 		
 		//vas chercher les lotteries actuelles
 		$params = array(
@@ -152,8 +153,8 @@ class LotteriesController extends AppController {
 			if($this->Config->hasLotteriesChanged($timestamp_lotteries)){
 				$this->loadModel('Statistic');
 				//vas chercher le total gagné
-				
-				$this->set('totalWon', $this->_get_total_won());
+
+                $this->set('totalWon', $this->Config->getTotalWon());
 
 				$this->layout = false;
 
@@ -233,7 +234,7 @@ class LotteriesController extends AppController {
 	* @param string $id
 	* @return void
 	*/
-	public function admin_view() {
+	public function admin_view($id) {
 		$this->Lottery->recursive = 1;
 		if (!$this->Lottery->exists($id)) {
 			throw new NotFoundException(__('Invalid lottery'));
@@ -401,23 +402,6 @@ class LotteriesController extends AppController {
 		$this->FlashLottery->end_flash_lottery();
 		
 		return $flashLottery;
-	}
-
-
-	protected function _get_total_won(){
-		
-		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
-			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
-			);
-		$total = $this->Statistic->find('first', $params);
-		if(isset($total[0])){
-			return $total[0]['totalAmount'];
-		}
-		else{
-			return 0;
-		}
-		
 	}
 
 	protected function _dateToUTC($dateT){

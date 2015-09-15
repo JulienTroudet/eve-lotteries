@@ -49,6 +49,11 @@ class AppController extends Controller {
 
 	public function beforeFilter() {
 
+
+        $this->_check_if_banned();
+
+
+
 		$this->Cookie->name = 'eve-lotteries';
 		$this->Cookie->time = '1 week';
 		$this->Cookie->key = 'qSI232qsmdsflgjmsdlfkgsmdlfkjsdmlfgjlmdfhkh';
@@ -89,18 +94,7 @@ class AppController extends Controller {
 
 	public function beforeRender() {
 
-		//see if the IP is banned or not
-		$this->loadModel('BannedIp');
-		$listBann = $this->BannedIp->find('list', 
-			array(
-				'fields'=>array('BannedIp.ip'),
-				'cache' => 'bannedipcache', 
-				'cacheConfig' => 'short',
-				));
 
-		if (in_array ($this->request->clientIp(), $listBann)) {
-			throw new ForbiddenException();
-		}
 
 		$this->loadModel('Config');
 		$this->loadModel('Lottery');
@@ -112,6 +106,12 @@ class AppController extends Controller {
 
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
+
+        if($userGlobal['group_id']==7){
+            $this->Cookie->destroy();
+            $this->Auth->logout();
+            throw new ForbiddenException('Character is Banned');
+        }
 		
 		$params = array(
 			'conditions' => array('Lottery.lottery_status_id' => '1'),
@@ -154,4 +154,18 @@ class AppController extends Controller {
 		return null;	
 	}
 
+    protected function _check_if_banned(){
+        //see if the IP is banned or not
+        $this->loadModel('BannedIp');
+        $listBann = $this->BannedIp->find('list',
+            array(
+                'fields'=>array('BannedIp.ip'),
+                'cache' => 'bannedipcache',
+                'cacheConfig' => 'short',
+            ));
+
+        if (in_array ($this->request->clientIp(), $listBann)) {
+            throw new ForbiddenException('IP is Banned');
+        }
+    }
 }

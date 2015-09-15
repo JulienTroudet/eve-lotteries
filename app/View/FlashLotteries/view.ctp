@@ -16,24 +16,32 @@
 
 
 		instanciateFlashButtons();
-		updateFlashCountDown();
+
+        var server_date = moment.utc("<?php echo date("c") ?>");
+
+        updateFlashCountDown(server_date);
 		
 	});
 
-	function updateFlashCountDown() {
+	function updateFlashCountDown(server_date) {
+
+        var server_date_flash = moment(server_date);
+
 		countdown.setLabels(
 			'ms| sec| min| hr|| wk|| yr',
 			'ms| secs| mins| hrs|| wk|| yrs',
 			' and ');
-		exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
+		var exp_date = "<?php echo $flashLottery['FlashLottery']['expiration_date']; ?>";
 
-		if(moment.utc(exp_date).isAfter()){
-			$('.flash-countdown').html("Ends in "+moment.utc(exp_date).countdown().toString());
+		if(moment.utc(exp_date).isAfter(server_date_flash)){
+            server_date_flash.add(1, 'seconds');
+			$('.flash-countdown').html("Ends in "+moment.utc(exp_date).countdown(server_date_flash).toString());
 		}
 		else{
+            server_date_flash.add(1, 'seconds');
 			$('.flash-countdown').html("Lottery Closed");
 		}
-		setTimeout(updateFlashCountDown, 10 );
+        setTimeout(function () {updateFlashCountDown(server_date_flash)}, 1000 );
 	}
 
 	

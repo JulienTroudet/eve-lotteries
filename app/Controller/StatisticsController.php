@@ -30,19 +30,11 @@ public function beforeFilter() {
 	 */
 	public function index() {
 
+        $this->loadModel('Config');
 
 		//vas chercher le total gagné
-		$params = array(
-			'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
-			'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
-			);
-		$total = $this->Statistic->find('first', $params);
-		if(isset($total[0])){
-			$this->set('totalWon', $total[0]['totalAmount']);
-		}
-		else{
-			$this->set('totalWon', 0);
-		}
+		$this->set('totalWon', $this->Config->getTotalWon());
+
 
 		$db = $this->Statistic->getDataSource();
 		

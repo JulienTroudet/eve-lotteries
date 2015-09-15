@@ -6,9 +6,6 @@
 
 
 <div class="transactions index">
-	
-
-	
 	<div class="row">
 		<div id="wallet-resume" class="col-md-6 col-sm-12">
 			<ul id="wallet-tabs" class="nav nav-tabs" role="tablist">

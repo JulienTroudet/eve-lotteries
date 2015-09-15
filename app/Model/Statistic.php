@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+App::uses('Config', 'Model');
 /**
  * Transaction Model
  *
@@ -15,6 +16,38 @@ class Statistic extends AppModel {
 	public $displayField = 'type';
 
 
+    /**
+     * Update some configs to optimise some request
+     * - set the total_won config
+     * @param boolean $created
+     * @param  array  $options
+     * @return boolean
+     */
+    public function afterSave($created, $options = array()) {
+        parent::afterSave($created, $options);
+
+        $last = $this->findById($this->id);
+
+        if($last['Statistic']['type'] =='win_lottery' || $last['Statistic']['type'] =='win_super_lottery' ||$last['Statistic']['type'] =='win_flash_lottery' ) {
+
+            $params = array(
+                'conditions' => array('OR'=>array(array('Statistic.type' => 'win_super_lottery'), array('Statistic.type' => 'win_lottery'), array('Statistic.type' => 'win_flash_lottery'))),
+                'fields' => array('SUM(Statistic.isk_value) as totalAmount'),
+            );
+            $total = $this->find('first', $params);
+            if(isset($total[0])){
+                $total_won =  $total[0]['totalAmount'];
+
+                $configModel = new Config();
+
+                $configModel->updateTotalWon($total_won);
+            }
+
+        }
+        return true;
+    }
+
+
 	public function saveStat($user_id, $type, $value, $iskValue, $eveItemId) {
 		$this->create();
 		$statData = array(
@@ -26,8 +59,6 @@ class Statistic extends AppModel {
 			);
 
 		return $this->save($statData, true, array('user_id', 'type', 'value', 'isk_value', 'eve_item_id'));
-
-
 	}
 
 

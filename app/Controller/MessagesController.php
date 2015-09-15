@@ -88,4 +88,34 @@ class MessagesController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index', 'admin' => false));
 	}
+
+
+    /**
+     * delete method
+     *
+     * @throws NotFoundException
+     * @param string $id
+     * @return void
+     */
+    public function delete_all() {
+        $userGlobal = $this->Auth->user();
+
+
+        $this->request->allowMethod('get', 'delete');
+
+        if ($this->Message->deleteAll(array('Message.user_id' => $userGlobal["id"]), false)) {
+            $this->Session->setFlash(
+                'All messages have been deleted.',
+                'FlashMessage',
+                array('type' => 'success')
+            );
+        } else {
+            $this->Session->setFlash(
+                'The messages could not be deleted. Please, try again.',
+                'FlashMessage',
+                array('type' => 'error')
+            );
+        }
+        return $this->redirect(array('action' => 'index', 'admin' => false));
+    }
 }

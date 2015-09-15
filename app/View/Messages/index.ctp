@@ -3,13 +3,20 @@
 </div>
 <div class="messages index">
 	<h2><?php echo __('Messages'); ?></h2>
+
+
+
 	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th><?php echo $this->Paginator->sort('status'); ?></th>
 				<th><?php echo $this->Paginator->sort('title'); ?></th>
 				<th><?php echo $this->Paginator->sort('body', 'Message'); ?></th>
-				<th></th>
+				<th><?php echo $this->Html->link(
+                        __('Delete All'),
+                        array('controller' => 'messages', 'action' => 'delete_all', 'admin' => false),
+                        array('class' => 'btn btn-xs btn-danger pull-right')
+                    ); ?></th>
 			</tr>
 		</thead>
 		<tbody>

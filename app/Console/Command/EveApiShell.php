@@ -154,6 +154,7 @@ class EveApiShell extends AppShell {
 		$db = $this->UserAward->getDataSource();
 
 		$params = array(
+            'conditions' => array('User.last_update BETWEEN NOW() -INTERVAL 3 HOUR AND NOW()'),
 			'contain' => array('UserAward' => array('fields' => array('UserAward.award_id'))),
 			'fields'  => array('User.id'),
 			);
@@ -185,7 +186,7 @@ class EveApiShell extends AppShell {
 
 						$this->UserAward->save($newUserAward, true, array('award_id', 'user_id', 'status'));
 
-						$this->log('Award Update : user_id['.$userId.'], award_idid['.$award['Award']['id'].']', 'CRON eve-lotteries');
+						$this->log('Award Update : user_id['.$userId.'], award_id['.$award['Award']['id'].']', 'CRON eve-lotteries');
 
 					}
 				}
@@ -199,6 +200,7 @@ class EveApiShell extends AppShell {
 		}
 
 		//$this->out('Update complete');
+        $this->log(count($users).' Users Updated', 'CRON eve-lotteries');
 		$this->log('ENDING CRON', 'CRON eve-lotteries');
 	}
 }

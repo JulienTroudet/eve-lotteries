@@ -12,11 +12,6 @@ echo $this->Form->create(
 		'role' => 'form'
 		));
 
-echo $this->Html->link(
-	'Register', 
-	array('controller' => 'users', 'action' => 'register'),
-	array('class' => 'btn btn-primary'));
-echo "&nbsp;";
 echo $this->Form->input(
 	'User.username',
 	array(

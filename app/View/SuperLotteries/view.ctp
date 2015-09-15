@@ -15,24 +15,31 @@
 
 
 		instanciateSuperButtons();
-		updateSuperCountDown();
+
+        var server_date = moment.utc("<?php echo date("c") ?>");
+		updateSuperCountDown(server_date);
 
 	});
 
-	function updateSuperCountDown() {
+	function updateSuperCountDown(server_date) {
 		countdown.setLabels(
 			'ms| sec| min| hr|| wk|| yr',
 			'ms| secs| mins| hrs|| wk|| yrs',
 			' and ');
-		exp_date = "<?php echo $superLottery['SuperLottery']['expiration_date']; ?>";
+
+        var server_date_super = moment(server_date);
+
+		var exp_date = "<?php echo $superLottery['SuperLottery']['expiration_date']; ?>";
 
 		if(moment.utc(exp_date).isAfter()){
-			$('.super-countdown').html("Ends in "+moment.utc(exp_date).countdown().toString());
+            server_date_super.add(1, 'seconds');
+			$('.super-countdown').html("Ends in "+moment.utc(exp_date).countdown(server_date_super).toString());
 		}
 		else{
+            server_date_super.add(1, 'seconds');
 			$('.super-countdown').html("Lottery Closed");
 		}
-		setTimeout(updateSuperCountDown, 10 );
+        setTimeout(function () {updateSuperCountDown(server_date_super)}, 1000 );
 	}
 
 

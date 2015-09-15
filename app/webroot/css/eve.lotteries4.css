@@ -19,6 +19,13 @@
 
 
 /* [START] USER NAVBAR */
+
+.navbar-default {
+    background-color: #2c2c2c;
+    border: 0;
+}
+
+
 .navbar-user-info{
 	margin: 0.7em;
 	height: 64px;
@@ -70,6 +77,9 @@
 	height: 63px;
 }
 
+#user-navbar{
+    margin-bottom: 0.5em;
+}
 /* [END] USER NAVBAR */
 
 /* [START] PANEL LOTTERY */
@@ -431,22 +441,18 @@ body {
 
 .super-lot .well-finished, .super-lott .well-finished{
 	background-color: rgba(122, 95, 57, 0.2);
-	border: 1px solid rgba(122, 95, 57, 0.8);
 }
 
 .super-lot .well-ongoing, .super-lott .well-ongoing{
 	background-color: rgba(80, 128, 80, 0.2);
-	border: 1px solid rgba(80, 128, 80, 0.8);
 }
 
 .super-lot .well-unclaimed, .super-lott .well-unclaimed{
 	background-color: rgba(24, 47, 66, 0.2);
-	border: 1px solid rgba(24, 47, 66, 0.8);
 }
 
 .super-lot .well-claimed, .super-lott .well-claimed{
 	background-color: rgba(255, 255, 255, 0.2);
-	border: 1px solid rgba(255, 255, 255, 0.8);
 }
 .col-super-panel{
 	padding-left: 5px;
@@ -466,25 +472,20 @@ body {
 
 .flash-lot .well-finished{
 	background-color: rgba(122, 95, 57, 0.2);
-	border: 1px solid rgba(122, 95, 57, 0.8);
 }
 .flash-lott .well-ongoing{
 	background-color: rgba(255, 255, 255, 0.2);
-	border: 1px solid rgba(255, 255, 255, 0.8);
 }
 .flash-lot .well-ongoing{
 	background-color: rgba(255, 255, 255, 0.2);
-	border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .flash-lot .well-unclaimed{
 	background-color: rgba(24, 47, 66, 0.2);;
-	border: 1px solid rgba(24, 47, 66, 0.8);
 }
 
 .flash-lot .well-claimed{
 	background-color: rgba(255, 255, 255, 0.2);;
-	border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .col-flash-panel{

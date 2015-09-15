@@ -58,6 +58,26 @@ class TransactionsController extends AppController {
 		$this->set('transactions', $this->Paginator->paginate());
 	}
 
+    /**
+     * index method
+     *
+     * @return void
+     */
+    public function banking() {
+
+
+        $this->Transaction->recursive = 0;
+        $paginateVar = array(
+            'contain' => array('User'),
+            'order' => array(
+                'Transaction.created' => 'desc'
+            ),
+            'limit' => 20
+        );
+        $this->Paginator->settings = $paginateVar;
+        $this->set('transactions', $this->Paginator->paginate());
+    }
+
 
 
 	/**

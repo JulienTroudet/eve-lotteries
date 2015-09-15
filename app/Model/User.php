@@ -31,7 +31,7 @@ App::uses('AuthComponent', 'Controller/Component');
 	/**
 	 * Encoding password
 	 * @param  array  $options [description]
-	 * @return [type]          [description]
+	 * @return boolean          [description]
 	 */
 	public function beforeSave($options = array()) {
 		parent::beforeSave($options);

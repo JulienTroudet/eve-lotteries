@@ -111,6 +111,7 @@ class UsersController extends AppController {
 		return $this->redirect(array('action' => 'index', 'admin' => true));
 	}
 
+
 	public function forbidden() {
 		$this->Session->setFlash('You don\'t have the right to go there !', 'FlashMessage', array('type' => 'warning'));
 		return $this->redirect(array('controller' => 'lotteries', 'action' => 'index', 'admin' => false));
@@ -598,6 +599,7 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
 		$this->Acl->allow($group, 'controllers/Messages/index');
 		$this->Acl->allow($group, 'controllers/Messages/delete');
+        $this->Acl->allow($group, 'controllers/Messages/delete_all');
 		$this->Acl->allow($group, 'controllers/Tickets/buy');
 		$this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
 		$this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
@@ -619,20 +621,29 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/Awards/index');
 		$this->Acl->allow($group, 'controllers/UserAwards/claim');
 
-		// $group->id = 5;
-		// $this->Acl->deny($group, 'controllers');
-		// $this->Acl->allow($group, 'controllers/Users/user_navbar');
-		// $this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
-		// $this->Acl->allow($group, 'controllers/Tickets/buy');
-		// $this->Acl->allow($group, 'controllers/Tickets/buy_firsts');
-		// $this->Acl->allow($group, 'controllers/SuperLotteryTickets/buy');
-		// $this->Acl->allow($group, 'controllers/Transactions/index');
-		// $this->Acl->allow($group, 'controllers/Withdrawals/index');
-		// $this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
-		// $this->Acl->allow($group, 'controllers/Withdrawals/old_list');
-		// $this->Acl->allow($group, 'controllers/Withdrawals/claim');
-		// $this->Acl->allow($group, 'controllers/Awards/index');
-		// $this->Acl->allow($group, 'controllers/UserAwards/claim');
+        /*$group->id = 6;
+        $this->Acl->deny($group, 'controllers');
+        $this->Acl->allow($group, 'controllers/Users/user_navbar');
+        $this->Acl->allow($group, 'controllers/Users/account');
+        $this->Acl->allow($group, 'controllers/Users/activate');
+        $this->Acl->allow($group, 'controllers/Users/resend_activation_mail');
+        $this->Acl->allow($group, 'controllers/Users/edit');
+        $this->Acl->allow($group, 'controllers/Lotteries/list_lotteries');
+        $this->Acl->allow($group, 'controllers/Messages/index');
+        $this->Acl->allow($group, 'controllers/Messages/delete');
+        $this->Acl->allow($group, 'controllers/Messages/delete_all');
+        $this->Acl->allow($group, 'controllers/SuperLotteries/list_super_awards');
+        $this->Acl->allow($group, 'controllers/FlashLotteries/view');
+        $this->Acl->allow($group, 'controllers/FlashLotteries/index');
+        $this->Acl->allow($group, 'controllers/FlashLotteries/list_flash_awards');
+        $this->Acl->allow($group, 'controllers/Statistics/list_stats');
+        $this->Acl->allow($group, 'controllers/Statistics/list_stats');
+        $this->Acl->allow($group, 'controllers/Transactions/banking'); //!!!!!!!!!!!!!!!!!!!!!
+        $this->Acl->allow($group, 'controllers/Withdrawals/management'); //!!!!!!!!!!!!!!!!!!!!!
+        $this->Acl->allow($group, 'controllers/Wages/index');
+        $this->Acl->allow($group, 'controllers/Wages/claim');*/
+
+
 
 		// $this->Acl->allow($group, 'controllers/Withdrawals/list_awards');
 		// $this->Acl->allow($group, 'controllers/Withdrawals/old_list');

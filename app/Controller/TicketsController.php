@@ -153,14 +153,15 @@ class TicketsController extends AppController {
 				}
 				else{
 
+                    $dataSource = $this->Ticket->getDataSource();
+                    $dataSource->begin();
 
 					$data = $this->Lottery->createNewLotteryForItemByUser($choosenItem, $buyer);
 
 					//si la nouvelle lottery à bien été crée
 					if($data['success']){
 
-						$dataSource = $this->Ticket->getDataSource();
-						$dataSource->begin();
+
 
 						$allBoughtTicketsIds = $this->Ticket->find('list', array(
 							'fields' => array('Ticket.id'),
