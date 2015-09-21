@@ -640,6 +640,9 @@ class UsersController extends AppController {
         $this->Acl->allow($group, 'controllers/Statistics/list_stats');
         $this->Acl->allow($group, 'controllers/Transactions/banking'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Withdrawals/management'); //!!!!!!!!!!!!!!!!!!!!!
+        $this->Acl->allow($group, 'controllers/Withdrawals/complete'); //!!!!!!!!!!!!!!!!!!!!!
+        $this->Acl->allow($group, 'controllers/Withdrawals/reserve_one'); //!!!!!!!!!!!!!!!!!!!!!
+        $this->Acl->allow($group, 'controllers/Withdrawals/cancel_reservation'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Wages/index');
         $this->Acl->allow($group, 'controllers/Wages/claim');*/
 

@@ -410,7 +410,9 @@ class WithdrawalsController extends AppController {
     }
 
     public function management() {
+        $userGlobal = $this->Auth->user();
 
+        //the first part search the list of withdrawals to complete
         $paginateVar = array(
             'contain' => array(
                 'User',
@@ -422,18 +424,115 @@ class WithdrawalsController extends AppController {
             ),
             'conditions' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => array('award_isk', 'award_item')),
             'order' => array(
-                'Withdrawal.modified' => 'desc'
+                'Withdrawal.modified' => 'asc'
             ),
             'limit' => 20
         );
         $this->Paginator->settings = $paginateVar;
         $claimed_awards = $this->Paginator->paginate('Withdrawal');
         $this->set('claimed_awards', $claimed_awards);
+
+        //the second part get the withdrawal reserved by the user, if there is one
+
+        $params = array(
+            'contain' => array(
+                'User',
+                'Ticket' => array(
+                    'Lottery' => array(
+                        'EveItem' => array('EveCategory')
+                    )
+                ),
+            ),
+            'conditions' => array('Withdrawal.status' => array('reserved'), 'Withdrawal.admin_id' => $userGlobal['id']),
+            'limit' => 1
+        );
+        $reserved_award = $this->Withdrawal->find('first', $params);
+
+        $this->set('reserved_award', $reserved_award);
     }
 
     public function complete() {
         $userGlobal = $this->Auth->user();
 
+        return $this->redirect(array('action' => 'management', 'admin' => false));
+    }
+
+    public function reserve_one() {
+        $manager = $this->Auth->user();
+
+        // a manager can only have one reserved award at a time
+        $params = array(
+            'conditions' => array(
+                'Withdrawal.status' => 'reserved',
+                'Withdrawal.admin_id' => $manager['id']
+            )
+        );
+        $reserved_award = $this->Withdrawal->find('all', $params);
+        if(!empty($reserved_award)){
+            $this->Session->setFlash(
+                'You already have a reserved withdrawal !',
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            $this->redirect(array('action' => 'management', 'admin' => false));
+        }
+
+        //search for the last withdrawal
+        $params = array(
+            'contain' => array(
+                'User',
+                'Ticket' => array(
+                    'Lottery' => array(
+                        'EveItem' => array('EveCategory')
+                    )
+                ),
+            ),
+            'conditions' => array('Withdrawal.status' => array('claimed'), 'Withdrawal.type' => array('award_isk', 'award_item')),
+            'order' => array(
+                'Withdrawal.modified' => 'asc'
+            )
+        );
+        $award = $this->Withdrawal->find('first', $params);
+
+
+        $this->Withdrawal->updateAll(
+            array(
+                'Withdrawal.admin_id' => $manager['id'],
+                'Withdrawal.status' => "'reserved'"),
+            array(
+                'Withdrawal.id' => $award['Withdrawal']['id']
+            )
+        );
+
+        $this->Session->setFlash(
+            "You reserved a player's claim",
+            'FlashMessage',
+            array('type' => 'info')
+        );
+
+        return $this->redirect(array('action' => 'management', 'admin' => false));
+    }
+
+    public function cancel_reservation() {
+        $manager = $this->Auth->user();
+
+        $this->Withdrawal->updateAll(
+            array(
+                'Withdrawal.admin_id' => null,
+                'Withdrawal.status' => "'claimed'"),
+            array(
+                'Withdrawal.admin_id' => $manager['id'],
+                'Withdrawal.status' => "reserved"
+            )
+        );
+
+        $this->Session->setFlash(
+            'Reservation canceled !',
+            'FlashMessage',
+            array('type' => 'info')
+        );
+
+        return $this->redirect(array('action' => 'management', 'admin' => false));
     }
 
     public function admin_list_awards_to_complete() {
