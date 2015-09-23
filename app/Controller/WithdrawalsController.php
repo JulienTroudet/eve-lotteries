@@ -13,7 +13,7 @@ class WithdrawalsController extends AppController {
      *
      * @var array
      */
-    public $components = array('Paginator', 'Session', 'RequestHandler');
+    public $components = array('Paginator', 'Session', 'RequestHandler', 'WalletParser');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -454,9 +454,40 @@ class WithdrawalsController extends AppController {
     public function complete() {
         $userGlobal = $this->Auth->user();
 
+        //gets the data send via form
+        $data = $this->request->data;
+
+        //search for the corresponding withdrawal
+        $withdrawalId = $data['Withdrawal']['withdrawal_id'];
+        $withdraw = $this->Withdrawal->findById($withdrawalId);
+
+        //if there is not corresponding withdrawal exit
+        if(!isset($withdraw)){
+            $this->Session->setFlash(
+                'Withdrawal not valid!',
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            return $this->redirect(array('action' => 'management', 'admin' => false));
+        }
+
+
+
+        $withdrawalInGameConfirmation = $data['Withdrawal']['ingame_confirmation'];
+
+        $deposit = $this->WalletParser->parseOneWithdrawal($withdrawalInGameConfirmation, $withdraw['Withdrawal']['type']);
+
+        debug($deposit);
+        die();
+
+
+
         return $this->redirect(array('action' => 'management', 'admin' => false));
     }
 
+    /**
+     * Function used by a manager to reserve a withdrawal claimed by a player
+     */
     public function reserve_one() {
         $manager = $this->Auth->user();
 
@@ -470,11 +501,11 @@ class WithdrawalsController extends AppController {
         $reserved_award = $this->Withdrawal->find('all', $params);
         if(!empty($reserved_award)){
             $this->Session->setFlash(
-                'You already have a reserved withdrawal !',
+                'You already have a reserved withdrawal!',
                 'FlashMessage',
                 array('type' => 'warning')
             );
-            $this->redirect(array('action' => 'management', 'admin' => false));
+            return $this->redirect(array('action' => 'management', 'admin' => false));
         }
 
         //search for the last withdrawal

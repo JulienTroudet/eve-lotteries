@@ -40,4 +40,75 @@ class WalletParserComponent extends Component {
 
         return false;
     }
+
+    /**
+     * This function parses a line copied from the ingame wallet or contract panel
+     * @param $inGameString
+     * @param $typeOfWithdrawal
+     * @return array|bool
+     */
+    public function parseOneWithdrawal($inGameString, $typeOfWithdrawal) {
+
+        $delimiter = "\t";
+        $splitContents = explode($delimiter, $inGameString);
+        $deposit = array();
+
+        if($typeOfWithdrawal == 'award_isk'){
+            //2015.09.20 21:25:14	Player Donation	209 000 000,00 ISK	1 209 100 000,00 ISK	Nel'Ea deposited cash into Natasha Tolsen's account
+            if( sizeof($splitContents) != 5){
+                return false;
+            }
+            $deposit["date"] = $splitContents[0];
+            $deposit["type"] = $splitContents[1];
+            $deposit["amount"] = str_replace(" ISK","", $splitContents[2]);
+            //careful here as we replace a special character, not a conventional space
+            $deposit["amount"] = str_replace(" ","", $deposit["amount"]);
+            $deposit["amount"] = str_replace(" ","", $deposit["amount"]);
+            $deposit["amount"] = str_replace(".","", $deposit["amount"]);
+            $deposit["amount"] = str_replace(",",".", $deposit["amount"]);
+            $deposit["amount"] = round($deposit["amount"], 2);
+
+            $userNames = str_replace("[r] ", "", $splitContents[4]);
+            $userNames = str_replace(" deposited cash into ", "\t", $userNames);
+            $userNames = explode($delimiter, $userNames);
+
+            $deposit["givenBy"] = $userNames[0];
+            $deposit["userName"] = str_replace("'s account", "", $userNames[1]);
+
+            if($deposit["type"] == "Player Donation"){
+                return $deposit;
+            }
+        }
+        else if($typeOfWithdrawal == 'award_item'){
+            //Astero	Item Exchange	EVE-Lotteries Corporation	Veritas Shinu	Finished	2015.09.23 07:47
+
+            if( sizeof($splitContents) != 7){
+                return 'coucou';
+            }
+
+            $deposit["name"] = $splitContents[0];
+            $deposit["type"] = $splitContents[1];
+            $deposit["issuer"] = $splitContents[2];
+
+            $deposit["userName"] = $splitContents[3];
+
+            $deposit["status"] = $splitContents[4];
+
+            $deposit["date"] = $splitContents[5];
+
+
+
+            if($deposit["type"] == "Item Exchange"){
+                return $deposit;
+            }
+        }
+
+
+
+
+
+
+
+        return false;
+    }
 }

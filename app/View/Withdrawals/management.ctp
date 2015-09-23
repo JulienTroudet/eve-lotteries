@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-2 col-xs-12">
                             <?php if(!empty($reserved_award)): ?>
-                            You have 10 minutes to complete this
+                                You have 10 minutes to complete this
                             <?php endif; ?>
                         </div>
                         <div class="col-md-8 col-xs-12">
@@ -53,14 +53,28 @@
                                             'label' => false,
                                             'class' => 'form-control',
                                         )
-                                    );?>
+                                    );
+                                    if(!empty($reserved_award)){
+                                    echo $this->Form->input(
+                                        'withdrawal_id',
+                                        array(
+                                            'div' => false,
+                                            'placeholder' => false,
+                                            'label' => false,
+                                            'class' => 'form-control',
+                                            'type' => 'hidden',
+                                            'value'=> $reserved_award['Withdrawal']['id']
+                                        )
+                                    );
+                                    }
+                                    ?>
                                 </div>
                                 <div class="col-md-2 col-xs-12">
                                     <?php
                                     $optionsFormLogin = array(
-                                        'label' => 'Complete',
-                                        'div' => false,
-                                        'class' => 'btn btn-success'
+                                    'label' => 'Complete',
+                                    'div' => false,
+                                    'class' => 'btn btn-success'
                                     );
                                     echo $this->Form->end($optionsFormLogin);
                                     ?>
@@ -79,26 +93,26 @@
                                     <div class="col-md-6 col-xs-12">
                                         <?php
                                         switch ($reserved_award['Withdrawal']['type']) {
-                                            case 'award_isk':
-                                                echo number_format($reserved_award['Withdrawal']['value'], 2).' ISK <br/>';
-                                                echo $reserved_award['Withdrawal']['value'];
-                                                break;
-                                            case 'award_item':
-                                                echo $reserved_award['Ticket']['Lottery']['name'];
-                                                ?>
+                                        case 'award_isk':
+                                        echo number_format($reserved_award['Withdrawal']['value'], 2).' ISK <br/>';
+                                        echo $reserved_award['Withdrawal']['value'];
+                                        break;
+                                        case 'award_item':
+                                        echo $reserved_award['Ticket']['Lottery']['name'];
+                                        ?>
                                                 <?php echo $reserved_award['Ticket']['Lottery']['name']; ?>
-                                                <button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $reserved_award['Ticket']['Lottery']['EveItem']['eve_id']; ?>)">
-                                                    Market Access
-                                                </button>
-                                                <?php
-                                                break;
+                                        <button class="btn btn-block btn-xs btn-warning" type="button" onclick="CCPEVE.buyType(<?php echo $reserved_award['Ticket']['Lottery']['EveItem']['eve_id']; ?>)">
+                                            Market Access
+                                        </button>
+                                        <?php
+                                        break;
                                         }
                                         ?>
                                     </div>
                                     <div class="col-md-2 col-xs-12">
 
                                         <button class="btn btn-block btn-xs btn-success" type="button" onclick="CCPEVE.showInfo(1377, <?php echo $reserved_award['User']['id']; ?>)">
-                                           In game profile
+                                            In game profile
                                         </button>
                                     </div>
                                     <?php endif; ?>
@@ -122,28 +136,28 @@
                             </thead>
                             <tbody>
                             <?php foreach ($claimed_awards as $claimed_award){?>
-                                <tr>
-                                    <td><img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['id']; ?>_32.jpg"></td>
-                                    <td>
-                                        <?php echo $claimed_award['User']['eve_name']; ?>
-                                    </td>
+                            <tr>
+                                <td><img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['id']; ?>_32.jpg"></td>
+                                <td>
+                                    <?php echo $claimed_award['User']['eve_name']; ?>
+                                </td>
 
-                                    <td>
-                                        <?php
-                                        switch ($claimed_award['Withdrawal']['type']) {
-                                            case 'award_isk':
-                                                echo 'ISK';
-                                                break;
-                                            case 'award_item':
-                                                echo 'Item';
-                                                break;
-                                        }
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $claimed_award['Withdrawal']['modified']; ?>
-                                    </td>
-                                </tr>
+                                <td>
+                                    <?php
+                                    switch ($claimed_award['Withdrawal']['type']) {
+                                    case 'award_isk':
+                                    echo 'ISK';
+                                    break;
+                                    case 'award_item':
+                                    echo 'Item';
+                                    break;
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php echo $claimed_award['Withdrawal']['modified']; ?>
+                                </td>
+                            </tr>
                             <?php } ?>
                             </tbody>
                         </table>
