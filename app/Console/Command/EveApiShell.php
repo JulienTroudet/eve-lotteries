@@ -32,8 +32,30 @@ class EveApiShell extends AppShell {
 
 
 		$response = null;
+        $response2 = null;
 		try {
 			$response = $this->pheal->walletjournal(array(''));
+
+            $response2 = $this->pheal->contracts(array(''));
+
+            debug($response->entries);
+            die();
+            foreach($response2->entries as $entry)
+            {
+                $this->log($entry->contractID);
+                $this->log($entry->issuerID);
+                $this->log($entry->issuerCorpID);
+                $this->log($entry->assigneeID);
+                $this->log($entry->type);
+                $this->log($entry->title);
+                $this->log($entry->forCorp);
+                $this->log($entry->numDays);
+                $this->log($entry->price);
+                $this->log($entry->volume);
+                $this->log($entry->numDays);
+                $this->log($entry->numDays);
+            }
+
 			$transactions = 0;
 
 			$startDateTime = new DateTime('NOW');

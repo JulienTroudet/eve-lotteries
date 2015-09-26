@@ -52,7 +52,7 @@
                         if ($userGlobal['group_id'] == 3) {
                             echo $this->Html->link(
                                 'Manager',
-                                array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true, 'plugin' => false)
+                                array('controller' => 'transactions', 'action' => 'index', 'admin' => true, 'plugin' => false)
                             );
                         }
                         ?>

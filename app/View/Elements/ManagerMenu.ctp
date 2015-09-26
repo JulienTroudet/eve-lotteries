@@ -6,9 +6,6 @@
 			<?php if(isset($nbWithdrawalClaimed) && $nbWithdrawalClaimed>0): ?>
 				<?php $label =  ' <span class="badge" style="display: inline;">'.$nbWithdrawalClaimed.'</span>'; ?>
 			<?php endif; ?>
-
-			<?php echo $this->Html->link(__('Give Won Lotteries'.$label), array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true), array('escape'=>false)); ?>
-			
 		</li>
 		<li class="divider"></li>
 		<li>

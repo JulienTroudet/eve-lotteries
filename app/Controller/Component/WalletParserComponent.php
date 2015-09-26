@@ -54,7 +54,7 @@ class WalletParserComponent extends Component {
         $deposit = array();
 
         if($typeOfWithdrawal == 'award_isk'){
-            //2015.09.20 21:25:14	Player Donation	209 000 000,00 ISK	1 209 100 000,00 ISK	Nel'Ea deposited cash into Natasha Tolsen's account
+            //2015.09.26 13:35:38	Corporation Account Withdrawal	-18 846 294,00 ISK	16 443 412 761,03 ISK	[r] Natasha Tolsen transferred cash from EVE-Lotteries Corporation's corporate account to Annecha Trouille's account
             if( sizeof($splitContents) != 5){
                 return false;
             }
@@ -69,13 +69,13 @@ class WalletParserComponent extends Component {
             $deposit["amount"] = round($deposit["amount"], 2);
 
             $userNames = str_replace("[r] ", "", $splitContents[4]);
-            $userNames = str_replace(" deposited cash into ", "\t", $userNames);
+            $userNames = str_replace(" transferred cash from EVE-Lotteries Corporation's corporate account to ", "\t", $userNames);
             $userNames = explode($delimiter, $userNames);
 
             $deposit["givenBy"] = $userNames[0];
             $deposit["userName"] = str_replace("'s account", "", $userNames[1]);
 
-            if($deposit["type"] == "Player Donation"){
+            if($deposit["type"] == "Corporation Account Withdrawal"){
                 return $deposit;
             }
         }
@@ -83,7 +83,7 @@ class WalletParserComponent extends Component {
             //Astero	Item Exchange	EVE-Lotteries Corporation	Veritas Shinu	Finished	2015.09.23 07:47
 
             if( sizeof($splitContents) != 7){
-                return 'coucou';
+                return false;
             }
 
             $deposit["name"] = $splitContents[0];

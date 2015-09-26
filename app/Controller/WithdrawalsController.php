@@ -409,6 +409,9 @@ class WithdrawalsController extends AppController {
         $this->set('claimed_awards', $claimed_awards);
     }
 
+    /**
+     * withdrawal panel for managers and admins
+     */
     public function management() {
         $userGlobal = $this->Auth->user();
 
@@ -451,6 +454,9 @@ class WithdrawalsController extends AppController {
         $this->set('reserved_award', $reserved_award);
     }
 
+    /**
+     * Function activated when a manager tries to complete a withdrawal
+     */
     public function complete() {
         $userGlobal = $this->Auth->user();
 
@@ -459,10 +465,8 @@ class WithdrawalsController extends AppController {
 
         //search for the corresponding withdrawal
         $withdrawalId = $data['Withdrawal']['withdrawal_id'];
-        $withdraw = $this->Withdrawal->findById($withdrawalId);
 
-        //if there is not corresponding withdrawal exit
-        if(!isset($withdraw)){
+        if(empty($withdrawalId)){
             $this->Session->setFlash(
                 'Withdrawal not valid!',
                 'FlashMessage',
@@ -471,15 +475,102 @@ class WithdrawalsController extends AppController {
             return $this->redirect(array('action' => 'management', 'admin' => false));
         }
 
+        $params = array(
+            'contain' => array(
+                'User',
+                'Ticket' => array(
+                    'Lottery' => array(
+                        'EveItem' => array('EveCategory')
+                    )
+                ),
+            ),
+            'conditions' => array('Withdrawal.id' => $withdrawalId),
+            'limit' => 1
+        );
+        $claimedWithdraw = $this->Withdrawal->find('first', $params);
 
+        //if there is not corresponding withdrawal exit
+        if(!isset($claimedWithdraw)){
+            $this->Session->setFlash(
+                'Withdrawal not valid!',
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            return $this->redirect(array('action' => 'management', 'admin' => false));
+        }
 
         $withdrawalInGameConfirmation = $data['Withdrawal']['ingame_confirmation'];
 
-        $deposit = $this->WalletParser->parseOneWithdrawal($withdrawalInGameConfirmation, $withdraw['Withdrawal']['type']);
+        $confirmation = $this->WalletParser->parseOneWithdrawal($withdrawalInGameConfirmation, $claimedWithdraw['Withdrawal']['type']);
 
-        debug($deposit);
-        die();
+        $okMessage = $this->_compareConfirmationToWithdrawal($confirmation, $claimedWithdraw);
 
+        // if the confirmation string copied in eve correspond to the withdrawal
+        if($okMessage == 'ok'){
+            if($claimedWithdraw['Withdrawal']['status'] != 'reserved'){
+                $this->Session->setFlash(
+                    'Withdrawal not reserved.',
+                    'FlashMessage',
+                    array('type' => 'warning')
+                );
+                return $this->redirect(array('action' => 'management', 'admin' => false));
+            }
+
+            if($claimedWithdraw['Withdrawal']['admin_id'] != $userGlobal['id']){
+                $this->Session->setFlash(
+                    'Withdrawal not reserved or already reserved by an admin.',
+                    'FlashMessage',
+                    array('type' => 'warning')
+                );
+                return $this->redirect(array('action' => 'management', 'admin' => false));
+            }
+
+            $this->loadModel('Ticket');
+            $this->loadModel('User');
+            $this->loadModel('Message');
+
+            $claimerUser = $this->User->findById($claimedWithdraw['Withdrawal']['user_id'], array('User.id', 'User.eve_name'));
+
+            $dataSource = $this->Withdrawal->getDataSource();
+            $dataSource->begin();
+
+            $success = $this->Withdrawal->updateAll(
+                array('Withdrawal.status' => '"completed_unverified"'),
+                array('Withdrawal.id' => $claimedWithdraw['Withdrawal']['id'])
+            );
+
+            if ($success) {
+
+                $this->Session->setFlash(
+                    'You have completed the Withdrawal for '.$claimerUser['User']['eve_name'],
+                    'FlashMessage',
+                    array('type' => 'success')
+                );
+
+                $this->Message->sendLotteryMessage(
+                    $claimerUser['User']['id'],
+                    'Lottery Completed',
+                    'Your prize for one or more lotteries has been delivered by our staff. Please check your wallet or your contracts in game.',
+                    $claimedWithdraw['Withdrawal']['id']
+                );
+                $this->log('Withdrawal completed : user_name['.$claimerUser['User']['eve_name'].'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$claimedWithdraw['Withdrawal']['id'].']', 'eve-lotteries');
+
+                $dataSource->commit();
+
+            }
+            else {
+                $dataSource->rollback();
+            }
+
+        }
+        else{
+            $this->Session->setFlash(
+                $okMessage,
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            return $this->redirect(array('action' => 'management', 'admin' => false));
+        }
 
 
         return $this->redirect(array('action' => 'management', 'admin' => false));
@@ -525,6 +616,15 @@ class WithdrawalsController extends AppController {
         );
         $award = $this->Withdrawal->find('first', $params);
 
+        //if there is no withdrawal to reserve
+        if(empty($award)){
+            $this->Session->setFlash(
+                'No withdrawal to reserve!',
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            return $this->redirect(array('action' => 'management', 'admin' => false));
+        }
 
         $this->Withdrawal->updateAll(
             array(
@@ -797,6 +897,39 @@ class WithdrawalsController extends AppController {
         $user['nb_new_won_flash_lotteries'] = $nbNewFlashAw;
 
         $this->User->save($user, true, array('id', 'nb_new_won_lotteries', 'nb_new_won_super_lotteries', 'nb_new_won_flash_lotteries'));
+    }
+
+    /*
+     * Compares the parsed confirmation to the withdrawal fetched in the bdd
+     */
+    private function _compareConfirmationToWithdrawal($confirmation, $withdraw){
+
+        if($withdraw['Withdrawal']['type'] == 'award_isk'){
+
+
+            if(($withdraw['Withdrawal']['value'] + $confirmation['amount']) != 0){
+                return 'Error in the ISK amount';
+            }
+            if($withdraw['User']['eve_name'] != $confirmation['userName']){
+                return 'Error in the player name, or wrong player awarded!';
+            }
+
+        }
+        else if($withdraw['Withdrawal']['type'] == 'award_item'){
+
+
+            if($withdraw['Ticket']['Lottery']['EveItem']['name'] != $confirmation['name']){
+                return 'Error in the Item\'s name or wrong Item!';
+            }
+            if($withdraw['User']['eve_name'] != $confirmation['userName']){
+                return 'Error in the player name, or wrong player awarded!';
+            }
+
+            return 'ok';
+
+
+        }
+
     }
 
 }
