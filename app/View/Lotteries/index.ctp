@@ -149,6 +149,7 @@
             wakeUp();
         });
     });
+
     function timerIncrement() {
         idleTime = idleTime + 1;
         if (idleTime > 4) {
@@ -485,7 +486,8 @@
     }
     function updateLotteriesCountDown(time_now) {
 
-        var server_date = moment.utc("<?php echo date("c") ?>");
+
+        var server_date = moment.utc($('#server-date').val());
 
         time_now = typeof time_now !== 'undefined' ? time_now : server_date;
 

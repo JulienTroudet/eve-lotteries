@@ -23,6 +23,7 @@
 	</div>
 </div>
 <input type="hidden" id="timestamp-lotteries" value="<?php echo $timestamp_lotteries; ?>"/>
+<input type="hidden" id="server-date" value="<?php echo date("c") ?>"/>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("[data-toggle='tooltip']").tooltip();

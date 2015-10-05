@@ -52,6 +52,13 @@ class Withdrawal extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+        'Admin' => array(
+            'className' => 'User',
+            'foreignKey' => 'admin_id',
+            'conditions' => '',
+            'fields' => '',
+            'order' => ''
+        )
 	);
 }

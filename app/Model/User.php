@@ -375,7 +375,20 @@ App::uses('AuthComponent', 'Controller/Component');
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-			)
+			),
+        'ManagementWithdrawal' => array(
+			'className' => 'Withdrawal',
+			'foreignKey' => 'admin_id',
+			'dependent' => true,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+			),
 		);
 
 

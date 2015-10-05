@@ -1,115 +1,81 @@
 <div id="wrapper" >
-	<?php 
-	if ($userGlobal['group_id'] == 3) {
-		echo $this->element('ManagerMenu', array());
-	}
-	?>
-	<div id="page-content-wrapper">
-		<div class="container-fluid">
-			<div class="awards index">
-				<h2>Withdrawals you must complete</h2>
+    <?php
+    echo $this->element('ManagerMenu', array());
+    ?>
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="awards index">
+                <h2>Ongoing Withdrawals</h2>
+                <div id="list-awards">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Player</th>
+                                    <th>Date</th>
+                                    <th>Claimed as</th>
+                                    <th>Manager</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($claimed_awards as $claimed_award):?>
+                                    <tr>
+                                        <td>
+                                            <img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['id']; ?>_32.jpg">
+                                        </td>
+                                        <td>
+                                            <?php echo $claimed_award['User']['eve_name']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $claimed_award['Withdrawal']['modified']; ?>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            switch ($claimed_award['Withdrawal']['type']) {
+                                                case 'award_isk':
+                                                    echo number_format($claimed_award['Withdrawal']['value'], 2).' ISK';
+                                                    break;
+                                                case 'award_item':
+                                                    echo $claimed_award['Ticket']['Lottery']['name'];
+                                                    break;
+                                            }
+                                            ?>
+                                        </td>
+                                        <td >
+                                            <?php echo $claimed_award['Admin']['eve_name']; ?>
+                                        </td>
+                                        <td >
+                                            <?php echo $claimed_award['Withdrawal']['status']; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-
-				<div id="list-awards">
-					<?php echo $this->element('Withdrawals/list_awards_admin', array("claimed_awards" => $claimed_awards)); ?>
-				</div>
-
-			</div>
-		</div>
-	</div>
+                    <div class="row">
+                        <ul class="pager">
+                            <li class="previous">
+                                <?php echo $this->Paginator->prev('< ' . __('Previous'), array(), null, array('class' => 'prev disabled')); ?>
+                            </li>
+                            <li>
+                                <?php echo $this->Paginator->counter(array( 'format' => __('Page {:page} of {:pages}, showing {:current} awards out of {:count}, starting on award {:start}, ending on {:end}') )); ?>
+                            </li>
+                            <li class="next">
+                                <?php
+                                echo $this->Paginator->next(__('Next') . ' >', array(), null, array('class' => 'next disabled'));
+                                ?>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-<script>
-	$(document).ready(function() {
-
-		$("[data-toggle='tooltip']").tooltip(); 
-
-		instanciateButtons();
-
-	});
-
-
-
-	function refreshListAwards(){
-		$.ajax({
-			type:"get",
-			url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'list_awards_to_complete', 'admin' => true)); ?>",
-
-
-			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-			},
-			success: function(response) {
-				$('#list-awards').html(response);
-				instanciateButtons();
-			},
-			error: function(e) {
-				alert("An error occurred: " + e.responseText);
-				console.log(e);
-			}
-		});
-	}
-
-	function instanciateButtons(){
-		$('.btn-reserve').click(function(){
-			var idWithdrawal = $(this).data('award-id-group');
-			$.ajax({
-				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'reserve_award', 'admin' => true ,'ext' => 'json')); ?>",
-
-				data:{
-					withdrawal_group_id:idWithdrawal,
-				},
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				},
-				success: function(response) {
-					if (response.error) {
-						toastr.warning(response.error);
-						console.log(response.error);
-					}
-					if (response.success) {
-						refreshListAwards();
-						toastr.success(response.message);
-					}
-				},
-				error: function(e) {
-					alert("An error occurred: " + e.responseText);
-					console.log(e);
-				}
-			});
-		});
-
-		$('.btn-complete').click(function(){
-			var idWithdrawal = $(this).data('award-id-group');
-			$.ajax({
-				type:"get",
-				url:"<?php echo $this->Html->url(array('controller' => 'withdrawals', 'action' => 'complete_award', 'admin' => true ,'ext' => 'json')); ?>",
-
-				data:{
-					withdrawal_group_id:idWithdrawal,
-				},
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				},
-				success: function(response) {
-					if (response.error) {
-						toastr.warning(response.error);
-						console.log(response.error);
-					}
-					if (response.success) {
-						refreshListAwards();
-						toastr.success(response.message);
-					}
-				},
-				error: function(e) {
-					alert("An error occurred: " + e.responseText);
-					console.log(e);
-				}
-			});
-		});
-	}
-
-
-</script>

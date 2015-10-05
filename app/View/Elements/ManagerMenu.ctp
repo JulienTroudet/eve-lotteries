@@ -2,11 +2,19 @@
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Manager Menu</li>
 		<li>
-			<?php $label = ''; ?>
-			<?php if(isset($nbWithdrawalClaimed) && $nbWithdrawalClaimed>0): ?>
-				<?php $label =  ' <span class="badge" style="display: inline;">'.$nbWithdrawalClaimed.'</span>'; ?>
-			<?php endif; ?>
-		</li>
+            <?php $label = ''; ?>
+            <?php if(isset($nbSuperClaimed) && $nbSuperClaimed>0): ?>
+                <?php $label =  ' <span class="badge" style="display: inline;">'.$nbSuperClaimed.'</span>'; ?>
+            <?php endif; ?>
+            <?php echo $this->Html->link(__('Withdrawals List'.$label), array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true), array('escape'=>false)); ?>
+        </li>
+        <li>
+            <?php $label = ''; ?>
+            <?php if(isset($nbSuperClaimed) && $nbSuperClaimed>0): ?>
+                <?php $label =  ' <span class="badge" style="display: inline;">'.$nbSuperClaimed.'</span>'; ?>
+            <?php endif; ?>
+            <?php echo $this->Html->link(__('Give Wages'.$label), array('controller' => 'wages', 'action' => 'index', 'admin' => true), array('escape'=>false)); ?>
+        </li>
 		<li class="divider"></li>
 		<li>
 			<?php $label = ''; ?>

@@ -22,12 +22,7 @@
                                 );?>
                             </div>
                         </div>
-                        <div class="col-md-2 col-xs-12">
-                            <?php if(!empty($reserved_award)): ?>
-                                You have 10 minutes to complete this
-                            <?php endif; ?>
-                        </div>
-                        <div class="col-md-8 col-xs-12">
+                        <div class="col-md-10 col-xs-12">
                             <div>
                                 <?php
                                 echo $this->Form->create(
