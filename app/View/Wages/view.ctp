@@ -8,12 +8,12 @@
                 <h2><?php echo __('Wage'); ?></h2>
 
                 <h3>
-                    <?php echo __('Status : '); ?> <?php echo h($wage['Wage']['status']); ?>
+                    <?php echo __('Status: '); ?> <?php echo h($wage['Wage']['status']); ?>
                     <p class="pull-right"><?php if($wage['Wage']['status'] == 'unclaimed'){echo $this->Html->link(__('Claim'), array('action' => 'claim', $wage['Wage']['id']));} ?></p>
                 </h3>
 
-                <h4><?php echo __('Amount : '); ?> <?php echo h(number_format($wage['Wage']['amount'], 2).' ISK'); ?></h4>
-                <h4><?php echo __('Creation date : '); ?> <?php echo h($wage['Wage']['created']); ?></h4>
+                <h4><?php echo __('Amount: '); ?> <?php echo h(number_format($wage['Wage']['amount'], 2).' ISK'); ?></h4>
+                <h4><?php echo __('Creation date: '); ?> <?php echo h($wage['Wage']['created']); ?></h4>
 
 
             </div>
@@ -21,7 +21,7 @@
 
         <div class="row">
             <div class="col-md-10 col-sm-12 col-md-offset-1">
-                <h3>Withdrawals linked to this wage</h3>
+                <h3>Withdrawals linked to this wage:</h3>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -32,30 +32,30 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($claimed_awards as $claimed_award){?>
+                    <?php foreach ($withdrawals as $withdrawal):?>
                         <tr>
-                            <td><img src="https://image.eveonline.com/Character/<?php echo $claimed_award['User']['id']; ?>_32.jpg"></td>
+                            <td><img src="https://image.eveonline.com/Character/<?php echo $withdrawal['User']['id']; ?>_32.jpg"></td>
                             <td>
-                                <?php echo $claimed_award['User']['eve_name']; ?>
+                                <?php echo $withdrawal['User']['eve_name']; ?>
                             </td>
 
                             <td>
                                 <?php
-                                switch ($claimed_award['Withdrawal']['type']) {
+                                switch ($withdrawal['Withdrawal']['type']) {
                                     case 'award_isk':
-                                        echo number_format($claimed_award['Withdrawal']['value'], 2).' ISK';
+                                        echo number_format($withdrawal['Withdrawal']['value'], 2).' ISK';
                                         break;
                                     case 'award_item':
-                                        echo $claimed_award['Withdrawal']['value'];
+                                        echo $withdrawal['Ticket']['Lottery']['EveItem']['name'];
                                         break;
                                 }
                                 ?>
                             </td>
                             <td>
-                                <?php echo $claimed_award['Withdrawal']['modified']; ?>
+                                <?php echo $withdrawal['Withdrawal']['modified']; ?>
                             </td>
                         </tr>
-                    <?php } ?>
+                    <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>

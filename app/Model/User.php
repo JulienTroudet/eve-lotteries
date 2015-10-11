@@ -389,6 +389,32 @@ App::uses('AuthComponent', 'Controller/Component');
 			'finderQuery' => '',
 			'counterQuery' => ''
 			),
+        'Wage' => array(
+            'className' => 'Wage',
+            'foreignKey' => 'recipient_id',
+            'dependent' => true,
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+        'ManagementWage' => array(
+            'className' => 'Wage',
+            'foreignKey' => 'admin_id',
+            'dependent' => true,
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
 		);
 
 

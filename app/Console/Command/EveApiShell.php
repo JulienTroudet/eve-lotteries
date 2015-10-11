@@ -225,32 +225,49 @@ class EveApiShell extends AppShell {
         //check of the contract list
         foreach($responseContract->contractList as $entry)
         {
-            $check_contract = $this->Withdrawal->findByTypeAndVerificationCode('award_item', $entry->refID);
+            if($entry->type == 'ItemExchange') {
+                $check_contract = $this->Withdrawal->findByTypeAndVerificationCode('award_item', $entry->contractID);
 
-            if(empty($check_contract)){
+                if (empty($check_contract)) {
 
-                $params = array(
-                    'conditions' => array(
-                        'Withdrawal.status' => array('new', 'claimed', 'reserved'),
-                        'Withdrawal.type' => array('award_credit', 'award_isk', 'award_item', 'award')),
-                );
+                    $specificContract = $this->pheal->contractItems(array("contractID" => $entry->contractID));
 
-                //rechercher le withdrawal correspondant
-                //si withdrawal trouvé, le passer à completed et ajouter le code de vérification
+
+                    $specificContract = $specificContract->itemList[0];
+                    /*$this->log($specificContract->typeID);
+                      $this->log($specificContract->quantity);*/
+
+                    //rechercher le withdrawal correspondant
+                    $params = array(
+                        'conditions' => array(
+                            'Withdrawal.status' => array('completed_unverified'),
+                            'Withdrawal.type' => array('award_item'),
+                            'Withdrawal.user_id' => array($entry->acceptorID)
+                        ),
+                        'contain' => array(
+                            'User',
+                            'Ticket' => array(
+                                'Lottery' => array(
+                                    'EveItem' => array(
+                                        'conditions' => array('EveItem.eve_id' => $specificContract->typeID)
+                                    )
+                                )
+                            ),
+                        ),
+                    );
+
+                    $correspondingWithdrawal = $this->Withdrawal->find('first', $params);
+
+                    if(!empty($correspondingWithdrawal)){
+
+                        debug($correspondingWithdrawal);
+                        die();
+                        $correspondingWithdrawal["Withdrawal"]["verification_code"] = $entry->contractID;
+                        $correspondingWithdrawal["Withdrawal"]["status"] = 'completed';
+
+                    }
+                }
             }
-
-            /*$this->log($entry->contractID);
-            $this->log($entry->issuerID);
-            $this->log($entry->issuerCorpID);
-            $this->log($entry->assigneeID);
-            $this->log($entry->type);
-            $this->log($entry->title);
-            $this->log($entry->forCorp);
-            $this->log($entry->numDays);
-            $this->log($entry->price);
-            $this->log($entry->volume);
-            $this->log($entry->numDays);
-            $this->log($entry->numDays);*/
         }
 
         //check of the corpo wallet

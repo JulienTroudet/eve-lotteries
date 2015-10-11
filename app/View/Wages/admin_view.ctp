@@ -4,45 +4,62 @@
     ?>
     <div id="page-content-wrapper">
         <div class="container-fluid">
-            <div class="wages view">
-                <h2><?php echo __('Wage'); ?></h2>
-                <dl>
-                    <dt><?php echo __('Id'); ?></dt>
-                    <dd>
-                        <?php echo h($wage['Wage']['id']); ?>
-                        &nbsp;
-                    </dd>
-                    <dt><?php echo __('Recipient'); ?></dt>
-                    <dd>
-                        <?php echo $this->Html->link($wage['Recipient']['eve_name'], array('controller' => 'users', 'action' => 'view', $wage['Recipient']['id'])); ?>
-                        &nbsp;
-                    </dd>
-                    <dt><?php echo __('Amount'); ?></dt>
-                    <dd>
-                        <?php echo h($wage['Wage']['amount']); ?>
-                        &nbsp;
-                    </dd>
-                    <dt><?php echo __('Admin'); ?></dt>
-                    <dd>
-                        <?php echo $this->Html->link($wage['Admin']['eve_name'], array('controller' => 'users', 'action' => 'view', $wage['Admin']['id'])); ?>
-                        &nbsp;
-                    </dd>
-                    <dt><?php echo __('Created'); ?></dt>
-                    <dd>
-                        <?php echo h($wage['Wage']['created']); ?>
-                        &nbsp;
-                    </dd>
-                    <dt><?php echo __('Modified'); ?></dt>
-                    <dd>
-                        <?php echo h($wage['Wage']['modified']); ?>
-                        &nbsp;
-                    </dd>
-                    <dt><?php echo __('Withdrawals Array'); ?></dt>
-                    <dd>
-                        <?php echo h($wage['Wage']['withdrawals_array']); ?>
-                        &nbsp;
-                    </dd>
-                </dl>
+            <div class="row">
+                <div class="col-md-10 col-sm-12 col-md-offset-1">
+                    <h2><?php echo __('Wage'); ?></h2>
+
+                    <h3>
+                        <?php echo __('Status: '); ?> <?php echo h($wage['Wage']['status']); ?>
+                        <p class="pull-right"><?php echo $this->Html->link(__('Delete'), array('action' => 'delete', 'admin'=>true, $wage['Wage']['id'])); ?></p>
+                    </h3>
+
+                    <h4><?php echo __('Amount: '); ?> <?php echo h(number_format($wage['Wage']['amount'], 2).' ISK'); ?></h4>
+                    <h4><?php echo __('Creation date: '); ?> <?php echo h($wage['Wage']['created']); ?></h4>
+
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-sm-12 col-md-offset-1">
+                    <h3>Withdrawals linked to this wage:</h3>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Player</th>
+                            <th>Claimed as</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($withdrawals as $withdrawal):?>
+                            <tr>
+                                <td><img src="https://image.eveonline.com/Character/<?php echo $withdrawal['User']['id']; ?>_32.jpg"></td>
+                                <td>
+                                    <?php echo $withdrawal['User']['eve_name']; ?>
+                                </td>
+
+                                <td>
+                                    <?php
+                                    switch ($withdrawal['Withdrawal']['type']) {
+                                        case 'award_isk':
+                                            echo number_format($withdrawal['Withdrawal']['value'], 2).' ISK';
+                                            break;
+                                        case 'award_item':
+                                            echo $withdrawal['Ticket']['Lottery']['EveItem']['name'];
+                                            break;
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php echo $withdrawal['Withdrawal']['modified']; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
