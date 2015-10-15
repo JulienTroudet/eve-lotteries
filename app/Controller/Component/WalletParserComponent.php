@@ -102,13 +102,6 @@ class WalletParserComponent extends Component {
                 return $deposit;
             }
         }
-
-
-
-
-
-
-
         return false;
     }
 }

@@ -1,5 +1,5 @@
 <?php if(isset($userGlobal)): ?>
-
+    <?php if ($userGlobal['group_id'] == 3 || $userGlobal['group_id'] == 5 || $userGlobal['group_id'] == 6):?>
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -72,6 +72,7 @@
         </div><!-- /.container-fluid -->
     </nav>
 
+    <?php endif; ?>
 
     <?php if ($userGlobal['group_id'] != 5 && $userGlobal['group_id'] != 6): ?>
     <div class="navbar navbar-default" role="navigation">

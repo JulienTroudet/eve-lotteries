@@ -621,7 +621,7 @@ class UsersController extends AppController {
 		$this->Acl->allow($group, 'controllers/Awards/index');
 		$this->Acl->allow($group, 'controllers/UserAwards/claim');
 
-        /*$group->id = 6;
+        $group->id = 5;
         $this->Acl->deny($group, 'controllers');
         $this->Acl->allow($group, 'controllers/Users/user_navbar');
         $this->Acl->allow($group, 'controllers/Users/account');
@@ -638,13 +638,13 @@ class UsersController extends AppController {
         $this->Acl->allow($group, 'controllers/FlashLotteries/list_flash_awards');
         $this->Acl->allow($group, 'controllers/Statistics/list_stats');
         $this->Acl->allow($group, 'controllers/Statistics/list_stats');
-        $this->Acl->allow($group, 'controllers/Transactions/banking'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Withdrawals/management'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Withdrawals/complete'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Withdrawals/reserve_one'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Withdrawals/cancel_reservation'); //!!!!!!!!!!!!!!!!!!!!!
         $this->Acl->allow($group, 'controllers/Wages/index');
-        $this->Acl->allow($group, 'controllers/Wages/claim');*/
+        $this->Acl->allow($group, 'controllers/Wages/claim');
+        $this->Acl->allow($group, 'controllers/Wages/view');
 
 
 

@@ -513,6 +513,7 @@ class WithdrawalsController extends AppController {
                 return $this->redirect(array('action' => 'management', 'admin' => false));
             }
 
+
             if($claimedWithdraw['Withdrawal']['admin_id'] != $userGlobal['id']){
                 $this->Session->setFlash(
                     'Withdrawal not reserved or already reserved by an admin.',
@@ -531,12 +532,16 @@ class WithdrawalsController extends AppController {
             $dataSource = $this->Withdrawal->getDataSource();
             $dataSource->begin();
 
+
             $success = $this->Withdrawal->updateAll(
-                array('Withdrawal.status' => '"completed_unverified"'),
+                array(
+                    'Withdrawal.status' => '"completed_unverified"',
+                    'Withdrawal.verification_date' => "'".$confirmation["date"]."'"
+                ),
                 array('Withdrawal.id' => $claimedWithdraw['Withdrawal']['id'])
             );
-
             if ($success) {
+
 
                 $this->Session->setFlash(
                     'You have completed the Withdrawal for '.$claimerUser['User']['eve_name'],
@@ -557,6 +562,13 @@ class WithdrawalsController extends AppController {
             }
             else {
                 $dataSource->rollback();
+
+                $this->Session->setFlash(
+                    'Error when saving the Withdrawal !',
+                    'FlashMessage',
+                    array('type' => 'danger')
+                );
+                return $this->redirect(array('action' => 'management', 'admin' => false));
             }
 
         }
@@ -709,6 +721,7 @@ class WithdrawalsController extends AppController {
      */
     private function _compareConfirmationToWithdrawal($confirmation, $withdraw){
 
+
         if($withdraw['Withdrawal']['type'] == 'award_isk'){
 
 
@@ -718,6 +731,8 @@ class WithdrawalsController extends AppController {
             if($withdraw['User']['eve_name'] != $confirmation['userName']){
                 return 'Error in the player name, or wrong player awarded!';
             }
+
+            return 'ok';
 
         }
         else if($withdraw['Withdrawal']['type'] == 'award_item'){
