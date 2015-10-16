@@ -14,7 +14,7 @@ class WagesController extends AppController {
      *
      * @var array
      */
-    public $components = array('Paginator', 'Session');
+    public $components = array('Paginator', 'Session', 'WalletParser');
 
     /**
      * index method
@@ -22,10 +22,13 @@ class WagesController extends AppController {
      * @return void
      */
     public function index() {
+        $userGlobal = $this->Auth->user();
         $this->Wage->recursive = 0;
 
         $paginateVar = array(
-            'conditions' => array(''),
+            'conditions' => array(
+                'Wage.recipient_id' => $userGlobal['id']
+            ),
             'order' => array(
                 'Wage.created' => 'desc'
             ),
@@ -43,11 +46,17 @@ class WagesController extends AppController {
      * @return void
      */
     public function view($id = null) {
-        $this->loadModel('Withdrawal');
+        $userGlobal = $this->Auth->user();
+        $this->loadModel('Wage');
         if (!$this->Wage->exists($id)) {
             throw new NotFoundException(__('Invalid wage'));
         }
-        $options = array('conditions' => array('Wage.' . $this->Wage->primaryKey => $id));
+        $options = array(
+            'conditions' => array(
+                'Wage.' . $this->Wage->primaryKey => $id,
+                'Wage.recipient_id' => $userGlobal['id']
+            )
+        );
         $wage = $this->Wage->find('first', $options);
 
         $listWithdrawalIds = explode(",", $wage["Wage"]["withdrawals_array"]);
@@ -114,7 +123,7 @@ class WagesController extends AppController {
 
         $paginateVar = array(
             'conditions' => array('Wage.status' => array('claimed', 'unclaimed')),
-            'limit' => 1
+            'limit' => 20
         );
         $this->Paginator->settings = $paginateVar;
         $this->set('wages', $this->Paginator->paginate());
@@ -174,116 +183,118 @@ class WagesController extends AppController {
         $data = $this->request->data;
 
         //search for the corresponding withdrawal
-        $withdrawalId = $data['Withdrawal']['withdrawal_id'];
+        $wageId = $data['Wage']['wage_id'];
 
-        if(empty($withdrawalId)){
+
+
+        if(empty($wageId)){
             $this->Session->setFlash(
-                'Withdrawal not valid!',
+                'Wage not valid!',
                 'FlashMessage',
                 array('type' => 'warning')
             );
-            return $this->redirect(array('action' => 'management', 'admin' => false));
+            return $this->redirect(array('action' => 'index', 'admin' => true));
         }
 
         $params = array(
             'contain' => array(
-                'User',
-                'Ticket' => array(
-                    'Lottery' => array(
-                        'EveItem' => array('EveCategory')
-                    )
-                ),
+                'Admin',
+                'Recipient'
             ),
-            'conditions' => array('Withdrawal.id' => $withdrawalId),
+            'conditions' => array('Wage.id' => $wageId),
             'limit' => 1
         );
-        $claimedWithdraw = $this->Withdrawal->find('first', $params);
+        $claimedWage = $this->Wage->find('first', $params);
 
         //if there is not corresponding withdrawal exit
-        if(!isset($claimedWithdraw)){
+        if(!isset($claimedWage)){
             $this->Session->setFlash(
-                'Withdrawal not valid!',
+                'Wage not valid!',
                 'FlashMessage',
                 array('type' => 'warning')
             );
-            return $this->redirect(array('action' => 'management', 'admin' => false));
+            return $this->redirect(array('action' => 'index', 'admin' => true));
         }
 
-        $withdrawalInGameConfirmation = $data['Withdrawal']['ingame_confirmation'];
+        $withdrawalInGameConfirmation = $data['Wage']['ingame_confirmation'];
 
-        $confirmation = $this->WalletParser->parseOneWithdrawal($withdrawalInGameConfirmation, $claimedWithdraw['Withdrawal']['type']);
 
-        $okMessage = $this->_compareConfirmationToWithdrawal($confirmation, $claimedWithdraw);
 
-        // if the confirmation string copied in eve correspond to the withdrawal
-        if($okMessage == 'ok'){
-            if($claimedWithdraw['Withdrawal']['status'] != 'reserved'){
-                $this->Session->setFlash(
-                    'Withdrawal not reserved.',
-                    'FlashMessage',
-                    array('type' => 'warning')
-                );
-                return $this->redirect(array('action' => 'management', 'admin' => false));
-            }
 
-            if($claimedWithdraw['Withdrawal']['admin_id'] != $userGlobal['id']){
-                $this->Session->setFlash(
-                    'Withdrawal not reserved or already reserved by an admin.',
-                    'FlashMessage',
-                    array('type' => 'warning')
-                );
-                return $this->redirect(array('action' => 'management', 'admin' => false));
-            }
-
-            $this->loadModel('Ticket');
-            $this->loadModel('User');
-            $this->loadModel('Message');
-
-            $claimerUser = $this->User->findById($claimedWithdraw['Withdrawal']['user_id'], array('User.id', 'User.eve_name'));
-
-            $dataSource = $this->Withdrawal->getDataSource();
-            $dataSource->begin();
-
-            $success = $this->Withdrawal->updateAll(
-                array('Withdrawal.status' => '"completed_unverified"'),
-                array('Withdrawal.id' => $claimedWithdraw['Withdrawal']['id'])
-            );
-
-            if ($success) {
-
-                $this->Session->setFlash(
-                    'You have completed the Withdrawal for '.$claimerUser['User']['eve_name'],
-                    'FlashMessage',
-                    array('type' => 'success')
-                );
-
-                $this->Message->sendLotteryMessage(
-                    $claimerUser['User']['id'],
-                    'Lottery Completed',
-                    'Your prize for one or more lotteries has been delivered by our staff. Please check your wallet or your contracts in game.',
-                    $claimedWithdraw['Withdrawal']['id']
-                );
-                $this->log('Withdrawal completed : user_name['.$claimerUser['User']['eve_name'].'], user_id['.$claimerUser['User']['id'].'], withdrawal_id['.$claimedWithdraw['Withdrawal']['id'].']', 'eve-lotteries');
-
-                $dataSource->commit();
-
-            }
-            else {
-                $dataSource->rollback();
-            }
-
-        }
-        else{
+        if($claimedWage['Wage']['status'] != 'reserved'){
             $this->Session->setFlash(
-                $okMessage,
+                'Wage not reserved.',
                 'FlashMessage',
                 array('type' => 'warning')
             );
-            return $this->redirect(array('action' => 'management', 'admin' => false));
+            return $this->redirect(array('action' => 'index', 'admin' => true));
+        }
+
+        if($claimedWage['Wage']['admin_id'] != $userGlobal['id']){
+            $this->Session->setFlash(
+                'Wage not reserved or already reserved by an admin.',
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            return $this->redirect(array('action' => 'index', 'admin' => true));
+        }
+
+        $this->loadModel('User');
+
+        $claimerUser = $this->User->findById($claimedWage['Wage']['recipient_id'], array('User.id', 'User.eve_name', 'User.group_id'));
+
+        if($claimerUser['User']['group_id'] == 3){
+
+            $this->Wage->updateAll(
+                array('Wage.status' => '"completed"'),
+                array('Wage.id' => $claimedWage['Wage']['id'])
+            );
+
+            $this->Session->setFlash(
+                'Not Wage for admins :(((((((',
+                'FlashMessage',
+                array('type' => 'info')
+            );
+            return $this->redirect(array('action' => 'index', 'admin' => true));
         }
 
 
-        return $this->redirect(array('action' => 'management', 'admin' => false));
+        $confirmation = $this->WalletParser->parseOneWage($withdrawalInGameConfirmation);
+
+        if($claimerUser['User']['eve_name'] != $confirmation['userName'] || $confirmation['amount']+$claimedWage['Wage']['amount'] != 0){
+            $this->Session->setFlash(
+                'Error in user name or amount',
+                'FlashMessage',
+                array('type' => 'warning')
+            );
+            return $this->redirect(array('action' => 'index', 'admin' => true));
+        }
+
+        $dataSource = $this->Wage->getDataSource();
+        $dataSource->begin();
+
+        $success = $this->Wage->updateAll(
+            array('Wage.status' => '"completed"'),
+            array('Wage.id' => $claimedWage['Wage']['id'])
+        );
+
+        if ($success) {
+
+            $this->Session->setFlash(
+                'You have completed the Wage for '.$claimerUser['User']['eve_name'],
+                'FlashMessage',
+                array('type' => 'success')
+            );
+
+            $dataSource->commit();
+
+        }
+        else {
+            $dataSource->rollback();
+        }
+
+
+        return $this->redirect(array('action' => 'index', 'admin' => true));
     }
 
     /**
@@ -385,6 +396,8 @@ class WagesController extends AppController {
         } else {
             $this->Session->setFlash(__('The wage could not be deleted. Please, try again.'));
         }
-        return $this->redirect(array('action' => 'index'));
+        return $this->redirect(array('action' => 'index', 'admin' => true));
     }
+
+
 }

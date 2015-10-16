@@ -85,7 +85,7 @@ class TransactionsController extends AppController {
 	 *
 	 * @return void
 	 */
-	public function admin_add() {
+	public function add() {
 
 		if ($this->request->is('post')) {
 
@@ -101,7 +101,7 @@ class TransactionsController extends AppController {
 					'FlashMessage',
 					array('type' => 'error')
 					);
-				return $this->redirect(array('action' => 'index', 'admin' => true));
+				return $this->redirect(array('action' => 'banking', 'admin' => false));
 			}
 
 			//request the transaction to see if is it not already added
@@ -131,7 +131,7 @@ class TransactionsController extends AppController {
 						'FlashMessage',
 						array('type' => 'error')
 						);
-					return $this->redirect(array('action' => 'index', 'admin' => true));
+					return $this->redirect(array('action' => 'banking', 'admin' => false));
 				}
 				if(empty($donatorUser)){
 					$this->Session->setFlash(
@@ -139,7 +139,7 @@ class TransactionsController extends AppController {
 						'FlashMessage',
 						array('type' => 'error')
 						);
-					return $this->redirect(array('action' => 'index', 'admin' => true));
+					return $this->redirect(array('action' => 'banking', 'admin' => false));
 				}
 
 				//new object transaction
@@ -162,7 +162,7 @@ class TransactionsController extends AppController {
 						array('type' => 'success')
 						);
 
-					return $this->redirect(array('action' => 'index', 'admin' => true));
+					return $this->redirect(array('action' => 'banking', 'admin' => false));
 
 				} else {
 
@@ -171,7 +171,7 @@ class TransactionsController extends AppController {
 						'FlashMessage',
 						array('type' => 'error')
 						);
-					return $this->redirect(array('action' => 'index', 'admin' => true));
+					return $this->redirect(array('action' => 'banking', 'admin' => false));
 				}
 			}
 			else{
@@ -180,10 +180,10 @@ class TransactionsController extends AppController {
 					'FlashMessage',
 					array('type' => 'error')
 					);
-				return $this->redirect(array('action' => 'index', 'admin' => true));
+				return $this->redirect(array('action' => 'banking', 'admin' => false));
 			}
 
-			return $this->redirect(array('action' => 'index', 'admin' => true));
+			return $this->redirect(array('action' => 'banking', 'admin' => false));
 			
 		}
 	}

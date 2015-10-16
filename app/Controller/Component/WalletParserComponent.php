@@ -104,4 +104,44 @@ class WalletParserComponent extends Component {
         }
         return false;
     }
+
+    /**
+     * This function parses a line copied from the ingame wallet or contract panel
+     * @param $inGameString
+     * @param $typeOfWithdrawal
+     * @return array|bool
+     */
+    public function parseOneWage($inGameString) {
+
+        $delimiter = "\t";
+        $splitContents = explode($delimiter, $inGameString);
+        $deposit = array();
+
+            //2015.09.26 13:35:38	Corporation Account Withdrawal	-18 846 294,00 ISK	16 443 412 761,03 ISK	[r] Natasha Tolsen transferred cash from EVE-Lotteries Corporation's corporate account to Annecha Trouille's account
+            if( sizeof($splitContents) != 5){
+                return false;
+            }
+            $deposit["date"] = $splitContents[0];
+            $deposit["type"] = $splitContents[1];
+            $deposit["amount"] = str_replace(" ISK","", $splitContents[2]);
+            //careful here as we replace a special character, not a conventional space
+            $deposit["amount"] = str_replace(" ","", $deposit["amount"]);
+            $deposit["amount"] = str_replace(" ","", $deposit["amount"]);
+            $deposit["amount"] = str_replace(".","", $deposit["amount"]);
+            $deposit["amount"] = str_replace(",",".", $deposit["amount"]);
+            $deposit["amount"] = round($deposit["amount"], 2);
+
+            $userNames = str_replace("[r] ", "", $splitContents[4]);
+            $userNames = str_replace(" transferred cash from EVE-Lotteries Corporation's corporate account to ", "\t", $userNames);
+            $userNames = explode($delimiter, $userNames);
+
+            $deposit["givenBy"] = $userNames[0];
+            $deposit["userName"] = str_replace("'s account", "", $userNames[1]);
+
+            if($deposit["type"] == "Corporation Account Withdrawal"){
+                return $deposit;
+            }
+
+        return false;
+    }
 }

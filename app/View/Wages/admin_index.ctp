@@ -53,7 +53,7 @@
                                         );
                                         if(!empty($reserved_wage)){
                                             echo $this->Form->input(
-                                                'withdrawal_id',
+                                                'wage_id',
                                                 array(
                                                     'div' => false,
                                                     'placeholder' => false,
