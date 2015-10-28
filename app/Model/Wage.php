@@ -72,7 +72,7 @@ class Wage extends AppModel {
 
             $wage['Wage']['withdrawals_array'] = $wage['Wage']['withdrawals_array'].','.$withdrawal_id;
 
-            return $this->save($wage, true, array('id', 'amount'));
+            return $this->save($wage, true, array('id', 'amount', 'withdrawals_array'));
         }
     }
 

@@ -40,9 +40,16 @@
                     <li>
                         <?php
                         if ($userGlobal['group_id'] == 3 || $userGlobal['group_id'] == 5) {
+
+                            $label = 'Give Withdrawals';
+                            if($nbClaimedWithdrawals>0){
+                                $label= $label.' <span class="badge">'.$nbClaimedWithdrawals.'</span>';
+                            }
+
                             echo $this->Html->link(
-                                'Give Withdrawals',
-                                array('controller' => 'withdrawals', 'action' => 'management', 'admin' => false, 'plugin' => false)
+                                $label,
+                                array('controller' => 'withdrawals', 'action' => 'management', 'admin' => false, 'plugin' => false),
+                                array('escape' => false)
                             );
                         }
                         ?>
@@ -50,9 +57,22 @@
                     <li>
                         <?php
                         if ($userGlobal['group_id'] == 3) {
+
+                            $label = 'Manager';
+                            if($nbClaimedWages>0){
+                                $label= $label.' | Wages <span class="badge">'.$nbClaimedWages.'</span>';
+                            }
+                            if($nbClaimedSuper>0){
+                                $label= $label.' | Super <span class="badge">'.$nbClaimedSuper.'</span>';
+                            }
+                            if($nbClaimedFlash>0){
+                                $label= $label.' | Flash <span class="badge">'.$nbClaimedFlash.'</span>';
+                            }
+
                             echo $this->Html->link(
-                                'Manager',
-                                array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true)
+                                $label,
+                                array('controller' => 'withdrawals', 'action' => 'index', 'admin' => true),
+                                array('escape' => false)
                             );
                         }
                         ?>

@@ -47,7 +47,7 @@ class WagesController extends AppController {
      */
     public function view($id = null) {
         $userGlobal = $this->Auth->user();
-        $this->loadModel('Wage');
+        $this->loadModel('Withdrawal');
         if (!$this->Wage->exists($id)) {
             throw new NotFoundException(__('Invalid wage'));
         }
@@ -60,7 +60,6 @@ class WagesController extends AppController {
         $wage = $this->Wage->find('first', $options);
 
         $listWithdrawalIds = explode(",", $wage["Wage"]["withdrawals_array"]);
-
 
 
         $wOptions = array(

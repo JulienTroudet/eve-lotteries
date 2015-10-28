@@ -97,7 +97,6 @@ class AppController extends Controller {
 
 
 		$this->loadModel('Config');
-		$this->loadModel('Lottery');
 		$this->loadModel('Statistic');
 		$this->loadModel('User');
 
@@ -107,17 +106,34 @@ class AppController extends Controller {
 		$userGlobal = $this->Auth->user();
 		$userGlobal = $this->_readConnectionCookie($userGlobal);
 
+        //if user is banned
         if($userGlobal['group_id']==7){
             $this->Cookie->destroy();
             $this->Auth->logout();
             throw new ForbiddenException('Character is Banned');
         }
-		
-		$params = array(
-			'conditions' => array('Lottery.lottery_status_id' => '1'),
-			);
-		$nbFreeLotteries = 10 - $this->Lottery->find('count', $params);
+
+
+        $nbFreeLotteries = $this->_getNbFreeLotteries();
 		$this->set('nbFreeLotteries', $nbFreeLotteries);
+
+        //if user is admin or manager
+        if($userGlobal['group_id']==3 || $userGlobal['group_id']==5){
+
+            $nbClaimedWithdrawals = $this->_getNbClaimedWithdrawals();
+            $this->set('nbClaimedWithdrawals', $nbClaimedWithdrawals);
+
+            $nbClaimedWages = $this->_getNbClaimedWages();
+            $this->set('nbClaimedWages', $nbClaimedWages);
+
+            $nbClaimedSuper = $this->_getNbClaimedSuper();
+            $this->set('nbClaimedSuper', $nbClaimedSuper);
+
+            $nbClaimedFlash = $this->_getNbClaimedFlash();
+            $this->set('nbClaimedFlash', $nbClaimedFlash);
+        }
+
+
 
 		$this->set('userGlobal', $userGlobal);
 
@@ -167,5 +183,65 @@ class AppController extends Controller {
         if (in_array ($this->request->clientIp(), $listBann)) {
             throw new ForbiddenException('IP is Banned');
         }
+    }
+
+    protected function _getNbFreeLotteries(){
+        $this->loadModel('Lottery');
+
+        $params = array(
+            'conditions' => array('Lottery.lottery_status_id' => '1'),
+        );
+        $nbFreeLotteries = 10 - $this->Lottery->find('count', $params);
+
+        return $nbFreeLotteries;
+
+    }
+
+    protected function _getNbClaimedWithdrawals(){
+        $this->loadModel('Withdrawal');
+
+        $params = array(
+            'conditions' => array('Withdrawal.status' => 'claimed'),
+        );
+        $nb = $this->Withdrawal->find('count', $params);
+
+        return $nb;
+
+    }
+
+    protected function _getNbClaimedWages(){
+        $this->loadModel('Wage');
+
+        $params = array(
+            'conditions' => array('Wage.status' => 'claimed'),
+        );
+        $nb = $this->Wage->find('count', $params);
+
+        return $nb;
+
+    }
+
+    protected function _getNbClaimedSuper(){
+        $this->loadModel('SuperLottery');
+
+        $params = array(
+            'conditions' => array('SuperLottery.status' => 'claimed'),
+        );
+        $nb = $this->SuperLottery->find('count', $params);
+
+        return $nb;
+
+    }
+
+    protected function _getNbClaimedFlash(){
+        $this->loadModel('FlashLottery');
+
+        $params = array(
+            'conditions' => array('FlashLottery.status' => 'claimed'),
+        );
+        $nb = $this->FlashLottery->find('count', $params);
+
+        return $nb;
+
     }
 }
