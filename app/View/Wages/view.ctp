@@ -13,6 +13,7 @@
                 </h3>
 
                 <h4><?php echo __('Amount: '); ?> <?php echo h(number_format($wage['Wage']['amount'], 2).' ISK'); ?></h4>
+                <h4><?php echo __('Bonus: '); ?> <?php echo h(number_format($wage['Wage']['amount']-$wage['Wage']['brut_value'], 2).' ISK'); ?></h4>
                 <h4><?php echo __('Creation date: '); ?> <?php echo h($wage['Wage']['created']); ?></h4>
 
 

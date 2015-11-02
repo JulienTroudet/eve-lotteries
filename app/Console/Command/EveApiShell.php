@@ -15,6 +15,9 @@ class EveApiShell extends AppShell {
         $corpoVCode = $this->Config->findByName("corpoVCode");
         $corpoVCodeValue = $corpoVCode['Config']['value'];
 
+        $bonusManager = $this->Config->findByName("bonusManager");
+        $bonusManager = $bonusManager['Config']['value'];
+
 
         Pheal\Core\Config::getInstance()->access = new \Pheal\Access\StaticCheck();
 
@@ -152,7 +155,7 @@ class EveApiShell extends AppShell {
 
             $walletTransactions = array($wallet1, $wallet2, $wallet3, $wallet4, $wallet5, $wallet6, $wallet7);
 
-            $this->verifyWithdrawalManagement($walletTransactions, $responseContract);
+            $this->verifyWithdrawalManagement($walletTransactions, $responseContract, $bonusManager);
 
         } catch (\Pheal\Exceptions\PhealException $e) {
 
@@ -226,10 +229,11 @@ class EveApiShell extends AppShell {
 
     /**
      * This function verifies the managers work (giving withdrawals to players)
-     * @param $responseWallet
+     * @param $walletTransactions
      * @param $responseContract
+     * @param $bonusManager
      */
-    public function verifyWithdrawalManagement($walletTransactions, $responseContract) {
+    public function verifyWithdrawalManagement($walletTransactions, $responseContract, $bonusManager) {
 
         //check of the contract list
         foreach($responseContract->contractList as $entry)
@@ -338,8 +342,9 @@ class EveApiShell extends AppShell {
 
                         $uok = $this->Wage->addIskToWage(
                             $correspondingWithdrawal["Withdrawal"]["admin_id"],
-                            $correspondingWithdrawal["Withdrawal"]["value"] * 1.025,
-                            $correspondingWithdrawal["Withdrawal"]["id"]
+                            $correspondingWithdrawal["Withdrawal"]["value"] * $bonusManager,
+                            $correspondingWithdrawal["Withdrawal"]["id"],
+                            $correspondingWithdrawal["Withdrawal"]["value"]
                         );
 
                         if ($wok && $uok) {

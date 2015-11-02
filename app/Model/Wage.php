@@ -44,7 +44,7 @@ class Wage extends AppModel {
         ),
     );
 
-    public function addIskToWage($recipient_id, $amount, $withdrawal_id) {
+    public function addIskToWage($recipient_id, $amount, $withdrawal_id, $brut_value) {
 
         $params = array(
             'conditions' => array(
@@ -62,6 +62,7 @@ class Wage extends AppModel {
                     'amount' => $amount,
                     'status' => 'unclaimed',
                     'withdrawals_array' => $withdrawal_id,
+                    'brut_value' => $brut_value
                 )
             );
             $this->create();
@@ -70,9 +71,11 @@ class Wage extends AppModel {
         else{
             $wage['Wage']['amount'] = $wage['Wage']['amount']+$amount;
 
+            $wage['Wage']['brut_value'] = $wage['Wage']['brut_value']+$brut_value;
+
             $wage['Wage']['withdrawals_array'] = $wage['Wage']['withdrawals_array'].','.$withdrawal_id;
 
-            return $this->save($wage, true, array('id', 'amount', 'withdrawals_array'));
+            return $this->save($wage, true, array('id', 'amount', 'withdrawals_array', 'brut_value'));
         }
     }
 

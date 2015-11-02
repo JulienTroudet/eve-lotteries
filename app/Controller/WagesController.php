@@ -36,6 +36,33 @@ class WagesController extends AppController {
         );
         $this->Paginator->settings = $paginateVar;
         $this->set('wages', $this->Paginator->paginate());
+
+        //Total value
+
+        $params = array(
+            'conditions' => array('Wage.recipient_id' => $userGlobal['id']),
+            'fields' => array(
+                'SUM(Wage.amount) as totalAmount',
+                'SUM(Wage.brut_value) as totalBrut',
+                "GROUP_CONCAT(Wage.withdrawals_array SEPARATOR ',') as withdrawals_list"
+            ),
+            'group'=>array('Wage.recipient_id')
+        );
+        $total = $this->Wage->find('first', $params);
+        if(isset($total[0])){
+            $this->set('totalAmount', $total[0]['totalAmount']);
+            $this->set('totalBrut', $total[0]['totalBrut']);
+
+            $listWithdrawalIds = explode(",", $total[0]['withdrawals_list']);
+
+            $this->set('withdrawals_number', sizeof($listWithdrawalIds));
+        }
+        else{
+            $this->set('totalAmount', 0);
+            $this->set('totalBrut', 0);
+            $this->set('withdrawals_number', 0);
+        }
+
     }
 
     /**
