@@ -2,6 +2,7 @@
 	<ul class="sidebar-nav">
 		<li class="sidebar-brand">Admin Menu</li>
 		<li><?php echo $this->Html->link(__('Statistics'), array('controller' => 'statistics', 'action' => 'index', 'admin' => true)); ?> </li>
+        <li><?php echo $this->Html->link(__('Employees'), array('controller' => 'users', 'action' => 'drh', 'admin' => true)); ?> </li>
 		<li class="divider"></li>
 		<li><?php echo $this->Html->link(__('List Lotteries'), array('controller' => 'lotteries', 'action' => 'index', 'admin' => true)); ?> </li>
 		<li class="divider"></li>

@@ -32,6 +32,56 @@ class UsersController extends AppController {
 		$this->set('users', $this->User->find('all'));
 	}
 
+    public function admin_drh() {
+
+        $this->loadModel('Wage');
+        $this->loadModel('Withdrawal');
+
+        $optionsUsers = array(
+            'contain' => array(
+                'Group'
+            ),
+            'conditions' => array(
+                'OR'=>array(
+                    array('User.group_id' => 3),
+                    array('User.group_id' => 5),
+                    array('User.group_id' => 6)
+                ),
+            ),
+
+            'order' => array('User.group_id' => 'asc')
+        );
+        $users = $this->User->find('all', $optionsUsers);
+        $this->set('users', $users);
+
+        $optionsWages = array(
+            'fields' => array(
+                'admin_id',
+                'SUM(Wage.amount) as totalAmount',
+                'SUM(Wage.brut_value) as totalBrut',
+            ),
+            'group'=>array('Wage.admin_id')
+        );
+
+        $wages = $this->Wage->find('all', $optionsWages);
+
+        $wages = Hash::combine($wages, '{n}.Wage.admin_id', '{n}.{n}');
+
+        $this->set('wages', $wages);
+
+
+        $optionsNbWages = array(
+            'fields' => array(
+                'Withdrawal.admin_id',
+                'COUNT(*) as nb'
+            ),
+            'group'=>array('Withdrawal.admin_id')
+        );
+        $nbWages = $this->Withdrawal->find('all', $optionsNbWages);
+        $nbWages = Hash::combine($nbWages, '{n}.Withdrawal.admin_id', '{n}.{n}');
+        $this->set('nbWages', $nbWages);
+    }
+
 	/**
 	 * view method
 	 *

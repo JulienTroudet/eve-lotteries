@@ -245,52 +245,56 @@ class EveApiShell extends AppShell {
 
                     $specificContract = $this->pheal->contractItems(array("contractID" => $entry->contractID));
 
+                    //if the contract contains a list of items
+                    if(sizeof($specificContract->itemList)>0) {
 
-                    $specificContract = $specificContract->itemList[0];
-                    //rechercher le withdrawal correspondant
-                    $params = array(
-                        'conditions' => array(
-                            'Withdrawal.status' => 'completed_unverified',
-                            'Withdrawal.type' => 'award_item',
-                            'Withdrawal.user_id' => $entry->acceptorID,
-                        ),
-                        'contain' => array(
-                            'User',
-                            'Admin',
-                            'Ticket' => array(
-                                'Lottery' => array(
-                                    'EveItem' => array(
-                                        'conditions' => array('EveItem.eve_id' => $specificContract->typeID)
-                                    )
-                                )
+                        $specificContract = $specificContract->itemList[0];
+
+                        //rechercher le withdrawal correspondant
+                        $params = array(
+                            'conditions' => array(
+                                'Withdrawal.status' => 'completed_unverified',
+                                'Withdrawal.type' => 'award_item',
+                                'Withdrawal.user_id' => $entry->acceptorID,
                             ),
-                        ),
-                    );
-
-                    $correspondingWithdrawal = $this->Withdrawal->find('first', $params);
-
-                    if(!empty($correspondingWithdrawal)){
-
-                        $correspondingWithdrawal["Withdrawal"]["verification_code"] = $entry->contractID;
-                        $correspondingWithdrawal["Withdrawal"]["status"] = 'completed';
-
-
-                        $dataSource = $this->User->getDataSource();
-                        $dataSource->begin();
-
-                        $wok = $this->Withdrawal->save($correspondingWithdrawal, true,  array('id', 'verification_code', 'status'));
-
-                        $uok = $this->Wage->addIskToWage(
-                            $correspondingWithdrawal["Withdrawal"]["admin_id"],
-                            $correspondingWithdrawal["Ticket"]["Lottery"]["value"]*1.025,
-                            $correspondingWithdrawal["Withdrawal"]["id"]
+                            'contain' => array(
+                                'User',
+                                'Admin',
+                                'Ticket' => array(
+                                    'Lottery' => array(
+                                        'EveItem' => array(
+                                            'conditions' => array('EveItem.eve_id' => $specificContract->typeID)
+                                        )
+                                    )
+                                ),
+                            ),
                         );
 
-                        if($wok && $uok){
-                            $dataSource->commit();
-                        }
-                        else {
-                            $dataSource->rollback();
+                        $correspondingWithdrawal = $this->Withdrawal->find('first', $params);
+
+                        if (!empty($correspondingWithdrawal)) {
+
+                            $correspondingWithdrawal["Withdrawal"]["verification_code"] = $entry->contractID;
+                            $correspondingWithdrawal["Withdrawal"]["status"] = 'completed';
+
+
+                            $dataSource = $this->User->getDataSource();
+                            $dataSource->begin();
+
+                            $wok = $this->Withdrawal->save($correspondingWithdrawal, true, array('id', 'verification_code', 'status'));
+
+                            $uok = $this->Wage->addIskToWage(
+                                $correspondingWithdrawal["Withdrawal"]["admin_id"],
+                                $correspondingWithdrawal["Ticket"]["Lottery"]["value"] * $bonusManager,
+                                $correspondingWithdrawal["Withdrawal"]["id"],
+                                $correspondingWithdrawal["Ticket"]["Lottery"]["value"]
+                            );
+
+                            if ($wok && $uok) {
+                                $dataSource->commit();
+                            } else {
+                                $dataSource->rollback();
+                            }
                         }
                     }
                 }
@@ -300,57 +304,67 @@ class EveApiShell extends AppShell {
         //check of the corpo wallet
         foreach($walletTransactions as $wallet) {
             foreach ($wallet->entries as $entry) {
-                $check_wallet = $this->Withdrawal->findByTypeAndVerificationCode('award_isk', $entry->refID);
 
-                if (empty($check_wallet)) {
+                if($entry->ownerID1 != $entry->ownerID2) {
 
-                    /*
-                    $refid =  $entry->refID;
-                    $amount = $entry->amount;
-                    $ownerID1 = $entry->ownerID1;
-                    $ownerName1 = $entry->ownerName1;
-                    $ownerID1 = $entry->ownerID2;
-                    $ownerName2 = $entry->ownerName2;
-                    $eve_date = $entry->date;*/
+                    $this->log("WALLET");
+                    $check_wallet = $this->Withdrawal->findByTypeAndVerificationCode('award_isk', $entry->refID);
 
+                    if (empty($check_wallet)) {
 
-                    //rechercher le withdrawal correspondant
-                    $params = array(
-                        'conditions' => array(
-                            'Withdrawal.status' => 'completed_unverified',
-                            'Withdrawal.type' => 'award_isk',
-                            'Withdrawal.user_id' => $entry->ownerID2,
-                            'Withdrawal.value' => $entry->amount*-1
-                        ),
-                        'contain' => array(
-                            'User',
-                            'Admin'
-                        ),
-                    );
+                        /*
+                        $refid =  $entry->refID;
+                        $amount = $entry->amount;
+                        $ownerID1 = $entry->ownerID1;
+                        $ownerName1 = $entry->ownerName1;
+                        $ownerID1 = $entry->ownerID2;
+                        $ownerName2 = $entry->ownerName2;
+                        $eve_date = $entry->date;*/
 
-                    $correspondingWithdrawal = $this->Withdrawal->find('first', $params);
+//                        $this->log("ID1 : " . $entry->ownerID1 . " " . $entry->ownerName1);
+//                        $this->log("ID2 : " . $entry->ownerID2 . " " . $entry->ownerName2);
+//                        $this->log("amount : " . $entry->amount);
 
-                    if (!empty($correspondingWithdrawal)) {
-                        $correspondingWithdrawal["Withdrawal"]["verification_code"] = $entry->contractID;
-                        $correspondingWithdrawal["Withdrawal"]["status"] = 'completed';
-
-
-                        $dataSource = $this->User->getDataSource();
-                        $dataSource->begin();
-
-                        $wok = $this->Withdrawal->save($correspondingWithdrawal, true, array('id', 'verification_code', 'status'));
-
-                        $uok = $this->Wage->addIskToWage(
-                            $correspondingWithdrawal["Withdrawal"]["admin_id"],
-                            $correspondingWithdrawal["Withdrawal"]["value"] * $bonusManager,
-                            $correspondingWithdrawal["Withdrawal"]["id"],
-                            $correspondingWithdrawal["Withdrawal"]["value"]
+                        //rechercher le withdrawal correspondant
+                        $params = array(
+                            'conditions' => array(
+                                'Withdrawal.status' => 'completed_unverified',
+                                'Withdrawal.type' => 'award_isk',
+                                'Withdrawal.user_id' => $entry->ownerID2,
+                                'Withdrawal.value LIKE' => ($entry->amount * -1).'%'
+                            ),
+                            'contain' => array(
+                                'User',
+                                'Admin'
+                            ),
                         );
 
-                        if ($wok && $uok) {
-                            $dataSource->commit();
-                        } else {
-                            $dataSource->rollback();
+                        $correspondingWithdrawal = $this->Withdrawal->find('first', $params);
+
+                        if (!empty($correspondingWithdrawal)) {
+
+
+                            $correspondingWithdrawal["Withdrawal"]["verification_code"] = $entry->contractID;
+                            $correspondingWithdrawal["Withdrawal"]["status"] = 'completed';
+
+
+                            $dataSource = $this->User->getDataSource();
+                            $dataSource->begin();
+
+                            $wok = $this->Withdrawal->save($correspondingWithdrawal, true, array('id', 'verification_code', 'status'));
+
+                            $uok = $this->Wage->addIskToWage(
+                                $correspondingWithdrawal["Withdrawal"]["admin_id"],
+                                $correspondingWithdrawal["Withdrawal"]["value"] * $bonusManager,
+                                $correspondingWithdrawal["Withdrawal"]["id"],
+                                $correspondingWithdrawal["Withdrawal"]["value"]
+                            );
+
+                            if ($wok && $uok) {
+                                $dataSource->commit();
+                            } else {
+                                $dataSource->rollback();
+                            }
                         }
                     }
                 }
